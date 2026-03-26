@@ -43,7 +43,8 @@ fi
 # ── Tests ──────────────────────────────────────────────────────────────────────
 echo "▶ Running tests..."
 echo ""
-if node --test tests/*.test.js 2>&1; then
+# Only run unit tests pre-build (not build.test.js which requires artifacts)
+if node --test tests/domain-db.test.js tests/error-detection.test.js 2>&1; then
   echo ""
   echo -e "  ${GREEN}✓ All tests passed${NC}"
 else

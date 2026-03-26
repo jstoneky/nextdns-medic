@@ -121,9 +121,11 @@ describe("domain-db.js sanity", () => {
 // ─── Build output ─────────────────────────────────────────────────────────────
 describe("Build zips", () => {
   before(() => {
-    // Run build if zips don't exist
-    if (!fs.existsSync(DIST)) {
-      execSync("./build.sh all", { cwd: ROOT, stdio: "pipe" });
+    // Build only if current version zip is missing (avoids recursive build)
+    const pkg = JSON.parse(fs.readFileSync(path.join(ROOT, "manifest.json"), "utf8"));
+    const expected = path.join(DIST, `nextdns-medic-chrome-v${pkg.version}.zip`);
+    if (!fs.existsSync(expected)) {
+      execSync("node --test tests/domain-db.test.js tests/error-detection.test.js && ./build.sh all", { cwd: ROOT, stdio: "pipe" });
     }
   });
 
