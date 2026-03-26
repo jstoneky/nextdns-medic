@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  width: 1400px; height: 560px;
+  background: #0f1117;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  display: flex; align-items: center;
+  overflow: hidden; position: relative;
+}
+
+/* Solid background — no transparency */
+.bg {
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, #0c0e18 0%, #0f1117 40%, #111827 100%);
+}
+
+/* Grid */
+.grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(99,102,241,0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99,102,241,0.07) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+/* Left glow */
+.glow {
+  position: absolute;
+  width: 600px; height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(99,102,241,0.12) 0%, transparent 70%);
+  left: -100px; top: -120px;
+  pointer-events: none;
+}
+
+.content {
+  position: relative; z-index: 1;
+  display: flex; align-items: center;
+  width: 100%; padding: 0 100px;
+  gap: 100px;
+}
+
+/* Left text block */
+.left { flex: 1; }
+
+.eyebrow {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 20px;
+}
+.eyebrow-badge {
+  background: rgba(99,102,241,0.15);
+  border: 1px solid rgba(99,102,241,0.3);
+  border-radius: 20px;
+  padding: 4px 14px;
+  font-size: 13px; font-weight: 700; color: #818cf8;
+  text-transform: uppercase; letter-spacing: 0.1em;
+}
+
+.headline {
+  font-size: 68px; font-weight: 800;
+  color: #f1f5f9; line-height: 1.05;
+  margin-bottom: 22px;
+  letter-spacing: -0.02em;
+}
+.headline em { color: #6366f1; font-style: normal; }
+
+.sub {
+  font-size: 20px; color: #64748b;
+  line-height: 1.55; max-width: 520px;
+  margin-bottom: 36px;
+}
+
+.pills { display: flex; gap: 12px; flex-wrap: wrap; }
+.pill {
+  display: flex; align-items: center; gap: 7px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px; padding: 8px 16px;
+  font-size: 14px; font-weight: 600;
+}
+.pill.h { color: #fca5a5; border-color: rgba(248,113,113,0.25); background: rgba(248,113,113,0.06); }
+.pill.m { color: #fcd34d; border-color: rgba(251,191,36,0.25);  background: rgba(251,191,36,0.06); }
+.pill.l { color: #86efac; border-color: rgba(74,222,128,0.25);  background: rgba(74,222,128,0.06); }
+.dot { width: 7px; height: 7px; border-radius: 50%; }
+.dot.h { background: #f87171; box-shadow: 0 0 6px #f87171; }
+.dot.m { background: #fbbf24; }
+.dot.l { background: #4ade80; }
+
+/* Right mock popup (larger) */
+.popup {
+  width: 360px; flex-shrink: 0;
+  background: #1a1d27;
+  border-radius: 16px;
+  border: 1px solid #2a2d3e;
+  overflow: hidden;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(99,102,241,0.1);
+}
+
+.ph {
+  padding: 16px 18px; border-bottom: 1px solid #2a2d3e;
+  display: flex; align-items: center; gap: 10px;
+}
+.ph-logo { font-size: 22px; }
+.ph-title { font-weight: 700; font-size: 15px; color: #f1f5f9; }
+.ph-host { font-size: 11px; color: #64748b; }
+
+.stats {
+  display: flex; border-bottom: 1px solid #2a2d3e;
+  background: #131620; padding: 8px 0;
+}
+.stat { flex: 1; text-align: center; }
+.sn { font-size: 22px; font-weight: 800; }
+.sl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+.hc { color: #f87171; } .mc { color: #fbbf24; } .lc { color: #4ade80; }
+.sdiv { width: 1px; background: #2a2d3e; }
+
+.sh {
+  padding: 9px 16px 4px;
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.08em; display: flex; align-items: center; gap: 7px;
+}
+.sh::after { content: ""; flex: 1; height: 1px; background: currentColor; opacity: 0.2; }
+
+.row {
+  display: flex; align-items: center;
+  padding: 10px 16px; gap: 11px;
+  border-bottom: 1px solid #1e2130;
+}
+.rdot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.rdot.h { background: #f87171; box-shadow: 0 0 6px #f87171aa; }
+.rdot.m { background: #fbbf24; }
+.rdot.l { background: #4ade80; }
+.ri { flex: 1; }
+.rd { font-weight: 600; font-size: 12px; color: #f1f5f9; }
+.rl { font-size: 10px; color: #64748b; margin-top: 1px; }
+.btn { background: #1e3a5f; border: 1px solid #2563eb44; border-radius: 5px; color: #60a5fa; font-size: 10px; font-weight: 700; padding: 4px 9px; white-space: nowrap; }
+.btn.ok { background: #14532d; border-color: #4ade8044; color: #4ade80; }
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="grid"></div>
+<div class="glow"></div>
+<div class="content">
+  <div class="left">
+    <div class="eyebrow">
+      <span class="eyebrow-badge">🛡️ NextDNS Monitor</span>
+    </div>
+    <div class="headline">See what<br>NextDNS is<br><em>blocking</em></div>
+    <div class="sub">Real-time detection of DNS blocks that silently break websites — with one-click allowlist via the NextDNS API.</div>
+    <div class="pills">
+      <div class="pill h"><div class="dot h"></div> High Risk</div>
+      <div class="pill m"><div class="dot m"></div> Medium</div>
+      <div class="pill l"><div class="dot l"></div> Low / Safe</div>
+    </div>
+  </div>
+
+  <div class="popup">
+    <div class="ph">
+      <span class="ph-logo">🛡️</span>
+      <div><div class="ph-title">NextDNS Monitor</div><div class="ph-host">lucidmotors.com</div></div>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="sn hc">2</div><div class="sl hc">High</div></div>
+      <div class="sdiv"></div>
+      <div class="stat"><div class="sn mc">2</div><div class="sl mc">Med</div></div>
+      <div class="sdiv"></div>
+      <div class="stat"><div class="sn lc">4</div><div class="sl lc">Low</div></div>
+    </div>
+    <div class="sh hc">🔴 High Risk — May Break Functionality</div>
+    <div class="row">
+      <div class="rdot h"></div>
+      <div class="ri"><div class="rd">featureassets.org</div><div class="rl">Feature Flags (Statsig)</div></div>
+      <div class="btn ok">✓ Added</div>
+    </div>
+    <div class="row">
+      <div class="rdot h"></div>
+      <div class="ri"><div class="rd">cdn.algolia.net</div><div class="rl">Search (Algolia)</div></div>
+      <div class="btn">+ Allowlist</div>
+    </div>
+    <div class="sh mc">🟡 Medium — Worth Reviewing</div>
+    <div class="row">
+      <div class="rdot m"></div>
+      <div class="ri"><div class="rd">www.googletagmanager.com</div><div class="rl">Tag Manager (GTM)</div></div>
+      <div class="btn">+ Allowlist</div>
+    </div>
+    <div class="row">
+      <div class="rdot l"></div>
+      <div class="ri"><div class="rd">www.google-analytics.com</div><div class="rl">Analytics (Google Analytics)</div></div>
+      <div class="btn">+ Allowlist</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

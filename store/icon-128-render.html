@@ -14,104 +14,73 @@ canvas { display: block; }
 const canvas = document.getElementById('c');
 const ctx = canvas.getContext('2d');
 const S = 128;
+const PAD = 16;          // 16px transparent padding per side
+const ART = S - PAD * 2; // 96x96 actual artwork area
+const cx = S / 2;
+const cy = S / 2;
 
-// Background — rounded rect
-const r = 24;
-ctx.beginPath();
-ctx.moveTo(r, 0);
-ctx.lineTo(S - r, 0);
-ctx.quadraticCurveTo(S, 0, S, r);
-ctx.lineTo(S, S - r);
-ctx.quadraticCurveTo(S, S, S - r, S);
-ctx.lineTo(r, S);
-ctx.quadraticCurveTo(0, S, 0, S - r);
-ctx.lineTo(0, r);
-ctx.quadraticCurveTo(0, 0, r, 0);
-ctx.closePath();
+// Clear to transparent
+ctx.clearRect(0, 0, S, S);
 
-// Background gradient
-const bg = ctx.createLinearGradient(0, 0, S, S);
-bg.addColorStop(0, '#1a1d2e');
-bg.addColorStop(1, '#0f1117');
-ctx.fillStyle = bg;
-ctx.fill();
+// Shield dimensions — centered within 96x96 art area
+const sw = 54, sh = 64;
 
-// Subtle grid lines
-ctx.strokeStyle = 'rgba(99,102,241,0.08)';
-ctx.lineWidth = 1;
-for (let x = 0; x < S; x += 16) {
-  ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, S); ctx.stroke();
-}
-for (let y = 0; y < S; y += 16) {
-  ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(S, y); ctx.stroke();
+// Shield path (centered at cx, cy)
+function shieldPath() {
+  ctx.beginPath();
+  ctx.moveTo(cx, cy - sh/2);
+  ctx.bezierCurveTo(cx + sw/2, cy - sh/2,  cx + sw/2, cy - sh/6,  cx + sw/2, cy + sh/8);
+  ctx.bezierCurveTo(cx + sw/2, cy + sh/2.2, cx, cy + sh/2, cx, cy + sh/2);
+  ctx.bezierCurveTo(cx, cy + sh/2, cx - sw/2, cy + sh/2.2, cx - sw/2, cy + sh/8);
+  ctx.bezierCurveTo(cx - sw/2, cy - sh/6, cx - sw/2, cy - sh/2, cx, cy - sh/2);
+  ctx.closePath();
 }
 
-// Shield shape
-const cx = 64, cy = 56;
-const sw = 52, sh = 62;
-
-ctx.save();
-ctx.translate(cx, cy);
-
-// Shield path
-ctx.beginPath();
-ctx.moveTo(0, -sh/2);
-ctx.bezierCurveTo( sw/2, -sh/2,  sw/2, -sh/6,  sw/2,  sh/8);
-ctx.bezierCurveTo( sw/2,  sh/2.2, 0,  sh/2,  0,  sh/2);
-ctx.bezierCurveTo( 0,  sh/2, -sw/2, sh/2.2, -sw/2, sh/8);
-ctx.bezierCurveTo(-sw/2, -sh/6, -sw/2, -sh/2, 0, -sh/2);
-ctx.closePath();
-
-// Shield gradient fill
-const sg = ctx.createLinearGradient(-sw/2, -sh/2, sw/2, sh/2);
+// Shield fill — indigo gradient
+shieldPath();
+const sg = ctx.createLinearGradient(cx - sw/2, cy - sh/2, cx + sw/2, cy + sh/2);
 sg.addColorStop(0, '#818cf8');
-sg.addColorStop(0.5, '#6366f1');
-sg.addColorStop(1, '#4f46e5');
+sg.addColorStop(0.45, '#6366f1');
+sg.addColorStop(1, '#4338ca');
 ctx.fillStyle = sg;
 ctx.fill();
 
-// Shield glow
-ctx.shadowColor = '#6366f1';
-ctx.shadowBlur = 20;
-ctx.fill();
-ctx.shadowBlur = 0;
-
-// Subtle shield border
-ctx.strokeStyle = 'rgba(165,180,252,0.4)';
-ctx.lineWidth = 1.5;
+// Subtle inner glow on shield edge
+shieldPath();
+ctx.strokeStyle = 'rgba(199,210,254,0.35)';
+ctx.lineWidth = 2;
 ctx.stroke();
 
-// Checkmark inside shield
-ctx.strokeStyle = 'white';
-ctx.lineWidth = 5;
+// Checkmark
+ctx.strokeStyle = 'rgba(255,255,255,0.95)';
+ctx.lineWidth = 6;
 ctx.lineCap = 'round';
 ctx.lineJoin = 'round';
-ctx.shadowColor = 'rgba(255,255,255,0.5)';
-ctx.shadowBlur = 6;
 ctx.beginPath();
-ctx.moveTo(-14, 2);
-ctx.lineTo(-4, 12);
-ctx.lineTo(16, -10);
+ctx.moveTo(cx - 15, cy + 2);
+ctx.lineTo(cx - 4,  cy + 14);
+ctx.lineTo(cx + 17, cy - 12);
 ctx.stroke();
 
-ctx.restore();
-
-// Red dot badge (top right) — signals "alert"
-const bx = 92, by = 22, br = 10;
+// Alert badge (top-right, within art bounds)
+const bx = cx + 22, by = cy - 22, br = 11;
+// Badge shadow (small, per guidelines)
+ctx.save();
+ctx.shadowColor = 'rgba(0,0,0,0.3)';
+ctx.shadowBlur = 4;
+ctx.shadowOffsetY = 2;
 ctx.beginPath();
 ctx.arc(bx, by, br, 0, Math.PI * 2);
 ctx.fillStyle = '#ef4444';
-ctx.shadowColor = '#ef4444';
-ctx.shadowBlur = 10;
 ctx.fill();
-ctx.shadowBlur = 0;
+ctx.restore();
 
-// Exclamation in badge
+// Badge exclamation
 ctx.fillStyle = 'white';
-ctx.font = 'bold 13px -apple-system, sans-serif';
+ctx.font = 'bold 14px -apple-system, Arial, sans-serif';
 ctx.textAlign = 'center';
 ctx.textBaseline = 'middle';
-ctx.fillText('!', bx, by + 0.5);
+ctx.fillText('!', bx, by + 1);
 </script>
 </body>
 </html>
