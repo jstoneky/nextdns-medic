@@ -1,8 +1,10 @@
 // NextDNS Traffic Monitor — Background Service Worker
 // Monitors webRequest errors and flags likely NextDNS blocks
 
-importScripts("browser-compat.js");
-importScripts("domain-db.js");
+// Chrome service worker loads these via importScripts.
+// Firefox loads them via background.scripts in manifest — these will no-op silently.
+try { importScripts("browser-compat.js"); } catch (e) {}
+try { importScripts("domain-db.js"); } catch (e) {}
 
 // In-memory store: tabId -> { url, hostname, blocks: Map<domain, blockInfo> }
 const tabData = new Map();

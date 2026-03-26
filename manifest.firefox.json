@@ -15,7 +15,7 @@
     "<all_urls>"
   ],
   "background": {
-    "service_worker": "background.js"
+    "scripts": ["browser-compat.js", "domain-db.js", "background.js"]
   },
   "action": {
     "default_popup": "popup.html",
