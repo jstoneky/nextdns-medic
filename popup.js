@@ -32,6 +32,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (apiKey) {
     document.getElementById("api-key-input").value = apiKey;
     lockApiKeyField();
+    // Silently restore profile list in background (no spinner)
+    fetchDeviceFingerprint().then(() => fetchAndMatchProfiles(apiKey));
   }
   if (profileId)   document.getElementById("profile-id-input").value = profileId;
   if (piholeUrl)   document.getElementById("pihole-url-input").value = piholeUrl;
@@ -73,9 +75,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("provider-select").addEventListener("change", e => {
     updateProviderUI(e.target.value);
   });
-  document.getElementById("api-key-input").addEventListener("blur", handleApiKeyBlur);
-  document.getElementById("btn-change-profile").addEventListener("click", showProfileDropdown);
-  document.getElementById("profile-select").addEventListener("change", handleProfileSelectChange);
+  document.getElementById("btn-lookup-profiles").addEventListener("click", handleLookupProfiles);
   document.getElementById("btn-clear-apikey").addEventListener("click", handleClearApiKey);
 
   // Filter by confidence level on stat click
@@ -333,10 +333,11 @@ async function addToAllowlist(btn) {
 
 // ── Settings ──────────────────────────────────────────────────────────────────
 async function toggleSettings() {
-  // Only fetch profiles once — loadSettings already ran it on open
-  if (apiKey && provider === "nextdns" && profilesList.length === 0) {
-    if (!detectedFingerprint) await fetchDeviceFingerprint();
-    await fetchAndMatchProfiles(apiKey);
+  // Re-render profile list if already loaded (keeps selection in sync)
+  if (profilesList.length > 0) {
+    const fingerprintMatch = detectedFingerprint
+      ? profilesList.find(p => p.fingerprint === detectedFingerprint) : null;
+    renderProfileList(fingerprintMatch?.id || null);
   }
   const panel = document.getElementById("settings-panel");
   const isHidden = panel.classList.contains("hidden");
@@ -387,16 +388,14 @@ async function handleClearApiKey() {
   profilesFetchInFlight = false;
 
   await ext.storage.sync.remove(["apiKey", "profileId"]);
+  await ext.storage.local.remove(["piholeVersion", "ndm_dbCache"]);
 
   unlockApiKeyField();
 
-  // Reset profile UI back to empty manual entry
-  document.getElementById("ndm-profile-detected").classList.add("hidden");
-  document.getElementById("ndm-profile-select-row").classList.add("hidden");
-  document.getElementById("ndm-profile-manual-row").classList.remove("hidden");
-  document.getElementById("profile-id-input").value = "";
-  document.getElementById("profile-id-input").readOnly = false;
-  document.getElementById("profile-id-input").placeholder = "Enter API key above to auto-detect";
+  // Reset profile UI
+  profilesList = [];
+  document.getElementById("ndm-profile-section").classList.add("hidden");
+  document.getElementById("ndm-profile-list").innerHTML = "";
 }
 
 function updateProviderUI(selectedProvider) {
@@ -568,91 +567,68 @@ async function fetchAndMatchProfiles(key) {
     const data = await res.json();
     profilesList = data.data || [];
 
-    // Populate dropdown — mark the active profile
-    const select = document.getElementById("profile-select");
-    select.innerHTML = profilesList
-      .map(p => {
-        const isActive = detectedFingerprint && p.fingerprint === detectedFingerprint;
-        const label = isActive ? `${p.name} (${p.id}) ← active` : `${p.name} (${p.id})`;
-        return `<option value="${p.id}"${isActive ? " data-active='true'" : ""}>${label}</option>`;
-      })
-      .join("");
-
-    // 1. Try fingerprint match (device is actively on NextDNS)
     const fingerprintMatch = detectedFingerprint
-      ? profilesList.find(p => p.fingerprint === detectedFingerprint)
-      : null;
-
-    // 2. Fall back to previously saved profileId
+      ? profilesList.find(p => p.fingerprint === detectedFingerprint) : null;
     const savedMatch = profileId
-      ? profilesList.find(p => p.id === profileId)
-      : null;
+      ? profilesList.find(p => p.id === profileId) : null;
+    const autoSelect = fingerprintMatch || savedMatch || profilesList[0] || null;
+    if (autoSelect) profileId = autoSelect.id;
 
-    // 3. Single profile — just use it
-    const singleProfile = profilesList.length === 1 ? profilesList[0] : null;
-
-    if (fingerprintMatch) {
-      profileId = fingerprintMatch.id;
-      showDetectedProfile(fingerprintMatch, detectedDeviceName, true);
-    } else if (savedMatch) {
-      // Show the saved profile — not confirmed as "active" device profile
-      showDetectedProfile(savedMatch, null, false);
-    } else if (singleProfile) {
-      profileId = singleProfile.id;
-      showDetectedProfile(singleProfile, null, false);
-    } else {
-      showProfileDropdown();
-    }
+    renderProfileList(fingerprintMatch?.id || null);
   } catch (_) {
   } finally {
     profilesFetchInFlight = false;
   }
 }
 
-function showDetectedProfile(profile, deviceName, isActive) {
-  document.getElementById("ndm-profile-detected").classList.remove("hidden");
-  document.getElementById("ndm-profile-manual-row").classList.add("hidden");
-  document.getElementById("ndm-profile-select-row").classList.add("hidden");
+function renderProfileList(activeId) {
+  const section = document.getElementById("ndm-profile-section");
+  const list    = document.getElementById("ndm-profile-list");
+  if (!profilesList.length) { section.classList.add("hidden"); return; }
 
-  const labelEl = document.querySelector(".ndm-profile-label");
-  if (isActive) {
-    labelEl.textContent = "✓ Active profile";
-    labelEl.style.color = "";
-  } else {
-    labelEl.textContent = "Selected profile";
-    labelEl.style.color = "#60a5fa"; // blue instead of green
-  }
+  list.innerHTML = profilesList.map(p => {
+    const isDevice   = p.id === activeId;
+    const isSelected = p.id === profileId;
+    return `
+      <div class="ndm-profile-item${isSelected ? " selected" : ""}" data-id="${p.id}">
+        <div class="ndm-profile-item-info">
+          <span class="ndm-profile-item-name">${p.name}</span>
+          <span class="ndm-profile-item-id">${p.id}</span>
+        </div>
+        <div class="ndm-profile-item-right">
+          ${isDevice ? `<span class="ndm-profile-item-badge">This device</span>` : ""}
+          ${isSelected ? `<span class="ndm-profile-item-check">✓</span>` : ""}
+        </div>
+      </div>`;
+  }).join("");
 
-  document.getElementById("ndm-profile-name").textContent = profile.name;
-  document.getElementById("ndm-profile-id").textContent   = `(${profile.id})`;
-  document.getElementById("ndm-device-name").textContent  = deviceName ? `📱 ${deviceName}` : "";
-  document.getElementById("profile-id-input").value       = profile.id;
-  document.getElementById("profile-select").value         = profile.id;
+  list.querySelectorAll(".ndm-profile-item").forEach(el => {
+    el.addEventListener("click", () => {
+      profileId = el.dataset.id;
+      renderProfileList(activeId);
+    });
+  });
+
+  section.classList.remove("hidden");
 }
 
-function showProfileDropdown() {
-  document.getElementById("ndm-profile-detected").classList.add("hidden");
-  document.getElementById("ndm-profile-manual-row").classList.add("hidden");
-  document.getElementById("ndm-profile-select-row").classList.remove("hidden");
-  // Sync select to current profileId
-  if (profileId) document.getElementById("profile-select").value = profileId;
-}
-
-function handleProfileSelectChange(e) {
-  profileId = e.target.value;
-  document.getElementById("profile-id-input").value = profileId;
-}
-
-async function handleApiKeyBlur() {
+async function handleLookupProfiles() {
   const key = document.getElementById("api-key-input").value.trim();
   if (!key) return;
-  await fetchDeviceFingerprint(); // always re-fetch to ensure it's fresh
+  const btn = document.getElementById("btn-lookup-profiles");
+  btn.textContent = "…";
+  btn.disabled = true;
+  profilesFetchInFlight = false;
+  await fetchDeviceFingerprint();
   await fetchAndMatchProfiles(key);
+  btn.textContent = "→";
+  btn.disabled = false;
+  lockApiKeyField();
 }
 
 async function saveSettings() {
   const newKey = document.getElementById("api-key-input").value.trim();
-  const newProfile = document.getElementById("profile-id-input").value.trim();
+  const newProfile = profileId; // set by renderProfileList click or auto-detect
 
   const newProvider     = document.getElementById("provider-select").value;
   const newPiholeUrl    = normalizePiholeUrl(document.getElementById("pihole-url-input").value);

@@ -462,6 +462,21 @@ body {
   background: #0f1117;
   border-color: #1e2130;
 }
+.lookup-btn {
+  background: #1e2130;
+  border: 1px solid #2a2d3e;
+  border-radius: 5px;
+  color: #60a5fa;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 6px 11px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+.lookup-btn:hover    { background: #2563eb; color: white; }
+.lookup-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
 .clear-apikey-btn {
   background: #1e2130;
   border: 1px solid #f8717133;
@@ -489,54 +504,61 @@ body {
 
 .provider-fields { margin-top: 2px; }
 
-/* ── NextDNS auto-detected profile ── */
-.ndm-profile-row {
-  background: #0f1117;
-  border: 1px solid #4ade8033;
-  border-radius: 7px;
-  padding: 8px 10px;
+/* ── NextDNS profile list ── */
+.ndm-profile-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
   margin-bottom: 10px;
 }
-.ndm-profile-label {
-  font-size: 10px;
-  font-weight: 600;
-  color: #4ade80;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  margin-bottom: 4px;
-}
-.ndm-profile-info {
+.ndm-profile-item {
   display: flex;
-  align-items: baseline;
-  gap: 6px;
-  margin-bottom: 3px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border-radius: 7px;
+  border: 1px solid #2a2d3e;
+  background: #0f1117;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
 }
-.ndm-profile-name {
+.ndm-profile-item:hover    { background: #1a1d2e; border-color: #3a3d4e; }
+.ndm-profile-item.selected { border-color: #4ade8066; background: #0f1a14; }
+.ndm-profile-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.ndm-profile-item-name {
   font-size: 12px;
   font-weight: 600;
-  color: #4ade80;
+  color: #e2e8f0;
 }
-.ndm-profile-id {
-  font-size: 11px;
+.ndm-profile-item-id {
+  font-size: 10px;
   color: #475569;
   font-family: monospace;
 }
-.ndm-device-name {
-  font-size: 11px;
-  color: #64748b;
-  margin-bottom: 6px;
+.ndm-profile-item-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
 }
-.change-profile-btn {
-  background: transparent;
-  border: 1px solid #2a2d3e;
-  border-radius: 5px;
-  color: #60a5fa;
+.ndm-profile-item-badge {
   font-size: 10px;
-  padding: 3px 7px;
-  cursor: pointer;
-  transition: background 0.15s;
+  color: #4ade80;
+  background: #14532d44;
+  border: 1px solid #4ade8033;
+  border-radius: 4px;
+  padding: 2px 6px;
+  white-space: nowrap;
 }
-.change-profile-btn:hover { background: #1e2130; }
+.ndm-profile-item-check {
+  font-size: 13px;
+  color: #4ade80;
+  font-weight: 700;
+}
 
 .pihole-token-hint {
   font-size: 10px;

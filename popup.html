@@ -38,31 +38,15 @@
       <div id="provider-nextdns" class="provider-fields">
         <label class="settings-label">API Key</label>
         <div class="api-key-row">
-          <input type="password" id="api-key-input" placeholder="Enter your NextDNS API key" class="settings-input api-key-input" />
+          <input type="password" id="api-key-input" placeholder="Paste your NextDNS API key" class="settings-input api-key-input" />
+          <button id="btn-lookup-profiles" class="lookup-btn" title="Look up profiles">→</button>
           <button id="btn-clear-apikey" class="clear-apikey-btn hidden" title="Clear API key">Clear</button>
         </div>
 
-        <!-- Auto-detected profile row -->
-        <div id="ndm-profile-detected" class="ndm-profile-row hidden">
-          <div class="ndm-profile-label">✓ Active profile</div>
-          <div class="ndm-profile-info">
-            <span id="ndm-profile-name" class="ndm-profile-name"></span>
-            <span id="ndm-profile-id" class="ndm-profile-id"></span>
-          </div>
-          <div id="ndm-device-name" class="ndm-device-name"></div>
-          <button id="btn-change-profile" class="change-profile-btn">Use different profile ▾</button>
-        </div>
-
-        <!-- Profile dropdown (shown when Change is clicked, or no auto-detect) -->
-        <div id="ndm-profile-select-row" class="hidden">
+        <!-- Profile picker — shown after lookup -->
+        <div id="ndm-profile-section" class="hidden">
           <label class="settings-label">Profile</label>
-          <select id="profile-select" class="settings-input settings-select"></select>
-        </div>
-
-        <!-- Fallback manual entry (shown if no API key yet) -->
-        <div id="ndm-profile-manual-row">
-          <label class="settings-label">Profile ID</label>
-          <input type="text" id="profile-id-input" placeholder="Enter API key above to auto-detect" class="settings-input" readonly />
+          <div id="ndm-profile-list" class="ndm-profile-list"></div>
         </div>
       </div>
 
