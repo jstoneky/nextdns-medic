@@ -1,3 +1,15 @@
+// Stub browser APIs when running in Node (for unit tests)
+if (typeof ext === "undefined" && typeof module !== "undefined") {
+  global.ext = {
+    webNavigation: { onCommitted: { addListener: () => {} } },
+    tabs:          { onUpdated:   { addListener: () => {} }, onRemoved: { addListener: () => {} } },
+    webRequest:    { onErrorOccurred: { addListener: () => {} } },
+    action:        { setBadgeText: () => {}, setBadgeBackgroundColor: () => {} },
+    runtime:       { onMessage: { addListener: () => {} } },
+  };
+  global.classifyDomain = (h) => ({ label: "Unknown Domain", confidence: "MEDIUM", category: "unknown", known: false });
+}
+
 // NextDNS Traffic Monitor — Background Service Worker
 // Monitors webRequest errors and flags likely NextDNS blocks
 
@@ -153,6 +165,11 @@ function updateBadge(tabId, total, highCount = 0) {
     color: highCount > 0 ? "#e53935" : "#f59e0b",
     tabId,
   });
+}
+
+// Exports for unit testing (Node environment only)
+if (typeof module !== "undefined") {
+  module.exports = { DNS_BLOCK_ERRORS, POSSIBLE_BLOCK_ERRORS, extractHostname, getOrCreateTabData, tabData };
 }
 
 // Message handler — popup requests data for current tab

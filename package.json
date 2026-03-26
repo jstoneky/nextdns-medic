@@ -1,0 +1,15 @@
+{
+  "name": "nextdns-medic",
+  "version": "1.0.0",
+  "description": "NextDNS Medic — browser extension for Chrome and Firefox",
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "test:domain": "node --test tests/domain-db.test.js",
+    "test:errors": "node --test tests/error-detection.test.js",
+    "test:build": "node --test tests/build.test.js",
+    "build": "./build.sh all",
+    "build:chrome": "./build.sh chrome",
+    "build:firefox": "./build.sh firefox"
+  },
+  "license": "MIT"
+}
