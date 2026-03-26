@@ -5,6 +5,7 @@ const NEXTDNS_API = "https://api.nextdns.io";
 let currentTabId = null;
 let apiKey = "";
 let profileId = "";
+let activeFilter = null; // "HIGH" | "MEDIUM" | "LOW" | null
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", async () => {
@@ -38,6 +39,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("btn-clear").addEventListener("click", clearBlocks);
   document.getElementById("btn-save-settings").addEventListener("click", saveSettings);
   document.getElementById("btn-refresh-db").addEventListener("click", handleRefreshDB);
+
+  // Filter by confidence level on stat click
+  ["HIGH", "MEDIUM", "LOW"].forEach(level => {
+    const el = document.getElementById(`stat-${level.toLowerCase()}`).closest(".stat");
+    el.addEventListener("click", () => {
+      activeFilter = activeFilter === level ? null : level;
+      loadBlocks();
+    });
+  });
 });
 
 // ── Load & Render Blocks ──────────────────────────────────────────────────────
@@ -90,10 +100,22 @@ function renderBlocks(blocks) {
   document.getElementById("stat-medium").textContent = mediumCount;
   document.getElementById("stat-low").textContent    = lowCount;
 
+  // Update filter highlight
+  ["HIGH", "MEDIUM", "LOW"].forEach(level => {
+    const el = document.getElementById(`stat-${level.toLowerCase()}`).closest(".stat");
+    el.classList.toggle("stat-active",  activeFilter === level);
+    el.classList.toggle("stat-dimmed", activeFilter !== null && activeFilter !== level);
+  });
+
   statsBar.classList.remove("hidden");
   emptyEl.classList.add("hidden");
   listEl.classList.remove("hidden");
   listEl.innerHTML = "";
+
+  // Apply filter
+  const visibleBlocks = activeFilter
+    ? blocks.filter(b => b.classification.confidence === activeFilter)
+    : blocks;
 
   let lastConfidence = null;
 
@@ -105,7 +127,7 @@ function renderBlocks(blocks) {
     listEl.appendChild(note);
   }
 
-  for (const block of blocks) {
+  for (const block of visibleBlocks) {
     const conf = block.classification.confidence;
 
     // Section header when confidence group changes

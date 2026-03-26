@@ -156,7 +156,15 @@ body {
   flex-direction: column;
   align-items: center;
   flex: 1;
+  cursor: pointer;
+  border-radius: 6px;
+  padding: 4px 0;
+  transition: background 0.15s, opacity 0.15s;
+  user-select: none;
 }
+.stat:hover { background: #1e2130; }
+.stat.stat-active { background: #1e2130; outline: 1px solid #3a3d4e; }
+.stat.stat-dimmed { opacity: 0.35; }
 
 .stat-num {
   font-size: 20px;
