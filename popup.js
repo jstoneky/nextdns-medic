@@ -510,10 +510,14 @@ async function fetchAndMatchProfiles(key) {
     const data = await res.json();
     profilesList = data.data || [];
 
-    // Populate dropdown
+    // Populate dropdown — mark the active profile
     const select = document.getElementById("profile-select");
     select.innerHTML = profilesList
-      .map(p => `<option value="${p.id}">${p.name} (${p.id})</option>`)
+      .map(p => {
+        const isActive = detectedFingerprint && p.fingerprint === detectedFingerprint;
+        const label = isActive ? `${p.name} (${p.id}) ← active` : `${p.name} (${p.id})`;
+        return `<option value="${p.id}"${isActive ? " data-active='true'" : ""}>${label}</option>`;
+      })
       .join("");
 
     // Try to auto-match via fingerprint
