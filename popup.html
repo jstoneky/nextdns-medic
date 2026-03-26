@@ -37,7 +37,10 @@
       <!-- NextDNS fields -->
       <div id="provider-nextdns" class="provider-fields">
         <label class="settings-label">API Key</label>
-        <input type="password" id="api-key-input" placeholder="Enter your NextDNS API key" class="settings-input" />
+        <div class="api-key-row">
+          <input type="password" id="api-key-input" placeholder="Enter your NextDNS API key" class="settings-input api-key-input" />
+          <button id="btn-clear-apikey" class="clear-apikey-btn hidden" title="Clear API key">Clear</button>
+        </div>
 
         <!-- Auto-detected profile row -->
         <div id="ndm-profile-detected" class="ndm-profile-row hidden">

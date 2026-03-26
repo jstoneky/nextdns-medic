@@ -445,6 +445,38 @@ body {
   border-color: #4ade8044;
 }
 
+/* ── API Key row ── */
+.api-key-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.api-key-input {
+  margin-bottom: 0 !important;
+  flex: 1;
+}
+.api-key-input.locked {
+  color: #475569;
+  cursor: default;
+  background: #0f1117;
+  border-color: #1e2130;
+}
+.clear-apikey-btn {
+  background: #1e2130;
+  border: 1px solid #f8717133;
+  border-radius: 5px;
+  color: #f87171;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 6px 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+.clear-apikey-btn:hover { background: #7f1d1d33; }
+
 /* ── Provider select ── */
 .settings-select {
   appearance: none;

@@ -29,7 +29,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   const local = await ext.storage.local.get(["piholeVersion"]);
   piholeVersion = local.piholeVersion || null;
 
-  if (apiKey)      document.getElementById("api-key-input").value    = apiKey;
+  if (apiKey) {
+    document.getElementById("api-key-input").value = apiKey;
+    lockApiKeyField();
+  }
   if (profileId)   document.getElementById("profile-id-input").value = profileId;
   if (piholeUrl)   document.getElementById("pihole-url-input").value = piholeUrl;
   if (piholeToken) document.getElementById("pihole-token-input").value = piholeToken;
@@ -73,6 +76,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("api-key-input").addEventListener("blur", handleApiKeyBlur);
   document.getElementById("btn-change-profile").addEventListener("click", showProfileDropdown);
   document.getElementById("profile-select").addEventListener("change", handleProfileSelectChange);
+  document.getElementById("btn-clear-apikey").addEventListener("click", handleClearApiKey);
 
   // Filter by confidence level on stat click
   ["HIGH", "MEDIUM", "LOW"].forEach(level => {
@@ -354,6 +358,47 @@ async function refreshDBMeta() {
   }
 }
 
+// ── API Key lock / clear ──────────────────────────────────────────────────────
+function lockApiKeyField() {
+  const input = document.getElementById("api-key-input");
+  const btn   = document.getElementById("btn-clear-apikey");
+  input.readOnly = true;
+  input.classList.add("locked");
+  btn.classList.remove("hidden");
+}
+
+function unlockApiKeyField() {
+  const input = document.getElementById("api-key-input");
+  const btn   = document.getElementById("btn-clear-apikey");
+  input.readOnly = false;
+  input.classList.remove("locked");
+  btn.classList.add("hidden");
+  input.value = "";
+  input.focus();
+}
+
+async function handleClearApiKey() {
+  // Clear API key from storage and reset all NextDNS state
+  apiKey      = "";
+  profileId   = "";
+  profilesList = [];
+  detectedFingerprint = null;
+  detectedDeviceName  = null;
+  profilesFetchInFlight = false;
+
+  await ext.storage.sync.remove(["apiKey", "profileId"]);
+
+  unlockApiKeyField();
+
+  // Reset profile UI back to empty manual entry
+  document.getElementById("ndm-profile-detected").classList.add("hidden");
+  document.getElementById("ndm-profile-select-row").classList.add("hidden");
+  document.getElementById("ndm-profile-manual-row").classList.remove("hidden");
+  document.getElementById("profile-id-input").value = "";
+  document.getElementById("profile-id-input").readOnly = false;
+  document.getElementById("profile-id-input").placeholder = "Enter API key above to auto-detect";
+}
+
 function updateProviderUI(selectedProvider) {
   document.getElementById("provider-nextdns").classList.toggle("hidden", selectedProvider !== "nextdns");
   document.getElementById("provider-pihole").classList.toggle("hidden",  selectedProvider !== "pihole");
@@ -622,6 +667,8 @@ async function saveSettings() {
   provider     = newProvider;
   piholeUrl    = newPiholeUrl;
   piholeToken  = newPiholeToken;
+
+  if (newKey && newProvider === "nextdns") lockApiKeyField();
 
   const status = document.getElementById("settings-status");
   status.textContent = "✓ Saved";
