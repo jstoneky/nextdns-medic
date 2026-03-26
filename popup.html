@@ -38,8 +38,28 @@
       <div id="provider-nextdns" class="provider-fields">
         <label class="settings-label">API Key</label>
         <input type="password" id="api-key-input" placeholder="Enter your NextDNS API key" class="settings-input" />
-        <label class="settings-label">Profile ID</label>
-        <input type="text" id="profile-id-input" placeholder="e.g. a1b2c3" class="settings-input" />
+
+        <!-- Auto-detected profile row -->
+        <div id="ndm-profile-detected" class="ndm-profile-row hidden">
+          <div class="ndm-profile-info">
+            <span id="ndm-profile-name" class="ndm-profile-name"></span>
+            <span id="ndm-profile-id" class="ndm-profile-id"></span>
+          </div>
+          <div id="ndm-device-name" class="ndm-device-name"></div>
+          <button id="btn-change-profile" class="change-profile-btn">Change ▾</button>
+        </div>
+
+        <!-- Profile dropdown (shown when Change is clicked, or no auto-detect) -->
+        <div id="ndm-profile-select-row" class="hidden">
+          <label class="settings-label">Profile</label>
+          <select id="profile-select" class="settings-input settings-select"></select>
+        </div>
+
+        <!-- Fallback manual entry (shown if no API key yet) -->
+        <div id="ndm-profile-manual-row">
+          <label class="settings-label">Profile ID</label>
+          <input type="text" id="profile-id-input" placeholder="Enter API key above to auto-detect" class="settings-input" readonly />
+        </div>
       </div>
 
       <!-- Pi-hole fields -->

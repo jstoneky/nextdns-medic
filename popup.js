@@ -10,6 +10,9 @@ let provider = "nextdns"; // "nextdns" | "pihole"
 let piholeUrl = "";
 let piholeToken = "";
 let piholeVersion = null; // 5 | 6 | null (cached detection result)
+let detectedFingerprint = null;
+let detectedDeviceName  = null;
+let profilesList        = []; // [{ id, name, fingerprint }]
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", async () => {
@@ -60,6 +63,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("provider-select").addEventListener("change", e => {
     updateProviderUI(e.target.value);
   });
+  document.getElementById("api-key-input").addEventListener("blur", handleApiKeyBlur);
+  document.getElementById("btn-change-profile").addEventListener("click", showProfileDropdown);
+  document.getElementById("profile-select").addEventListener("change", handleProfileSelectChange);
 
   // Filter by confidence level on stat click
   ["HIGH", "MEDIUM", "LOW"].forEach(level => {
@@ -316,6 +322,10 @@ async function addToAllowlist(btn) {
 
 // ── Settings ──────────────────────────────────────────────────────────────────
 async function toggleSettings() {
+  // Kick off fingerprint detection in background on first open
+  if (!detectedFingerprint) fetchDeviceFingerprint();
+  // If we already have an API key, refresh profile list
+  if (apiKey && provider === "nextdns") fetchAndMatchProfiles(apiKey);
   const panel = document.getElementById("settings-panel");
   const isHidden = panel.classList.contains("hidden");
   panel.classList.toggle("hidden");
@@ -476,6 +486,84 @@ async function handleTestPihole() {
 
   btn.disabled = false;
   btn.textContent = "Test Connection";
+}
+
+// ── NextDNS Profile Auto-detect ───────────────────────────────────────────────
+async function fetchDeviceFingerprint() {
+  try {
+    const res = await fetch("https://test.nextdns.io", { signal: AbortSignal.timeout(5000) });
+    const data = await res.json();
+    detectedFingerprint = data.profile   || null;
+    detectedDeviceName  = data.deviceName || data.clientName || null;
+  } catch (_) {
+    // Not on NextDNS, or offline — silent fail
+  }
+}
+
+async function fetchAndMatchProfiles(key) {
+  try {
+    const res = await fetch("https://api.nextdns.io/profiles", {
+      headers: { "X-Api-Key": key },
+      signal: AbortSignal.timeout(6000)
+    });
+    if (!res.ok) return;
+    const data = await res.json();
+    profilesList = data.data || [];
+
+    // Populate dropdown
+    const select = document.getElementById("profile-select");
+    select.innerHTML = profilesList
+      .map(p => `<option value="${p.id}">${p.name} (${p.id})</option>`)
+      .join("");
+
+    // Try to auto-match via fingerprint
+    const match = detectedFingerprint
+      ? profilesList.find(p => p.fingerprint === detectedFingerprint)
+      : null;
+
+    if (match) {
+      profileId = match.id;
+      showDetectedProfile(match, detectedDeviceName);
+    } else if (profilesList.length === 1) {
+      // Only one profile — auto-select it
+      profileId = profilesList[0].id;
+      showDetectedProfile(profilesList[0], detectedDeviceName);
+    } else {
+      // Multiple profiles, no fingerprint match — show dropdown
+      showProfileDropdown();
+    }
+  } catch (_) {}
+}
+
+function showDetectedProfile(profile, deviceName) {
+  document.getElementById("ndm-profile-detected").classList.remove("hidden");
+  document.getElementById("ndm-profile-manual-row").classList.add("hidden");
+  document.getElementById("ndm-profile-select-row").classList.add("hidden");
+  document.getElementById("ndm-profile-name").textContent = profile.name;
+  document.getElementById("ndm-profile-id").textContent   = `(${profile.id})`;
+  document.getElementById("ndm-device-name").textContent  = deviceName ? `📱 ${deviceName}` : "";
+  document.getElementById("profile-id-input").value       = profile.id;
+  document.getElementById("profile-select").value         = profile.id;
+}
+
+function showProfileDropdown() {
+  document.getElementById("ndm-profile-detected").classList.add("hidden");
+  document.getElementById("ndm-profile-manual-row").classList.add("hidden");
+  document.getElementById("ndm-profile-select-row").classList.remove("hidden");
+  // Sync select to current profileId
+  if (profileId) document.getElementById("profile-select").value = profileId;
+}
+
+function handleProfileSelectChange(e) {
+  profileId = e.target.value;
+  document.getElementById("profile-id-input").value = profileId;
+}
+
+async function handleApiKeyBlur() {
+  const key = document.getElementById("api-key-input").value.trim();
+  if (!key) return;
+  if (!detectedFingerprint) await fetchDeviceFingerprint();
+  await fetchAndMatchProfiles(key);
 }
 
 async function saveSettings() {
