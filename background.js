@@ -10,16 +10,17 @@ try { importScripts("domain-db.js"); } catch (e) {}
 const tabData = new Map();
 
 // Errors that indicate DNS-level blocking
-// Chrome uses net::ERR_* — Firefox uses NS_ERROR_*
+// Chrome uses net::ERR_* codes; Firefox uses human-readable cert/network error strings
 const DNS_BLOCK_ERRORS = [
   // Chrome
   "net::ERR_NAME_NOT_RESOLVED",
   "net::ERR_CERT_AUTHORITY_INVALID",
   "net::ERR_BLOCKED_BY_ADMINISTRATOR",
-  // Firefox
-  "NS_ERROR_UNKNOWN_HOST",        // DNS resolution failed (NextDNS NXDOMAIN)
-  "NS_ERROR_NET_ON_RESOLVING",    // DNS timeout
-  "NS_ERROR_PROXY_CONNECTION_REFUSED", // Blocked by proxy/DNS
+  // Firefox — NextDNS block page returns a self-signed cert, causing these:
+  "Peer's Certificate issuer is not recognized.",
+  "You have received an invalid certificate",
+  "NS_ERROR_UNKNOWN_HOST",
+  "NS_ERROR_NET_ON_RESOLVING",
 ];
 
 // Also watch for these as possible (lower confidence)
@@ -31,7 +32,6 @@ const POSSIBLE_BLOCK_ERRORS = [
   // Firefox
   "NS_ERROR_CONNECTION_REFUSED",
   "NS_ERROR_NET_RESET",
-  "NS_ERROR_OFFLINE",
 ];
 
 function getOrCreateTabData(tabId) {
