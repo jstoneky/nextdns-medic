@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>NextDNS Medic — Screenshots</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1280px; height: 800px;
+    background: linear-gradient(135deg, #0d1117 0%, #161b27 50%, #0d1117 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    overflow: hidden;
+  }
+  .scene {
+    display: flex;
+    align-items: flex-start;
+    gap: 40px;
+  }
+  /* Browser chrome mock */
+  .browser-chrome {
+    background: #1e2030;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.08);
+    width: 440px;
+  }
+  .browser-bar {
+    background: #272b3d;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid #2a2d3e;
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot.red { background: #ff5f57; }
+  .dot.yellow { background: #ffbd2e; }
+  .dot.green { background: #28c840; }
+  .url-bar {
+    flex: 1;
+    background: #1a1d27;
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-size: 11px;
+    color: #64748b;
+    margin-left: 8px;
+  }
+  /* Popup */
+  .popup {
+    background: #0f1117;
+    color: #e2e8f0;
+    font-size: 13px;
+    width: 400px;
+  }
+  .header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 14px;
+    background: #1a1d27;
+    border-bottom: 1px solid #2a2d3e;
+  }
+  .header-left { display: flex; align-items: center; gap: 10px; }
+  .logo { font-size: 20px; }
+  .title { font-weight: 700; font-size: 14px; color: #f1f5f9; }
+  .subtitle { font-size: 11px; color: #64748b; }
+  .header-actions { display: flex; gap: 6px; }
+  .icon-btn {
+    background: transparent; border: none; font-size: 16px;
+    padding: 4px; border-radius: 6px; opacity: 0.6; cursor: pointer;
+  }
+  .stats-bar {
+    display: flex; align-items: center; justify-content: center;
+    padding: 8px 14px; background: #131620;
+    border-bottom: 1px solid #2a2d3e;
+  }
+  .stat { display: flex; flex-direction: column; align-items: center; flex: 1; }
+  .stat-num { font-size: 20px; font-weight: 700; }
+  .stat-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 1px; }
+  .stat-divider { width: 1px; height: 32px; background: #2a2d3e; }
+  .high-label   { color: #f87171; }
+  .medium-label { color: #fbbf24; }
+  .low-label    { color: #4ade80; }
+  .section-header {
+    padding: 8px 14px 4px; font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .section-header::after { content: ""; flex: 1; height: 1px; background: currentColor; opacity: 0.2; }
+  .section-header.high   { color: #f87171; }
+  .section-header.medium { color: #fbbf24; }
+  .section-header.low    { color: #4ade80; }
+  .block-item {
+    display: flex; align-items: flex-start;
+    padding: 8px 14px; gap: 10px;
+    border-bottom: 1px solid #1e2130;
+  }
+  .confidence-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 4px; flex-shrink: 0; }
+  .confidence-dot.HIGH   { background: #f87171; box-shadow: 0 0 6px #f87171aa; }
+  .confidence-dot.MEDIUM { background: #fbbf24; box-shadow: 0 0 6px #fbbf24aa; }
+  .confidence-dot.LOW    { background: #4ade80; }
+  .block-info { flex: 1; min-width: 0; }
+  .block-domain { font-weight: 600; font-size: 12px; color: #f1f5f9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .block-label  { font-size: 11px; color: #64748b; margin-top: 1px; }
+  .block-meta   { display: flex; align-items: center; gap: 6px; margin-top: 4px; }
+  .block-error  { font-size: 10px; color: #475569; font-family: monospace; }
+  .block-count  { font-size: 10px; color: #475569; }
+  .block-actions { flex-shrink: 0; }
+  .allowlist-btn {
+    background: #1e3a5f; border: 1px solid #2563eb44;
+    border-radius: 5px; color: #60a5fa; font-size: 10px;
+    font-weight: 600; padding: 4px 8px; cursor: pointer; white-space: nowrap;
+  }
+  .allowlist-btn.success { background: #14532d; border-color: #4ade8044; color: #4ade80; }
+  .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 36px 20px; gap: 6px; }
+  .empty-icon { font-size: 28px; margin-bottom: 4px; }
+  .empty-title { font-weight: 600; font-size: 14px; color: #e2e8f0; }
+  .empty-subtitle { font-size: 12px; color: #475569; }
+  .settings-panel { padding: 14px; background: #1a1d27; border-bottom: 1px solid #2a2d3e; }
+  .settings-title { font-weight: 600; font-size: 13px; color: #94a3b8; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .settings-label { display: block; font-size: 11px; color: #64748b; margin-bottom: 4px; margin-top: 10px; }
+  .settings-input {
+    width: 100%; background: #0f1117; border: 1px solid #2a2d3e;
+    border-radius: 6px; color: #e2e8f0; padding: 7px 10px;
+    font-size: 12px;
+  }
+  .save-btn {
+    margin-top: 12px; width: 100%; background: #6366f1; border: none;
+    border-radius: 6px; color: white; font-size: 13px; font-weight: 600;
+    padding: 8px; cursor: pointer;
+  }
+  /* Caption */
+  .caption {
+    margin-top: 20px;
+    text-align: center;
+    color: rgba(255,255,255,0.5);
+    font-size: 13px;
+    letter-spacing: 0.02em;
+  }
+  .caption strong { color: rgba(255,255,255,0.8); }
+</style>
+</head>
+<body>
+<div class="scene" id="scene"></div>
+
+<script>
+const params = new URLSearchParams(location.search);
+const state = parseInt(params.get('state') || '1');
+
+const states = {
+  1: {
+    caption: '<strong>High-risk blocks detected</strong> — Feature flag services blocked on checkout page',
+    url: 'shop.example.com',
+    popup: `
+      <div class="header">
+        <div class="header-left">
+          <span class="logo">🛡️</span>
+          <div><div class="title">NextDNS Medic</div><div class="subtitle">shop.example.com</div></div>
+        </div>
+        <div class="header-actions"><span class="icon-btn">⚙️</span><span class="icon-btn">🗑️</span></div>
+      </div>
+      <div class="stats-bar">
+        <div class="stat"><span class="stat-num" style="color:#f87171">2</span><span class="stat-label high-label">High</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><span class="stat-num" style="color:#64748b">0</span><span class="stat-label medium-label">Medium</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><span class="stat-num" style="color:#64748b">0</span><span class="stat-label low-label">Low</span></div>
+      </div>
+      <div class="section-header high">🔴 High — May break this site</div>
+      <div class="block-item">
+        <div class="confidence-dot HIGH"></div>
+        <div class="block-info">
+          <div class="block-domain">featureassets.org</div>
+          <div class="block-label">Feature Flags (Statsig)</div>
+          <div class="block-meta"><span class="block-error">Certificate issuer not recognized</span><span class="block-count">×4</span></div>
+        </div>
+        <div class="block-actions"><button class="allowlist-btn">+ Allowlist</button></div>
+      </div>
+      <div class="block-item">
+        <div class="confidence-dot HIGH"></div>
+        <div class="block-info">
+          <div class="block-domain">app.launchdarkly.com</div>
+          <div class="block-label">Feature Flags (LaunchDarkly)</div>
+          <div class="block-meta"><span class="block-error">Certificate issuer not recognized</span><span class="block-count">×2</span></div>
+        </div>
+        <div class="block-actions"><button class="allowlist-btn">+ Allowlist</button></div>
+      </div>
+    `
+  },
+  2: {
+    caption: '<strong>Full breakdown</strong> — Multiple services blocked across risk levels',
+    url: 'dashboard.example.com',
+    popup: `
+      <div class="header">
+        <div class="header-left">
+          <span class="logo">🛡️</span>
+          <div><div class="title">NextDNS Medic</div><div class="subtitle">dashboard.example.com</div></div>
+        </div>
+        <div class="header-actions"><span class="icon-btn">⚙️</span><span class="icon-btn">🗑️</span></div>
+      </div>
+      <div class="stats-bar">
+        <div class="stat"><span class="stat-num" style="color:#f87171">1</span><span class="stat-label high-label">High</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><span class="stat-num" style="color:#fbbf24">2</span><span class="stat-label medium-label">Medium</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><span class="stat-num" style="color:#4ade80">3</span><span class="stat-label low-label">Low</span></div>
+      </div>
+      <div class="section-header high">🔴 High — May break this site</div>
+      <div class="block-item">
+        <div class="confidence-dot HIGH"></div>
+        <div class="block-info">
+          <div class="block-domain">cdn.auth0.com</div>
+          <div class="block-label">Authentication (Auth0)</div>
+          <div class="block-meta"><span class="block-error">NS_ERROR_UNKNOWN_HOST</span><span class="block-count">×1</span></div>
+        </div>
+        <div class="block-actions"><button class="allowlist-btn">+ Allowlist</button></div>
+      </div>
+      <div class="section-header medium">🟡 Medium — Worth reviewing</div>
+      <div class="block-item">
+        <div class="confidence-dot MEDIUM"></div>
+        <div class="block-info">
+          <div class="block-domain">www.googletagmanager.com</div>
+          <div class="block-label">Tag Manager (Google Tag Manager)</div>
+          <div class="block-meta"><span class="block-error">Certificate issuer not recognized</span><span class="block-count">×3</span></div>
+        </div>
+        <div class="block-actions"><button class="allowlist-btn">+ Allowlist</button></div>
+      </div>
+      <div class="block-item">
+        <div class="confidence-dot MEDIUM"></div>
+        <div class="block-info">
+          <div class="block-domain">geolocation.onetrust.com</div>
+          <div class="block-label">Consent (OneTrust)</div>
+          <div class="block-meta"><span class="block-error">Certificate issuer not recognized</span><span class="block-count">×1</span></div>
+        </div>
+        <div class="block-actions"><button class="allowlist-btn">+ Allowlist</button></div>
+      </div>
+      <div class="section-header low">🟢 Low — Safe to ignore</div>
+      <div class="block-item">
+        <div class="confidence-dot LOW"></div>
+        <div class="block-info">
+          <div class="block-domain">www.google-analytics.com</div>
+          <div class="block-label">Analytics (Google Analytics)</div>
+          <div class="block-meta"><span class="block-error">NS_ERROR_UNKNOWN_HOST</span><span class="block-count">×6</span></div>
+        </div>
+        <div class="block-actions"><button class="allowlist-btn">+ Allowlist</button></div>
+      </div>
+    `
+  },
+  3: {
+    caption: '<strong>Settings</strong> — Connect your NextDNS account for one-click allowlisting',
+    url: 'my.nextdns.io',
+    popup: `
+      <div class="header">
+        <div class="header-left">
+          <span class="logo">🛡️</span>
+          <div><div class="title">NextDNS Medic</div><div class="subtitle">Settings</div></div>
+        </div>
+        <div class="header-actions"><span class="icon-btn">⚙️</span><span class="icon-btn">🗑️</span></div>
+      </div>
+      <div class="settings-panel">
+        <div class="settings-title">Configuration</div>
+        <label class="settings-label">NextDNS API Key</label>
+        <input class="settings-input" type="password" value="••••••••••••••••••••••••••••••••••••" readonly />
+        <label class="settings-label">Profile ID</label>
+        <input class="settings-input" type="text" value="a1b2c3" readonly />
+        <button class="save-btn">Save Settings</button>
+        <div style="margin-top:8px;font-size:11px;color:#4ade80;text-align:center;">✓ Settings saved</div>
+      </div>
+      <div class="empty-state">
+        <div class="empty-icon">✅</div>
+        <div class="empty-title">No blocked requests detected</div>
+        <div class="empty-subtitle">Monitoring this page's network traffic</div>
+      </div>
+    `
+  },
+  4: {
+    caption: '<strong>All clear</strong> — No blocked requests on this page',
+    url: 'example.com',
+    popup: `
+      <div class="header">
+        <div class="header-left">
+          <span class="logo">🛡️</span>
+          <div><div class="title">NextDNS Medic</div><div class="subtitle">example.com</div></div>
+        </div>
+        <div class="header-actions"><span class="icon-btn">⚙️</span><span class="icon-btn">🗑️</span></div>
+      </div>
+      <div class="empty-state" style="padding: 48px 20px;">
+        <div class="empty-icon">✅</div>
+        <div class="empty-title">No blocked requests detected</div>
+        <div class="empty-subtitle">Monitoring this page's network traffic</div>
+      </div>
+    `
+  },
+  5: {
+    caption: '<strong>One-click allowlist</strong> — Domain added to NextDNS instantly',
+    url: 'shop.example.com',
+    popup: `
+      <div class="header">
+        <div class="header-left">
+          <span class="logo">🛡️</span>
+          <div><div class="title">NextDNS Medic</div><div class="subtitle">shop.example.com</div></div>
+        </div>
+        <div class="header-actions"><span class="icon-btn">⚙️</span><span class="icon-btn">🗑️</span></div>
+      </div>
+      <div class="stats-bar">
+        <div class="stat"><span class="stat-num" style="color:#f87171">2</span><span class="stat-label high-label">High</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><span class="stat-num" style="color:#64748b">0</span><span class="stat-label medium-label">Medium</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><span class="stat-num" style="color:#64748b">0</span><span class="stat-label low-label">Low</span></div>
+      </div>
+      <div class="section-header high">🔴 High — May break this site</div>
+      <div class="block-item">
+        <div class="confidence-dot HIGH"></div>
+        <div class="block-info">
+          <div class="block-domain">featureassets.org</div>
+          <div class="block-label">Feature Flags (Statsig)</div>
+          <div class="block-meta"><span class="block-error">Certificate issuer not recognized</span><span class="block-count">×4</span></div>
+        </div>
+        <div class="block-actions"><button class="allowlist-btn success">✓ Added</button></div>
+      </div>
+      <div class="block-item">
+        <div class="confidence-dot HIGH"></div>
+        <div class="block-info">
+          <div class="block-domain">app.launchdarkly.com</div>
+          <div class="block-label">Feature Flags (LaunchDarkly)</div>
+          <div class="block-meta"><span class="block-error">Certificate issuer not recognized</span><span class="block-count">×2</span></div>
+        </div>
+        <div class="block-actions"><button class="allowlist-btn">+ Allowlist</button></div>
+      </div>
+    `
+  }
+};
+
+const s = states[state];
+const scene = document.getElementById('scene');
+scene.innerHTML = `
+  <div>
+    <div class="browser-chrome">
+      <div class="browser-bar">
+        <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
+        <div class="url-bar">${s.url}</div>
+      </div>
+      <div class="popup">${s.popup}</div>
+    </div>
+    <div class="caption">${s.caption}</div>
+  </div>
+`;
+</script>
+</body>
+</html>
