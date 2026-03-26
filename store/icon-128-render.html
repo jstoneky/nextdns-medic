@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+* { margin: 0; padding: 0; }
+body { width: 128px; height: 128px; overflow: hidden; background: transparent; }
+canvas { display: block; }
+</style>
+</head>
+<body>
+<canvas id="c" width="128" height="128"></canvas>
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const S = 128;
+
+// Background — rounded rect
+const r = 24;
+ctx.beginPath();
+ctx.moveTo(r, 0);
+ctx.lineTo(S - r, 0);
+ctx.quadraticCurveTo(S, 0, S, r);
+ctx.lineTo(S, S - r);
+ctx.quadraticCurveTo(S, S, S - r, S);
+ctx.lineTo(r, S);
+ctx.quadraticCurveTo(0, S, 0, S - r);
+ctx.lineTo(0, r);
+ctx.quadraticCurveTo(0, 0, r, 0);
+ctx.closePath();
+
+// Background gradient
+const bg = ctx.createLinearGradient(0, 0, S, S);
+bg.addColorStop(0, '#1a1d2e');
+bg.addColorStop(1, '#0f1117');
+ctx.fillStyle = bg;
+ctx.fill();
+
+// Subtle grid lines
+ctx.strokeStyle = 'rgba(99,102,241,0.08)';
+ctx.lineWidth = 1;
+for (let x = 0; x < S; x += 16) {
+  ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, S); ctx.stroke();
+}
+for (let y = 0; y < S; y += 16) {
+  ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(S, y); ctx.stroke();
+}
+
+// Shield shape
+const cx = 64, cy = 56;
+const sw = 52, sh = 62;
+
+ctx.save();
+ctx.translate(cx, cy);
+
+// Shield path
+ctx.beginPath();
+ctx.moveTo(0, -sh/2);
+ctx.bezierCurveTo( sw/2, -sh/2,  sw/2, -sh/6,  sw/2,  sh/8);
+ctx.bezierCurveTo( sw/2,  sh/2.2, 0,  sh/2,  0,  sh/2);
+ctx.bezierCurveTo( 0,  sh/2, -sw/2, sh/2.2, -sw/2, sh/8);
+ctx.bezierCurveTo(-sw/2, -sh/6, -sw/2, -sh/2, 0, -sh/2);
+ctx.closePath();
+
+// Shield gradient fill
+const sg = ctx.createLinearGradient(-sw/2, -sh/2, sw/2, sh/2);
+sg.addColorStop(0, '#818cf8');
+sg.addColorStop(0.5, '#6366f1');
+sg.addColorStop(1, '#4f46e5');
+ctx.fillStyle = sg;
+ctx.fill();
+
+// Shield glow
+ctx.shadowColor = '#6366f1';
+ctx.shadowBlur = 20;
+ctx.fill();
+ctx.shadowBlur = 0;
+
+// Subtle shield border
+ctx.strokeStyle = 'rgba(165,180,252,0.4)';
+ctx.lineWidth = 1.5;
+ctx.stroke();
+
+// Checkmark inside shield
+ctx.strokeStyle = 'white';
+ctx.lineWidth = 5;
+ctx.lineCap = 'round';
+ctx.lineJoin = 'round';
+ctx.shadowColor = 'rgba(255,255,255,0.5)';
+ctx.shadowBlur = 6;
+ctx.beginPath();
+ctx.moveTo(-14, 2);
+ctx.lineTo(-4, 12);
+ctx.lineTo(16, -10);
+ctx.stroke();
+
+ctx.restore();
+
+// Red dot badge (top right) — signals "alert"
+const bx = 92, by = 22, br = 10;
+ctx.beginPath();
+ctx.arc(bx, by, br, 0, Math.PI * 2);
+ctx.fillStyle = '#ef4444';
+ctx.shadowColor = '#ef4444';
+ctx.shadowBlur = 10;
+ctx.fill();
+ctx.shadowBlur = 0;
+
+// Exclamation in badge
+ctx.fillStyle = 'white';
+ctx.font = 'bold 13px -apple-system, sans-serif';
+ctx.textAlign = 'center';
+ctx.textBaseline = 'middle';
+ctx.fillText('!', bx, by + 0.5);
+</script>
+</body>
+</html>
