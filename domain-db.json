@@ -1,0 +1,2428 @@
+{
+  "version": "1.1.0",
+  "updated": "2026-03-26",
+  "entries": [
+    {
+      "pattern": "featureassets\\.org",
+      "flags": "",
+      "label": "Feature Flags (Statsig CDN)",
+      "confidence": "HIGH",
+      "category": "feature-flags"
+    },
+    {
+      "pattern": "statsigapi\\.net",
+      "flags": "",
+      "label": "Feature Flags (Statsig API)",
+      "confidence": "HIGH",
+      "category": "feature-flags"
+    },
+    {
+      "pattern": "featuregates\\.org",
+      "flags": "",
+      "label": "Feature Flags (Statsig alt)",
+      "confidence": "MEDIUM",
+      "category": "feature-flags"
+    },
+    {
+      "pattern": "prodregistryv2\\.org",
+      "flags": "",
+      "label": "Feature Flags (Statsig alt)",
+      "confidence": "MEDIUM",
+      "category": "feature-flags"
+    },
+    {
+      "pattern": "assetsconfigcdn\\.org",
+      "flags": "",
+      "label": "Feature Flags (Statsig alt)",
+      "confidence": "MEDIUM",
+      "category": "feature-flags"
+    },
+    {
+      "pattern": "beyondwickedmapping\\.org",
+      "flags": "",
+      "label": "Feature Flags (Statsig alt)",
+      "confidence": "MEDIUM",
+      "category": "feature-flags"
+    },
+    {
+      "pattern": "api\\.statsig\\.com",
+      "flags": "",
+      "label": "Feature Flags (Statsig API)",
+      "confidence": "HIGH",
+      "category": "feature-flags"
+    },
+    {
+      "pattern": "statsig",
+      "flags": "i",
+      "label": "Feature Flags (Statsig)",
+      "confidence": "HIGH",
+      "category": "feature-flags"
+    },
+    {
+      "pattern": "clientstream\\.launchdarkly",
+      "flags": "",
+      "label": "Feature Flags (LaunchDarkly Stream)",
+      "confidence": "HIGH",
+      "category": "feature-flags"
+    },
+    {
+      "pattern": "events\\.launchdarkly",
+      "flags": "",
+      "label": "Feature Flags (LaunchDarkly Events)",
+      "confidence": "HIGH",
+      "category": "feature-flags"
+    },
+    {
+      "pattern": "sdk\\.launchdarkly",
+      "flags": "",
+      "label": "Feature Flags (LaunchDarkly SDK)",
+      "confidence": "HIGH",
+      "category": "feature-flags"
+    },
+    {
+      "pattern": "launchdarkly",
+      "flags": "i",
+      "label": "Feature Flags (LaunchDarkly)",
+      "confidence": "HIGH",
+      "category": "feature-flags"
+    },
+    {
+      "pattern": "sdk\\.split\\.io",
+      "flags": "",
+      "label": "Feature Flags (Split.io SDK)",
+      "confidence": "HIGH",
+      "category": "feature-flags"
+    },
+    {
+      "pattern": "events\\.split\\.io",
+      "flags": "",
+      "label": "Feature Flags (Split.io Events)",
+      "confidence": "HIGH",
+      "category": "feature-flags"
+    },
+    {
+      "pattern": "auth\\.split\\.io",
+      "flags": "",
+      "label": "Feature Flags (Split.io Auth)",
+      "confidence": "HIGH",
+      "category": "feature-flags"
+    },
+    {
+      "pattern": "split\\.io",
+      "flags": "",
+      "label": "Feature Flags (Split.io)",
+      "confidence": "HIGH",
+      "category": "feature-flags"
+    },
+    {
+      "pattern": "cdn\\.optimizely\\.com",
+      "flags": "",
+      "label": "A/B Testing (Optimizely CDN)",
+      "confidence": "HIGH",
+      "category": "feature-flags"
+    },
+    {
+      "pattern": "logx\\.optimizely\\.com",
+      "flags": "",
+      "label": "A/B Testing (Optimizely Events)",
+      "confidence": "HIGH",
+      "category": "feature-flags"
+    },
+    {
+      "pattern": "optimizely",
+      "flags": "i",
+      "label": "A/B Testing (Optimizely)",
+      "confidence": "HIGH",
+      "category": "feature-flags"
+    },
+    {
+      "pattern": "us\\.posthog\\.com",
+      "flags": "",
+      "label": "Feature Flags (PostHog US)",
+      "confidence": "HIGH",
+      "category": "feature-flags"
+    },
+    {
+      "pattern": "eu\\.posthog\\.com",
+      "flags": "",
+      "label": "Feature Flags (PostHog EU)",
+      "confidence": "HIGH",
+      "category": "feature-flags"
+    },
+    {
+      "pattern": "us-assets\\.posthog\\.com",
+      "flags": "",
+      "label": "Feature Flags (PostHog US assets)",
+      "confidence": "HIGH",
+      "category": "feature-flags"
+    },
+    {
+      "pattern": "eu-assets\\.posthog\\.com",
+      "flags": "",
+      "label": "Feature Flags (PostHog EU assets)",
+      "confidence": "HIGH",
+      "category": "feature-flags"
+    },
+    {
+      "pattern": "posthog",
+      "flags": "i",
+      "label": "Feature Flags (PostHog)",
+      "confidence": "HIGH",
+      "category": "feature-flags"
+    },
+    {
+      "pattern": "cdn\\.growthbook\\.io",
+      "flags": "",
+      "label": "Feature Flags (GrowthBook CDN)",
+      "confidence": "HIGH",
+      "category": "feature-flags"
+    },
+    {
+      "pattern": "growthbook",
+      "flags": "i",
+      "label": "Feature Flags (GrowthBook)",
+      "confidence": "HIGH",
+      "category": "feature-flags"
+    },
+    {
+      "pattern": "cdn\\.configcat\\.com",
+      "flags": "",
+      "label": "Feature Flags (ConfigCat CDN)",
+      "confidence": "HIGH",
+      "category": "feature-flags"
+    },
+    {
+      "pattern": "cdn-global\\.configcat\\.com",
+      "flags": "",
+      "label": "Feature Flags (ConfigCat Global CDN)",
+      "confidence": "HIGH",
+      "category": "feature-flags"
+    },
+    {
+      "pattern": "configcat",
+      "flags": "i",
+      "label": "Feature Flags (ConfigCat)",
+      "confidence": "HIGH",
+      "category": "feature-flags"
+    },
+    {
+      "pattern": "edge\\.api\\.flagsmith\\.com",
+      "flags": "",
+      "label": "Feature Flags (Flagsmith Edge)",
+      "confidence": "HIGH",
+      "category": "feature-flags"
+    },
+    {
+      "pattern": "flagsmith",
+      "flags": "i",
+      "label": "Feature Flags (Flagsmith)",
+      "confidence": "HIGH",
+      "category": "feature-flags"
+    },
+    {
+      "pattern": "ff\\.harness\\.io",
+      "flags": "",
+      "label": "Feature Flags (Harness FF)",
+      "confidence": "HIGH",
+      "category": "feature-flags"
+    },
+    {
+      "pattern": "config\\.ff\\.harness\\.io",
+      "flags": "",
+      "label": "Feature Flags (Harness FF config)",
+      "confidence": "HIGH",
+      "category": "feature-flags"
+    },
+    {
+      "pattern": "fscdn\\.eppo\\.cloud",
+      "flags": "",
+      "label": "Feature Flags (Eppo CDN)",
+      "confidence": "HIGH",
+      "category": "feature-flags"
+    },
+    {
+      "pattern": "eppo\\.cloud",
+      "flags": "",
+      "label": "Feature Flags (Eppo)",
+      "confidence": "HIGH",
+      "category": "feature-flags"
+    },
+    {
+      "pattern": "kameleoon",
+      "flags": "i",
+      "label": "A/B Testing (Kameleoon)",
+      "confidence": "HIGH",
+      "category": "feature-flags"
+    },
+    {
+      "pattern": "amplitude\\.com\\/libs",
+      "flags": "",
+      "label": "Feature Flags (Amplitude Experiment)",
+      "confidence": "HIGH",
+      "category": "feature-flags"
+    },
+    {
+      "pattern": "unleash",
+      "flags": "i",
+      "label": "Feature Flags (Unleash)",
+      "confidence": "HIGH",
+      "category": "feature-flags"
+    },
+    {
+      "pattern": "cdn\\.auth0\\.com",
+      "flags": "",
+      "label": "Auth (Auth0 CDN)",
+      "confidence": "HIGH",
+      "category": "auth"
+    },
+    {
+      "pattern": "auth0\\.com",
+      "flags": "",
+      "label": "Auth (Auth0)",
+      "confidence": "HIGH",
+      "category": "auth"
+    },
+    {
+      "pattern": "cdn\\.okta\\.com",
+      "flags": "",
+      "label": "Auth (Okta CDN)",
+      "confidence": "HIGH",
+      "category": "auth"
+    },
+    {
+      "pattern": "oktacdn\\.com",
+      "flags": "",
+      "label": "Auth (Okta CDN)",
+      "confidence": "HIGH",
+      "category": "auth"
+    },
+    {
+      "pattern": "okta\\.com",
+      "flags": "",
+      "label": "Auth (Okta)",
+      "confidence": "HIGH",
+      "category": "auth"
+    },
+    {
+      "pattern": "okta-emea\\.com",
+      "flags": "",
+      "label": "Auth (Okta EMEA)",
+      "confidence": "HIGH",
+      "category": "auth"
+    },
+    {
+      "pattern": "login\\.microsoftonline\\.com",
+      "flags": "",
+      "label": "Auth (Azure AD / Microsoft SSO)",
+      "confidence": "HIGH",
+      "category": "auth"
+    },
+    {
+      "pattern": "aadcdn\\.msftauth\\.net",
+      "flags": "",
+      "label": "Auth (Azure AD CDN)",
+      "confidence": "HIGH",
+      "category": "auth"
+    },
+    {
+      "pattern": "aadcdn\\.msauth\\.net",
+      "flags": "",
+      "label": "Auth (Azure AD CDN alt)",
+      "confidence": "HIGH",
+      "category": "auth"
+    },
+    {
+      "pattern": "accounts\\.google\\.com",
+      "flags": "",
+      "label": "Auth (Google Sign-In)",
+      "confidence": "HIGH",
+      "category": "auth"
+    },
+    {
+      "pattern": "identitytoolkit\\.googleapis",
+      "flags": "",
+      "label": "Auth (Firebase Auth)",
+      "confidence": "HIGH",
+      "category": "auth"
+    },
+    {
+      "pattern": "securetoken\\.googleapis",
+      "flags": "",
+      "label": "Auth (Firebase Auth token)",
+      "confidence": "HIGH",
+      "category": "auth"
+    },
+    {
+      "pattern": "appleid\\.apple\\.com",
+      "flags": "",
+      "label": "Auth (Apple Sign-In)",
+      "confidence": "HIGH",
+      "category": "auth"
+    },
+    {
+      "pattern": "cognito.*amazonaws",
+      "flags": "",
+      "label": "Auth (AWS Cognito)",
+      "confidence": "HIGH",
+      "category": "auth"
+    },
+    {
+      "pattern": "clerkapis\\.com",
+      "flags": "",
+      "label": "Auth (Clerk API)",
+      "confidence": "HIGH",
+      "category": "auth"
+    },
+    {
+      "pattern": "clerk\\.com",
+      "flags": "",
+      "label": "Auth (Clerk)",
+      "confidence": "HIGH",
+      "category": "auth"
+    },
+    {
+      "pattern": "clerk\\.dev",
+      "flags": "",
+      "label": "Auth (Clerk dev)",
+      "confidence": "HIGH",
+      "category": "auth"
+    },
+    {
+      "pattern": "(^|\\.)clerk\\.",
+      "flags": "",
+      "label": "Auth (Clerk)",
+      "confidence": "HIGH",
+      "category": "auth"
+    },
+    {
+      "pattern": "api\\.workos\\.com",
+      "flags": "",
+      "label": "Auth (WorkOS API)",
+      "confidence": "HIGH",
+      "category": "auth"
+    },
+    {
+      "pattern": "workos\\.com",
+      "flags": "",
+      "label": "Auth (WorkOS)",
+      "confidence": "HIGH",
+      "category": "auth"
+    },
+    {
+      "pattern": "kinde\\.com",
+      "flags": "",
+      "label": "Auth (Kinde)",
+      "confidence": "HIGH",
+      "category": "auth"
+    },
+    {
+      "pattern": "stytch\\.com",
+      "flags": "",
+      "label": "Auth (Stytch)",
+      "confidence": "HIGH",
+      "category": "auth"
+    },
+    {
+      "pattern": "auth\\.magic\\.link",
+      "flags": "",
+      "label": "Auth (Magic Link)",
+      "confidence": "HIGH",
+      "category": "auth"
+    },
+    {
+      "pattern": "api\\.magic\\.link",
+      "flags": "",
+      "label": "Auth (Magic Link API)",
+      "confidence": "HIGH",
+      "category": "auth"
+    },
+    {
+      "pattern": "passage\\.id",
+      "flags": "",
+      "label": "Auth (Passage)",
+      "confidence": "HIGH",
+      "category": "auth"
+    },
+    {
+      "pattern": "onelogin\\.com",
+      "flags": "",
+      "label": "Auth (OneLogin)",
+      "confidence": "HIGH",
+      "category": "auth"
+    },
+    {
+      "pattern": "pingidentity",
+      "flags": "i",
+      "label": "Auth (Ping Identity)",
+      "confidence": "HIGH",
+      "category": "auth"
+    },
+    {
+      "pattern": "js\\.stripe\\.com",
+      "flags": "",
+      "label": "Payments (Stripe JS)",
+      "confidence": "HIGH",
+      "category": "payments"
+    },
+    {
+      "pattern": "api\\.stripe\\.com",
+      "flags": "",
+      "label": "Payments (Stripe API)",
+      "confidence": "HIGH",
+      "category": "payments"
+    },
+    {
+      "pattern": "m\\.stripe\\.com",
+      "flags": "",
+      "label": "Payments (Stripe mobile)",
+      "confidence": "HIGH",
+      "category": "payments"
+    },
+    {
+      "pattern": "stripe\\.network",
+      "flags": "",
+      "label": "Payments (Stripe network CDN)",
+      "confidence": "HIGH",
+      "category": "payments"
+    },
+    {
+      "pattern": "stripe\\.com",
+      "flags": "",
+      "label": "Payments (Stripe)",
+      "confidence": "HIGH",
+      "category": "payments"
+    },
+    {
+      "pattern": "js\\.braintreegateway\\.com",
+      "flags": "",
+      "label": "Payments (Braintree JS)",
+      "confidence": "HIGH",
+      "category": "payments"
+    },
+    {
+      "pattern": "braintreegateway\\.com",
+      "flags": "",
+      "label": "Payments (Braintree)",
+      "confidence": "HIGH",
+      "category": "payments"
+    },
+    {
+      "pattern": "paypalobjects\\.com",
+      "flags": "",
+      "label": "Payments (PayPal assets)",
+      "confidence": "HIGH",
+      "category": "payments"
+    },
+    {
+      "pattern": "paypal\\.com",
+      "flags": "",
+      "label": "Payments (PayPal)",
+      "confidence": "HIGH",
+      "category": "payments"
+    },
+    {
+      "pattern": "js\\.squareup\\.com",
+      "flags": "",
+      "label": "Payments (Square JS)",
+      "confidence": "HIGH",
+      "category": "payments"
+    },
+    {
+      "pattern": "web\\.squarecdn\\.com",
+      "flags": "",
+      "label": "Payments (Square CDN)",
+      "confidence": "HIGH",
+      "category": "payments"
+    },
+    {
+      "pattern": "squarecdn\\.com",
+      "flags": "",
+      "label": "Payments (Square CDN)",
+      "confidence": "HIGH",
+      "category": "payments"
+    },
+    {
+      "pattern": "square(up)?\\.com",
+      "flags": "",
+      "label": "Payments (Square)",
+      "confidence": "HIGH",
+      "category": "payments"
+    },
+    {
+      "pattern": "checkoutshopper.*\\.adyen\\.com",
+      "flags": "",
+      "label": "Payments (Adyen Checkout)",
+      "confidence": "HIGH",
+      "category": "payments"
+    },
+    {
+      "pattern": "adyen\\.com",
+      "flags": "",
+      "label": "Payments (Adyen)",
+      "confidence": "HIGH",
+      "category": "payments"
+    },
+    {
+      "pattern": "x\\.klarnacdn\\.net",
+      "flags": "",
+      "label": "Payments (Klarna CDN)",
+      "confidence": "HIGH",
+      "category": "payments"
+    },
+    {
+      "pattern": "klarnacdn\\.net",
+      "flags": "",
+      "label": "Payments (Klarna CDN)",
+      "confidence": "HIGH",
+      "category": "payments"
+    },
+    {
+      "pattern": "klarna\\.com",
+      "flags": "",
+      "label": "Payments (Klarna)",
+      "confidence": "HIGH",
+      "category": "payments"
+    },
+    {
+      "pattern": "afterpay\\.com",
+      "flags": "",
+      "label": "Payments (Afterpay)",
+      "confidence": "HIGH",
+      "category": "payments"
+    },
+    {
+      "pattern": "clearpay\\.co\\.uk",
+      "flags": "",
+      "label": "Payments (Clearpay UK)",
+      "confidence": "HIGH",
+      "category": "payments"
+    },
+    {
+      "pattern": "cdn1\\.affirm\\.com",
+      "flags": "",
+      "label": "Payments (Affirm CDN)",
+      "confidence": "HIGH",
+      "category": "payments"
+    },
+    {
+      "pattern": "affirm\\.com",
+      "flags": "",
+      "label": "Payments (Affirm)",
+      "confidence": "HIGH",
+      "category": "payments"
+    },
+    {
+      "pattern": "js\\.mollie\\.com",
+      "flags": "",
+      "label": "Payments (Mollie JS)",
+      "confidence": "HIGH",
+      "category": "payments"
+    },
+    {
+      "pattern": "mollie\\.com",
+      "flags": "",
+      "label": "Payments (Mollie)",
+      "confidence": "HIGH",
+      "category": "payments"
+    },
+    {
+      "pattern": "checkout\\.razorpay\\.com",
+      "flags": "",
+      "label": "Payments (Razorpay Checkout)",
+      "confidence": "HIGH",
+      "category": "payments"
+    },
+    {
+      "pattern": "cdn\\.razorpay\\.com",
+      "flags": "",
+      "label": "Payments (Razorpay CDN)",
+      "confidence": "HIGH",
+      "category": "payments"
+    },
+    {
+      "pattern": "razorpay\\.com",
+      "flags": "",
+      "label": "Payments (Razorpay)",
+      "confidence": "HIGH",
+      "category": "payments"
+    },
+    {
+      "pattern": "js\\.chargebee\\.com",
+      "flags": "",
+      "label": "Payments (Chargebee JS)",
+      "confidence": "HIGH",
+      "category": "payments"
+    },
+    {
+      "pattern": "chargebee\\.com",
+      "flags": "",
+      "label": "Payments (Chargebee)",
+      "confidence": "HIGH",
+      "category": "payments"
+    },
+    {
+      "pattern": "js\\.recurly\\.com",
+      "flags": "",
+      "label": "Payments (Recurly JS)",
+      "confidence": "HIGH",
+      "category": "payments"
+    },
+    {
+      "pattern": "recurly\\.com",
+      "flags": "",
+      "label": "Payments (Recurly)",
+      "confidence": "HIGH",
+      "category": "payments"
+    },
+    {
+      "pattern": "cdn\\.paddle\\.com",
+      "flags": "",
+      "label": "Payments (Paddle CDN)",
+      "confidence": "HIGH",
+      "category": "payments"
+    },
+    {
+      "pattern": "sandbox-cdn\\.paddle\\.com",
+      "flags": "",
+      "label": "Payments (Paddle sandbox)",
+      "confidence": "HIGH",
+      "category": "payments"
+    },
+    {
+      "pattern": "paddle\\.com",
+      "flags": "",
+      "label": "Payments (Paddle)",
+      "confidence": "HIGH",
+      "category": "payments"
+    },
+    {
+      "pattern": "sezzle\\.com",
+      "flags": "",
+      "label": "Payments (Sezzle)",
+      "confidence": "HIGH",
+      "category": "payments"
+    },
+    {
+      "pattern": "static\\.zuora\\.com",
+      "flags": "",
+      "label": "Payments (Zuora JS)",
+      "confidence": "HIGH",
+      "category": "payments"
+    },
+    {
+      "pattern": "zuora\\.com",
+      "flags": "",
+      "label": "Payments (Zuora)",
+      "confidence": "HIGH",
+      "category": "payments"
+    },
+    {
+      "pattern": "algolia\\.net",
+      "flags": "",
+      "label": "Search (Algolia)",
+      "confidence": "HIGH",
+      "category": "search-api"
+    },
+    {
+      "pattern": "algolianet\\.com",
+      "flags": "",
+      "label": "Search (Algolia CDN)",
+      "confidence": "HIGH",
+      "category": "search-api"
+    },
+    {
+      "pattern": "algolia\\.io",
+      "flags": "",
+      "label": "Search (Algolia alt)",
+      "confidence": "HIGH",
+      "category": "search-api"
+    },
+    {
+      "pattern": "algolia",
+      "flags": "i",
+      "label": "Search (Algolia)",
+      "confidence": "HIGH",
+      "category": "search-api"
+    },
+    {
+      "pattern": "ac\\.cnstrc\\.com",
+      "flags": "",
+      "label": "Search (Constructor.io autocomplete)",
+      "confidence": "HIGH",
+      "category": "search-api"
+    },
+    {
+      "pattern": "cnstrc\\.com",
+      "flags": "",
+      "label": "Search (Constructor.io)",
+      "confidence": "HIGH",
+      "category": "search-api"
+    },
+    {
+      "pattern": "constructor\\.io",
+      "flags": "",
+      "label": "Search (Constructor.io)",
+      "confidence": "HIGH",
+      "category": "search-api"
+    },
+    {
+      "pattern": "klevu",
+      "flags": "i",
+      "label": "Search (Klevu)",
+      "confidence": "HIGH",
+      "category": "search-api"
+    },
+    {
+      "pattern": "ksearchnet\\.com",
+      "flags": "",
+      "label": "Search (Klevu CDN)",
+      "confidence": "HIGH",
+      "category": "search-api"
+    },
+    {
+      "pattern": "searchspring",
+      "flags": "i",
+      "label": "Search (Searchspring)",
+      "confidence": "HIGH",
+      "category": "search-api"
+    },
+    {
+      "pattern": "bloomreach",
+      "flags": "i",
+      "label": "Search (Bloomreach)",
+      "confidence": "HIGH",
+      "category": "search-api"
+    },
+    {
+      "pattern": "cloud\\.coveo\\.com",
+      "flags": "",
+      "label": "Search (Coveo Cloud)",
+      "confidence": "HIGH",
+      "category": "search-api"
+    },
+    {
+      "pattern": "coveo",
+      "flags": "i",
+      "label": "Search (Coveo)",
+      "confidence": "HIGH",
+      "category": "search-api"
+    },
+    {
+      "pattern": "cdn\\.yextapis\\.com",
+      "flags": "",
+      "label": "Search (Yext CDN)",
+      "confidence": "HIGH",
+      "category": "search-api"
+    },
+    {
+      "pattern": "yext",
+      "flags": "i",
+      "label": "Search (Yext)",
+      "confidence": "HIGH",
+      "category": "search-api"
+    },
+    {
+      "pattern": "cdn\\.findify\\.io",
+      "flags": "",
+      "label": "Search (Findify CDN)",
+      "confidence": "HIGH",
+      "category": "search-api"
+    },
+    {
+      "pattern": "findify",
+      "flags": "i",
+      "label": "Search (Findify)",
+      "confidence": "HIGH",
+      "category": "search-api"
+    },
+    {
+      "pattern": "elastic\\.co",
+      "flags": "",
+      "label": "Search (Elastic/Elasticsearch)",
+      "confidence": "HIGH",
+      "category": "search-api"
+    },
+    {
+      "pattern": "typesense\\.net",
+      "flags": "",
+      "label": "Search (Typesense Cloud)",
+      "confidence": "HIGH",
+      "category": "search-api"
+    },
+    {
+      "pattern": "nosto\\.com",
+      "flags": "",
+      "label": "Personalization (Nosto)",
+      "confidence": "HIGH",
+      "category": "search-api"
+    },
+    {
+      "pattern": "cloudflareinsights\\.com",
+      "flags": "",
+      "label": "Analytics (Cloudflare Web Analytics)",
+      "confidence": "LOW",
+      "category": "analytics"
+    },
+    {
+      "pattern": "cloudflare\\.com",
+      "flags": "",
+      "label": "CDN (Cloudflare)",
+      "confidence": "HIGH",
+      "category": "cdn"
+    },
+    {
+      "pattern": "workers\\.dev",
+      "flags": "",
+      "label": "CDN (Cloudflare Workers)",
+      "confidence": "HIGH",
+      "category": "cdn"
+    },
+    {
+      "pattern": "pages\\.dev",
+      "flags": "",
+      "label": "Hosting (Cloudflare Pages)",
+      "confidence": "HIGH",
+      "category": "cdn"
+    },
+    {
+      "pattern": "fastly\\.net",
+      "flags": "",
+      "label": "CDN (Fastly)",
+      "confidence": "HIGH",
+      "category": "cdn"
+    },
+    {
+      "pattern": "akamaihd\\.net",
+      "flags": "",
+      "label": "CDN (Akamai HD)",
+      "confidence": "HIGH",
+      "category": "cdn"
+    },
+    {
+      "pattern": "akamaized\\.net",
+      "flags": "",
+      "label": "CDN (Akamai)",
+      "confidence": "HIGH",
+      "category": "cdn"
+    },
+    {
+      "pattern": "edgekey\\.net",
+      "flags": "",
+      "label": "CDN (Akamai EdgeKey)",
+      "confidence": "HIGH",
+      "category": "cdn"
+    },
+    {
+      "pattern": "akamai",
+      "flags": "i",
+      "label": "CDN (Akamai)",
+      "confidence": "HIGH",
+      "category": "cdn"
+    },
+    {
+      "pattern": "edgio\\.net",
+      "flags": "",
+      "label": "CDN (Edgio)",
+      "confidence": "HIGH",
+      "category": "cdn"
+    },
+    {
+      "pattern": "llnwd\\.net",
+      "flags": "",
+      "label": "CDN (Limelight/Edgio)",
+      "confidence": "HIGH",
+      "category": "cdn"
+    },
+    {
+      "pattern": "b-cdn\\.net",
+      "flags": "",
+      "label": "CDN (BunnyCDN)",
+      "confidence": "HIGH",
+      "category": "cdn"
+    },
+    {
+      "pattern": "kxcdn\\.com",
+      "flags": "",
+      "label": "CDN (KeyCDN)",
+      "confidence": "HIGH",
+      "category": "cdn"
+    },
+    {
+      "pattern": "cdn\\.jsdelivr\\.net",
+      "flags": "",
+      "label": "CDN (jsDelivr)",
+      "confidence": "HIGH",
+      "category": "cdn"
+    },
+    {
+      "pattern": "unpkg\\.com",
+      "flags": "",
+      "label": "CDN (unpkg)",
+      "confidence": "HIGH",
+      "category": "cdn"
+    },
+    {
+      "pattern": "cdnjs\\.cloudflare\\.com",
+      "flags": "",
+      "label": "CDN (cdnjs)",
+      "confidence": "HIGH",
+      "category": "cdn"
+    },
+    {
+      "pattern": "amazonaws\\.com",
+      "flags": "",
+      "label": "Cloud (AWS)",
+      "confidence": "HIGH",
+      "category": "cdn"
+    },
+    {
+      "pattern": "googleapis\\.com",
+      "flags": "",
+      "label": "APIs (Google APIs)",
+      "confidence": "HIGH",
+      "category": "cdn"
+    },
+    {
+      "pattern": "gstatic\\.com",
+      "flags": "",
+      "label": "Assets (Google Static)",
+      "confidence": "HIGH",
+      "category": "cdn"
+    },
+    {
+      "pattern": "shopifycloud\\.com",
+      "flags": "",
+      "label": "E-commerce CDN (Shopify Cloud)",
+      "confidence": "HIGH",
+      "category": "cdn"
+    },
+    {
+      "pattern": "cdn\\.shopify\\.com",
+      "flags": "",
+      "label": "E-commerce CDN (Shopify)",
+      "confidence": "HIGH",
+      "category": "cdn"
+    },
+    {
+      "pattern": "shopify\\.com",
+      "flags": "",
+      "label": "E-commerce (Shopify)",
+      "confidence": "HIGH",
+      "category": "ecommerce"
+    },
+    {
+      "pattern": "demandware\\.net",
+      "flags": "",
+      "label": "E-commerce (Salesforce Commerce Cloud)",
+      "confidence": "HIGH",
+      "category": "ecommerce"
+    },
+    {
+      "pattern": "demandware\\.com",
+      "flags": "",
+      "label": "E-commerce (Salesforce Commerce Cloud)",
+      "confidence": "HIGH",
+      "category": "ecommerce"
+    },
+    {
+      "pattern": "commercetools\\.(com|io)",
+      "flags": "",
+      "label": "E-commerce (Commercetools)",
+      "confidence": "HIGH",
+      "category": "ecommerce"
+    },
+    {
+      "pattern": "bigcommerce\\.com",
+      "flags": "",
+      "label": "E-commerce (BigCommerce)",
+      "confidence": "HIGH",
+      "category": "ecommerce"
+    },
+    {
+      "pattern": "bcapp\\.net",
+      "flags": "",
+      "label": "E-commerce (BigCommerce CDN)",
+      "confidence": "HIGH",
+      "category": "ecommerce"
+    },
+    {
+      "pattern": "pusherapp\\.com",
+      "flags": "",
+      "label": "Real-time (Pusher)",
+      "confidence": "HIGH",
+      "category": "realtime"
+    },
+    {
+      "pattern": "sockjs.*pusher",
+      "flags": "",
+      "label": "Real-time (Pusher SockJS)",
+      "confidence": "HIGH",
+      "category": "realtime"
+    },
+    {
+      "pattern": "ws-.*\\.pusher\\.com",
+      "flags": "",
+      "label": "Real-time (Pusher WebSocket)",
+      "confidence": "HIGH",
+      "category": "realtime"
+    },
+    {
+      "pattern": "pusher",
+      "flags": "i",
+      "label": "Real-time (Pusher)",
+      "confidence": "HIGH",
+      "category": "realtime"
+    },
+    {
+      "pattern": "realtime\\.ably\\.io",
+      "flags": "",
+      "label": "Real-time (Ably)",
+      "confidence": "HIGH",
+      "category": "realtime"
+    },
+    {
+      "pattern": "rest\\.ably\\.io",
+      "flags": "",
+      "label": "Real-time (Ably REST)",
+      "confidence": "HIGH",
+      "category": "realtime"
+    },
+    {
+      "pattern": "ably\\.io",
+      "flags": "",
+      "label": "Real-time (Ably)",
+      "confidence": "HIGH",
+      "category": "realtime"
+    },
+    {
+      "pattern": "ably\\.net",
+      "flags": "",
+      "label": "Real-time (Ably)",
+      "confidence": "HIGH",
+      "category": "realtime"
+    },
+    {
+      "pattern": "twiliocdn\\.com",
+      "flags": "",
+      "label": "Messaging (Twilio CDN)",
+      "confidence": "HIGH",
+      "category": "realtime"
+    },
+    {
+      "pattern": "twilio\\.com",
+      "flags": "",
+      "label": "Messaging (Twilio)",
+      "confidence": "HIGH",
+      "category": "realtime"
+    },
+    {
+      "pattern": "vonage\\.com",
+      "flags": "",
+      "label": "Messaging (Vonage)",
+      "confidence": "HIGH",
+      "category": "realtime"
+    },
+    {
+      "pattern": "nexmo\\.com",
+      "flags": "",
+      "label": "Messaging (Vonage/Nexmo)",
+      "confidence": "HIGH",
+      "category": "realtime"
+    },
+    {
+      "pattern": "livekit\\.cloud",
+      "flags": "",
+      "label": "Real-time (LiveKit)",
+      "confidence": "HIGH",
+      "category": "realtime"
+    },
+    {
+      "pattern": "livekit\\.io",
+      "flags": "",
+      "label": "Real-time (LiveKit)",
+      "confidence": "HIGH",
+      "category": "realtime"
+    },
+    {
+      "pattern": "daily\\.co",
+      "flags": "",
+      "label": "Real-time (Daily.co)",
+      "confidence": "HIGH",
+      "category": "realtime"
+    },
+    {
+      "pattern": "agora\\.io",
+      "flags": "",
+      "label": "Real-time (Agora)",
+      "confidence": "HIGH",
+      "category": "realtime"
+    },
+    {
+      "pattern": "sd-rtn\\.com",
+      "flags": "",
+      "label": "Real-time (Agora CDN)",
+      "confidence": "HIGH",
+      "category": "realtime"
+    },
+    {
+      "pattern": "socket\\.io",
+      "flags": "",
+      "label": "Real-time (Socket.io)",
+      "confidence": "HIGH",
+      "category": "realtime"
+    },
+    {
+      "pattern": "googletagmanager\\.com",
+      "flags": "",
+      "label": "Tag Manager (GTM)",
+      "confidence": "MEDIUM",
+      "category": "tag-manager"
+    },
+    {
+      "pattern": "tags\\.tiqcdn\\.com",
+      "flags": "",
+      "label": "Tag Manager (Tealium)",
+      "confidence": "MEDIUM",
+      "category": "tag-manager"
+    },
+    {
+      "pattern": "tiqcdn\\.com",
+      "flags": "",
+      "label": "Tag Manager (Tealium CDN)",
+      "confidence": "MEDIUM",
+      "category": "tag-manager"
+    },
+    {
+      "pattern": "tealium",
+      "flags": "i",
+      "label": "Tag Manager (Tealium)",
+      "confidence": "MEDIUM",
+      "category": "tag-manager"
+    },
+    {
+      "pattern": "assets\\.adobedtm\\.com",
+      "flags": "",
+      "label": "Tag Manager (Adobe Launch CDN)",
+      "confidence": "MEDIUM",
+      "category": "tag-manager"
+    },
+    {
+      "pattern": "adobedtm\\.com",
+      "flags": "",
+      "label": "Tag Manager (Adobe Launch)",
+      "confidence": "MEDIUM",
+      "category": "tag-manager"
+    },
+    {
+      "pattern": "cdn\\.segment\\.com",
+      "flags": "",
+      "label": "Data Pipeline (Segment CDN)",
+      "confidence": "MEDIUM",
+      "category": "tag-manager"
+    },
+    {
+      "pattern": "api\\.segment\\.io",
+      "flags": "",
+      "label": "Data Pipeline (Segment API)",
+      "confidence": "MEDIUM",
+      "category": "tag-manager"
+    },
+    {
+      "pattern": "analytics\\.js.*segment",
+      "flags": "",
+      "label": "Data Pipeline (Segment analytics.js)",
+      "confidence": "MEDIUM",
+      "category": "tag-manager"
+    },
+    {
+      "pattern": "segment\\.(com|io)",
+      "flags": "",
+      "label": "Data Pipeline (Segment)",
+      "confidence": "MEDIUM",
+      "category": "tag-manager"
+    },
+    {
+      "pattern": "cdn\\.rudderlabs\\.com",
+      "flags": "",
+      "label": "Data Pipeline (RudderStack CDN)",
+      "confidence": "MEDIUM",
+      "category": "tag-manager"
+    },
+    {
+      "pattern": "rudderstack\\.com",
+      "flags": "",
+      "label": "Data Pipeline (RudderStack)",
+      "confidence": "MEDIUM",
+      "category": "tag-manager"
+    },
+    {
+      "pattern": "rudderlabs\\.com",
+      "flags": "",
+      "label": "Data Pipeline (RudderStack)",
+      "confidence": "MEDIUM",
+      "category": "tag-manager"
+    },
+    {
+      "pattern": "jssdks\\.mparticle\\.com",
+      "flags": "",
+      "label": "Data Pipeline (mParticle CDN)",
+      "confidence": "MEDIUM",
+      "category": "tag-manager"
+    },
+    {
+      "pattern": "mparticle\\.com",
+      "flags": "",
+      "label": "Data Pipeline (mParticle)",
+      "confidence": "MEDIUM",
+      "category": "tag-manager"
+    },
+    {
+      "pattern": "ensighten",
+      "flags": "i",
+      "label": "Tag Manager (Ensighten)",
+      "confidence": "MEDIUM",
+      "category": "tag-manager"
+    },
+    {
+      "pattern": "js\\.intercomcdn\\.com",
+      "flags": "",
+      "label": "Chat (Intercom CDN)",
+      "confidence": "MEDIUM",
+      "category": "chat"
+    },
+    {
+      "pattern": "widget\\.intercom\\.io",
+      "flags": "",
+      "label": "Chat (Intercom widget)",
+      "confidence": "MEDIUM",
+      "category": "chat"
+    },
+    {
+      "pattern": "intercom\\.io",
+      "flags": "",
+      "label": "Chat (Intercom)",
+      "confidence": "MEDIUM",
+      "category": "chat"
+    },
+    {
+      "pattern": "intercom",
+      "flags": "i",
+      "label": "Chat (Intercom)",
+      "confidence": "MEDIUM",
+      "category": "chat"
+    },
+    {
+      "pattern": "static\\.zdassets\\.com",
+      "flags": "",
+      "label": "Support (Zendesk CDN)",
+      "confidence": "MEDIUM",
+      "category": "chat"
+    },
+    {
+      "pattern": "zdassets\\.com",
+      "flags": "",
+      "label": "Support (Zendesk assets)",
+      "confidence": "MEDIUM",
+      "category": "chat"
+    },
+    {
+      "pattern": "zendesk\\.com",
+      "flags": "",
+      "label": "Support (Zendesk)",
+      "confidence": "MEDIUM",
+      "category": "chat"
+    },
+    {
+      "pattern": "js\\.driftt\\.com",
+      "flags": "",
+      "label": "Chat (Drift JS)",
+      "confidence": "MEDIUM",
+      "category": "chat"
+    },
+    {
+      "pattern": "driftt\\.com",
+      "flags": "",
+      "label": "Chat (Drift CDN)",
+      "confidence": "MEDIUM",
+      "category": "chat"
+    },
+    {
+      "pattern": "drift\\.com",
+      "flags": "",
+      "label": "Chat (Drift)",
+      "confidence": "MEDIUM",
+      "category": "chat"
+    },
+    {
+      "pattern": "freshchat",
+      "flags": "i",
+      "label": "Chat (Freshchat)",
+      "confidence": "MEDIUM",
+      "category": "chat"
+    },
+    {
+      "pattern": "freshdesk",
+      "flags": "i",
+      "label": "Support (Freshdesk)",
+      "confidence": "MEDIUM",
+      "category": "chat"
+    },
+    {
+      "pattern": "freshworksapi\\.com",
+      "flags": "",
+      "label": "Chat (Freshworks API)",
+      "confidence": "MEDIUM",
+      "category": "chat"
+    },
+    {
+      "pattern": "cdn\\.livechatinc\\.com",
+      "flags": "",
+      "label": "Chat (LiveChat CDN)",
+      "confidence": "MEDIUM",
+      "category": "chat"
+    },
+    {
+      "pattern": "livechatinc\\.com",
+      "flags": "",
+      "label": "Chat (LiveChat)",
+      "confidence": "MEDIUM",
+      "category": "chat"
+    },
+    {
+      "pattern": "livechat",
+      "flags": "i",
+      "label": "Chat (LiveChat)",
+      "confidence": "MEDIUM",
+      "category": "chat"
+    },
+    {
+      "pattern": "client\\.crisp\\.chat",
+      "flags": "",
+      "label": "Chat (Crisp client)",
+      "confidence": "MEDIUM",
+      "category": "chat"
+    },
+    {
+      "pattern": "crisp\\.chat",
+      "flags": "",
+      "label": "Chat (Crisp)",
+      "confidence": "MEDIUM",
+      "category": "chat"
+    },
+    {
+      "pattern": "hs-scripts\\.com",
+      "flags": "",
+      "label": "Chat/CRM (HubSpot scripts)",
+      "confidence": "MEDIUM",
+      "category": "chat"
+    },
+    {
+      "pattern": "hsforms\\.com",
+      "flags": "",
+      "label": "CRM (HubSpot forms)",
+      "confidence": "MEDIUM",
+      "category": "chat"
+    },
+    {
+      "pattern": "hubspot\\.com",
+      "flags": "",
+      "label": "Chat/CRM (HubSpot)",
+      "confidence": "MEDIUM",
+      "category": "chat"
+    },
+    {
+      "pattern": "code\\.tidio\\.co",
+      "flags": "",
+      "label": "Chat (Tidio)",
+      "confidence": "MEDIUM",
+      "category": "chat"
+    },
+    {
+      "pattern": "tidio\\.co",
+      "flags": "",
+      "label": "Chat (Tidio)",
+      "confidence": "MEDIUM",
+      "category": "chat"
+    },
+    {
+      "pattern": "cdn\\.kustomerapp\\.com",
+      "flags": "",
+      "label": "Support (Kustomer CDN)",
+      "confidence": "MEDIUM",
+      "category": "chat"
+    },
+    {
+      "pattern": "kustomerapp\\.com",
+      "flags": "",
+      "label": "Support (Kustomer)",
+      "confidence": "MEDIUM",
+      "category": "chat"
+    },
+    {
+      "pattern": "olark\\.com",
+      "flags": "",
+      "label": "Chat (Olark)",
+      "confidence": "MEDIUM",
+      "category": "chat"
+    },
+    {
+      "pattern": "browser\\.sentry-cdn\\.com",
+      "flags": "",
+      "label": "Error Tracking (Sentry CDN)",
+      "confidence": "MEDIUM",
+      "category": "monitoring"
+    },
+    {
+      "pattern": "\\.ingest\\.sentry\\.io",
+      "flags": "",
+      "label": "Error Tracking (Sentry ingest)",
+      "confidence": "MEDIUM",
+      "category": "monitoring"
+    },
+    {
+      "pattern": "sentry\\.io",
+      "flags": "",
+      "label": "Error Tracking (Sentry)",
+      "confidence": "MEDIUM",
+      "category": "monitoring"
+    },
+    {
+      "pattern": "notify\\.bugsnag\\.com",
+      "flags": "",
+      "label": "Error Tracking (Bugsnag notify)",
+      "confidence": "MEDIUM",
+      "category": "monitoring"
+    },
+    {
+      "pattern": "sessions\\.bugsnag\\.com",
+      "flags": "",
+      "label": "Error Tracking (Bugsnag sessions)",
+      "confidence": "MEDIUM",
+      "category": "monitoring"
+    },
+    {
+      "pattern": "bugsnag",
+      "flags": "i",
+      "label": "Error Tracking (Bugsnag)",
+      "confidence": "MEDIUM",
+      "category": "monitoring"
+    },
+    {
+      "pattern": "cdn\\.rollbar\\.com",
+      "flags": "",
+      "label": "Error Tracking (Rollbar CDN)",
+      "confidence": "MEDIUM",
+      "category": "monitoring"
+    },
+    {
+      "pattern": "api\\.rollbar\\.com",
+      "flags": "",
+      "label": "Error Tracking (Rollbar API)",
+      "confidence": "MEDIUM",
+      "category": "monitoring"
+    },
+    {
+      "pattern": "rollbar",
+      "flags": "i",
+      "label": "Error Tracking (Rollbar)",
+      "confidence": "MEDIUM",
+      "category": "monitoring"
+    },
+    {
+      "pattern": "browser-intake-datadoghq\\.com",
+      "flags": "",
+      "label": "Monitoring (Datadog RUM intake)",
+      "confidence": "MEDIUM",
+      "category": "monitoring"
+    },
+    {
+      "pattern": "datadoghq\\.com",
+      "flags": "",
+      "label": "Monitoring (Datadog)",
+      "confidence": "MEDIUM",
+      "category": "monitoring"
+    },
+    {
+      "pattern": "datadoghq\\.eu",
+      "flags": "",
+      "label": "Monitoring (Datadog EU)",
+      "confidence": "MEDIUM",
+      "category": "monitoring"
+    },
+    {
+      "pattern": "js-agent\\.newrelic\\.com",
+      "flags": "",
+      "label": "Monitoring (New Relic agent)",
+      "confidence": "MEDIUM",
+      "category": "monitoring"
+    },
+    {
+      "pattern": "bam\\.nr-data\\.net",
+      "flags": "",
+      "label": "Monitoring (New Relic BAM)",
+      "confidence": "MEDIUM",
+      "category": "monitoring"
+    },
+    {
+      "pattern": "nr-data\\.net",
+      "flags": "",
+      "label": "Monitoring (New Relic data)",
+      "confidence": "MEDIUM",
+      "category": "monitoring"
+    },
+    {
+      "pattern": "newrelic",
+      "flags": "i",
+      "label": "Monitoring (New Relic)",
+      "confidence": "MEDIUM",
+      "category": "monitoring"
+    },
+    {
+      "pattern": "\\.live\\.dynatrace\\.com",
+      "flags": "",
+      "label": "Monitoring (Dynatrace live)",
+      "confidence": "MEDIUM",
+      "category": "monitoring"
+    },
+    {
+      "pattern": "dynatrace",
+      "flags": "i",
+      "label": "Monitoring (Dynatrace)",
+      "confidence": "MEDIUM",
+      "category": "monitoring"
+    },
+    {
+      "pattern": "eum-appdynamics\\.com",
+      "flags": "",
+      "label": "Monitoring (AppDynamics EUM)",
+      "confidence": "MEDIUM",
+      "category": "monitoring"
+    },
+    {
+      "pattern": "appdynamics",
+      "flags": "i",
+      "label": "Monitoring (AppDynamics)",
+      "confidence": "MEDIUM",
+      "category": "monitoring"
+    },
+    {
+      "pattern": "raygun\\.com",
+      "flags": "",
+      "label": "Error Tracking (Raygun)",
+      "confidence": "MEDIUM",
+      "category": "monitoring"
+    },
+    {
+      "pattern": "airbrake\\.io",
+      "flags": "",
+      "label": "Error Tracking (Airbrake)",
+      "confidence": "MEDIUM",
+      "category": "monitoring"
+    },
+    {
+      "pattern": "static\\.hotjar\\.com",
+      "flags": "",
+      "label": "Session Replay (Hotjar CDN)",
+      "confidence": "MEDIUM",
+      "category": "session-replay"
+    },
+    {
+      "pattern": "insights\\.hotjar\\.com",
+      "flags": "",
+      "label": "Session Replay (Hotjar insights)",
+      "confidence": "MEDIUM",
+      "category": "session-replay"
+    },
+    {
+      "pattern": "hotjar",
+      "flags": "i",
+      "label": "Session Replay (Hotjar)",
+      "confidence": "MEDIUM",
+      "category": "session-replay"
+    },
+    {
+      "pattern": "rs\\.fullstory\\.com",
+      "flags": "",
+      "label": "Session Replay (FullStory record)",
+      "confidence": "MEDIUM",
+      "category": "session-replay"
+    },
+    {
+      "pattern": "edge\\.fullstory\\.com",
+      "flags": "",
+      "label": "Session Replay (FullStory edge)",
+      "confidence": "MEDIUM",
+      "category": "session-replay"
+    },
+    {
+      "pattern": "fullstory",
+      "flags": "i",
+      "label": "Session Replay (FullStory)",
+      "confidence": "MEDIUM",
+      "category": "session-replay"
+    },
+    {
+      "pattern": "cdn\\.logrocket\\.io",
+      "flags": "",
+      "label": "Session Replay (LogRocket CDN)",
+      "confidence": "MEDIUM",
+      "category": "session-replay"
+    },
+    {
+      "pattern": "lr-in-prod\\.com",
+      "flags": "",
+      "label": "Session Replay (LogRocket ingest)",
+      "confidence": "MEDIUM",
+      "category": "session-replay"
+    },
+    {
+      "pattern": "lr-in\\.com",
+      "flags": "",
+      "label": "Session Replay (LogRocket ingest)",
+      "confidence": "MEDIUM",
+      "category": "session-replay"
+    },
+    {
+      "pattern": "logrocket",
+      "flags": "i",
+      "label": "Session Replay (LogRocket)",
+      "confidence": "MEDIUM",
+      "category": "session-replay"
+    },
+    {
+      "pattern": "mouseflow",
+      "flags": "i",
+      "label": "Session Replay (Mouseflow)",
+      "confidence": "MEDIUM",
+      "category": "session-replay"
+    },
+    {
+      "pattern": "luckyorange\\.com",
+      "flags": "",
+      "label": "Session Replay (Lucky Orange)",
+      "confidence": "MEDIUM",
+      "category": "session-replay"
+    },
+    {
+      "pattern": "luckyorange\\.net",
+      "flags": "",
+      "label": "Session Replay (Lucky Orange CDN)",
+      "confidence": "MEDIUM",
+      "category": "session-replay"
+    },
+    {
+      "pattern": "luckyorange",
+      "flags": "i",
+      "label": "Session Replay (Lucky Orange)",
+      "confidence": "MEDIUM",
+      "category": "session-replay"
+    },
+    {
+      "pattern": "inspectlet",
+      "flags": "i",
+      "label": "Session Replay (Inspectlet)",
+      "confidence": "MEDIUM",
+      "category": "session-replay"
+    },
+    {
+      "pattern": "clarity\\.ms",
+      "flags": "",
+      "label": "Session Replay (Microsoft Clarity)",
+      "confidence": "MEDIUM",
+      "category": "session-replay"
+    },
+    {
+      "pattern": "cdn\\.quantummetric\\.com",
+      "flags": "",
+      "label": "Session Replay (Quantum Metric CDN)",
+      "confidence": "MEDIUM",
+      "category": "session-replay"
+    },
+    {
+      "pattern": "quantummetric",
+      "flags": "i",
+      "label": "Session Replay (Quantum Metric)",
+      "confidence": "MEDIUM",
+      "category": "session-replay"
+    },
+    {
+      "pattern": "cs-script\\.net",
+      "flags": "",
+      "label": "Session Replay (Contentsquare CDN)",
+      "confidence": "MEDIUM",
+      "category": "session-replay"
+    },
+    {
+      "pattern": "contentsquare",
+      "flags": "i",
+      "label": "Session Replay (Contentsquare)",
+      "confidence": "MEDIUM",
+      "category": "session-replay"
+    },
+    {
+      "pattern": "glassboxdigital\\.io",
+      "flags": "",
+      "label": "Session Replay (Glassbox CDN)",
+      "confidence": "MEDIUM",
+      "category": "session-replay"
+    },
+    {
+      "pattern": "glassbox\\.com",
+      "flags": "",
+      "label": "Session Replay (Glassbox)",
+      "confidence": "MEDIUM",
+      "category": "session-replay"
+    },
+    {
+      "pattern": "kampyle\\.com",
+      "flags": "",
+      "label": "Session Replay (Medallia/Kampyle)",
+      "confidence": "MEDIUM",
+      "category": "session-replay"
+    },
+    {
+      "pattern": "medallia\\.com",
+      "flags": "",
+      "label": "Session Replay (Medallia)",
+      "confidence": "MEDIUM",
+      "category": "session-replay"
+    },
+    {
+      "pattern": "cdn\\.cookielaw\\.org",
+      "flags": "",
+      "label": "Consent (OneTrust CookieLaw CDN)",
+      "confidence": "MEDIUM",
+      "category": "consent"
+    },
+    {
+      "pattern": "cookielaw\\.org",
+      "flags": "",
+      "label": "Consent (OneTrust CookieLaw)",
+      "confidence": "MEDIUM",
+      "category": "consent"
+    },
+    {
+      "pattern": "geolocation\\.onetrust\\.com",
+      "flags": "",
+      "label": "Consent (OneTrust Geo)",
+      "confidence": "MEDIUM",
+      "category": "consent"
+    },
+    {
+      "pattern": "onetrust\\.com",
+      "flags": "",
+      "label": "Consent (OneTrust)",
+      "confidence": "MEDIUM",
+      "category": "consent"
+    },
+    {
+      "pattern": "consent\\.cookiebot\\.com",
+      "flags": "",
+      "label": "Consent (Cookiebot)",
+      "confidence": "MEDIUM",
+      "category": "consent"
+    },
+    {
+      "pattern": "consentcdn\\.cookiebot\\.com",
+      "flags": "",
+      "label": "Consent (Cookiebot CDN)",
+      "confidence": "MEDIUM",
+      "category": "consent"
+    },
+    {
+      "pattern": "cookiebot",
+      "flags": "i",
+      "label": "Consent (Cookiebot)",
+      "confidence": "MEDIUM",
+      "category": "consent"
+    },
+    {
+      "pattern": "usercentrics\\.eu",
+      "flags": "",
+      "label": "Consent (Usercentrics EU)",
+      "confidence": "MEDIUM",
+      "category": "consent"
+    },
+    {
+      "pattern": "usercentrics\\.com",
+      "flags": "",
+      "label": "Consent (Usercentrics)",
+      "confidence": "MEDIUM",
+      "category": "consent"
+    },
+    {
+      "pattern": "cookiehub\\.com",
+      "flags": "",
+      "label": "Consent (Usercentrics CookieHub)",
+      "confidence": "MEDIUM",
+      "category": "consent"
+    },
+    {
+      "pattern": "consent\\.trustarc\\.com",
+      "flags": "",
+      "label": "Consent (TrustArc)",
+      "confidence": "MEDIUM",
+      "category": "consent"
+    },
+    {
+      "pattern": "trustarc\\.com",
+      "flags": "",
+      "label": "Consent (TrustArc)",
+      "confidence": "MEDIUM",
+      "category": "consent"
+    },
+    {
+      "pattern": "truste\\.com",
+      "flags": "",
+      "label": "Consent (TrustArc/TRUSTe)",
+      "confidence": "MEDIUM",
+      "category": "consent"
+    },
+    {
+      "pattern": "didomi\\.io",
+      "flags": "",
+      "label": "Consent (Didomi)",
+      "confidence": "MEDIUM",
+      "category": "consent"
+    },
+    {
+      "pattern": "privacy-center\\.org",
+      "flags": "",
+      "label": "Consent (Didomi Privacy Center)",
+      "confidence": "MEDIUM",
+      "category": "consent"
+    },
+    {
+      "pattern": "osano\\.com",
+      "flags": "",
+      "label": "Consent (Osano)",
+      "confidence": "MEDIUM",
+      "category": "consent"
+    },
+    {
+      "pattern": "cdn\\.iubenda\\.com",
+      "flags": "",
+      "label": "Consent (iubenda CDN)",
+      "confidence": "MEDIUM",
+      "category": "consent"
+    },
+    {
+      "pattern": "cs\\.iubenda\\.com",
+      "flags": "",
+      "label": "Consent (iubenda CS)",
+      "confidence": "MEDIUM",
+      "category": "consent"
+    },
+    {
+      "pattern": "iubenda\\.com",
+      "flags": "",
+      "label": "Consent (iubenda)",
+      "confidence": "MEDIUM",
+      "category": "consent"
+    },
+    {
+      "pattern": "app\\.termly\\.io",
+      "flags": "",
+      "label": "Consent (Termly)",
+      "confidence": "MEDIUM",
+      "category": "consent"
+    },
+    {
+      "pattern": "termly\\.io",
+      "flags": "",
+      "label": "Consent (Termly)",
+      "confidence": "MEDIUM",
+      "category": "consent"
+    },
+    {
+      "pattern": "quantcast",
+      "flags": "i",
+      "label": "Consent (Quantcast Choice)",
+      "confidence": "MEDIUM",
+      "category": "consent"
+    },
+    {
+      "pattern": "region1\\.analytics\\.google\\.com",
+      "flags": "",
+      "label": "Analytics (GA4 region1)",
+      "confidence": "LOW",
+      "category": "analytics"
+    },
+    {
+      "pattern": "region1\\.google-analytics\\.com",
+      "flags": "",
+      "label": "Analytics (GA4 region1 alt)",
+      "confidence": "LOW",
+      "category": "analytics"
+    },
+    {
+      "pattern": "analytics\\.google\\.com",
+      "flags": "",
+      "label": "Analytics (Google Analytics)",
+      "confidence": "LOW",
+      "category": "analytics"
+    },
+    {
+      "pattern": "www\\.google-analytics\\.com",
+      "flags": "",
+      "label": "Analytics (Google Analytics)",
+      "confidence": "LOW",
+      "category": "analytics"
+    },
+    {
+      "pattern": "google-analytics",
+      "flags": "i",
+      "label": "Analytics (Google Analytics)",
+      "confidence": "LOW",
+      "category": "analytics"
+    },
+    {
+      "pattern": "api\\.mixpanel\\.com",
+      "flags": "",
+      "label": "Analytics (Mixpanel API)",
+      "confidence": "LOW",
+      "category": "analytics"
+    },
+    {
+      "pattern": "cdn\\.mxpnl\\.com",
+      "flags": "",
+      "label": "Analytics (Mixpanel CDN)",
+      "confidence": "LOW",
+      "category": "analytics"
+    },
+    {
+      "pattern": "mixpanel",
+      "flags": "i",
+      "label": "Analytics (Mixpanel)",
+      "confidence": "LOW",
+      "category": "analytics"
+    },
+    {
+      "pattern": "api\\.amplitude\\.com",
+      "flags": "",
+      "label": "Analytics (Amplitude API)",
+      "confidence": "LOW",
+      "category": "analytics"
+    },
+    {
+      "pattern": "api2\\.amplitude\\.com",
+      "flags": "",
+      "label": "Analytics (Amplitude API v2)",
+      "confidence": "LOW",
+      "category": "analytics"
+    },
+    {
+      "pattern": "cdn\\.amplitude\\.com",
+      "flags": "",
+      "label": "Analytics (Amplitude CDN)",
+      "confidence": "LOW",
+      "category": "analytics"
+    },
+    {
+      "pattern": "amplitude\\.com",
+      "flags": "",
+      "label": "Analytics (Amplitude)",
+      "confidence": "LOW",
+      "category": "analytics"
+    },
+    {
+      "pattern": "cdn\\.heapanalytics\\.com",
+      "flags": "",
+      "label": "Analytics (Heap CDN)",
+      "confidence": "LOW",
+      "category": "analytics"
+    },
+    {
+      "pattern": "heapanalytics\\.com",
+      "flags": "",
+      "label": "Analytics (Heap)",
+      "confidence": "LOW",
+      "category": "analytics"
+    },
+    {
+      "pattern": "heap\\.io",
+      "flags": "",
+      "label": "Analytics (Heap)",
+      "confidence": "LOW",
+      "category": "analytics"
+    },
+    {
+      "pattern": "cdn\\.pendo\\.io",
+      "flags": "",
+      "label": "Analytics (Pendo CDN)",
+      "confidence": "LOW",
+      "category": "analytics"
+    },
+    {
+      "pattern": "data\\.pendo\\.io",
+      "flags": "",
+      "label": "Analytics (Pendo data)",
+      "confidence": "LOW",
+      "category": "analytics"
+    },
+    {
+      "pattern": "app\\.pendo\\.io",
+      "flags": "",
+      "label": "Analytics (Pendo app)",
+      "confidence": "LOW",
+      "category": "analytics"
+    },
+    {
+      "pattern": "pendo\\.io",
+      "flags": "",
+      "label": "Analytics (Pendo)",
+      "confidence": "LOW",
+      "category": "analytics"
+    },
+    {
+      "pattern": "static\\.chartbeat\\.com",
+      "flags": "",
+      "label": "Analytics (Chartbeat CDN)",
+      "confidence": "LOW",
+      "category": "analytics"
+    },
+    {
+      "pattern": "chartbeat",
+      "flags": "i",
+      "label": "Analytics (Chartbeat)",
+      "confidence": "LOW",
+      "category": "analytics"
+    },
+    {
+      "pattern": "scorecardresearch\\.com",
+      "flags": "",
+      "label": "Analytics (Comscore)",
+      "confidence": "LOW",
+      "category": "analytics"
+    },
+    {
+      "pattern": "comscore",
+      "flags": "i",
+      "label": "Analytics (Comscore)",
+      "confidence": "LOW",
+      "category": "analytics"
+    },
+    {
+      "pattern": "parsely\\.com",
+      "flags": "",
+      "label": "Analytics (Parse.ly)",
+      "confidence": "LOW",
+      "category": "analytics"
+    },
+    {
+      "pattern": "piano\\.io",
+      "flags": "",
+      "label": "Analytics (Piano Analytics)",
+      "confidence": "LOW",
+      "category": "analytics"
+    },
+    {
+      "pattern": "atinternet-solutions\\.com",
+      "flags": "",
+      "label": "Analytics (AT Internet)",
+      "confidence": "LOW",
+      "category": "analytics"
+    },
+    {
+      "pattern": "ati-host\\.net",
+      "flags": "",
+      "label": "Analytics (AT Internet CDN)",
+      "confidence": "LOW",
+      "category": "analytics"
+    },
+    {
+      "pattern": "woopra\\.com",
+      "flags": "",
+      "label": "Analytics (Woopra)",
+      "confidence": "LOW",
+      "category": "analytics"
+    },
+    {
+      "pattern": "count\\.ly",
+      "flags": "",
+      "label": "Analytics (Countly)",
+      "confidence": "LOW",
+      "category": "analytics"
+    },
+    {
+      "pattern": "kissmetrics",
+      "flags": "i",
+      "label": "Analytics (Kissmetrics)",
+      "confidence": "LOW",
+      "category": "analytics"
+    },
+    {
+      "pattern": "clicky\\.com",
+      "flags": "",
+      "label": "Analytics (Clicky)",
+      "confidence": "LOW",
+      "category": "analytics"
+    },
+    {
+      "pattern": "statcounter",
+      "flags": "i",
+      "label": "Analytics (StatCounter)",
+      "confidence": "LOW",
+      "category": "analytics"
+    },
+    {
+      "pattern": "plausible\\.io",
+      "flags": "",
+      "label": "Analytics (Plausible)",
+      "confidence": "LOW",
+      "category": "analytics"
+    },
+    {
+      "pattern": "fathom",
+      "flags": "i",
+      "label": "Analytics (Fathom)",
+      "confidence": "LOW",
+      "category": "analytics"
+    },
+    {
+      "pattern": "googleadservices\\.com",
+      "flags": "",
+      "label": "Ads (Google Ads)",
+      "confidence": "LOW",
+      "category": "advertising"
+    },
+    {
+      "pattern": "googlesyndication\\.com",
+      "flags": "",
+      "label": "Ads (Google AdSense)",
+      "confidence": "LOW",
+      "category": "advertising"
+    },
+    {
+      "pattern": "doubleclick\\.net",
+      "flags": "",
+      "label": "Ads (Google DoubleClick)",
+      "confidence": "LOW",
+      "category": "advertising"
+    },
+    {
+      "pattern": "connect\\.facebook\\.net",
+      "flags": "",
+      "label": "Ads (Meta/Facebook Pixel)",
+      "confidence": "LOW",
+      "category": "advertising"
+    },
+    {
+      "pattern": "facebook\\.net",
+      "flags": "",
+      "label": "Ads (Facebook)",
+      "confidence": "LOW",
+      "category": "advertising"
+    },
+    {
+      "pattern": "px\\.ads\\.linkedin\\.com",
+      "flags": "",
+      "label": "Ads (LinkedIn Insight pixel)",
+      "confidence": "LOW",
+      "category": "advertising"
+    },
+    {
+      "pattern": "snap\\.licdn\\.com",
+      "flags": "",
+      "label": "Ads (LinkedIn Insight CDN)",
+      "confidence": "LOW",
+      "category": "advertising"
+    },
+    {
+      "pattern": "ads\\.linkedin\\.com",
+      "flags": "",
+      "label": "Ads (LinkedIn Ads)",
+      "confidence": "LOW",
+      "category": "advertising"
+    },
+    {
+      "pattern": "analytics\\.twitter\\.com",
+      "flags": "",
+      "label": "Ads (Twitter/X Analytics)",
+      "confidence": "LOW",
+      "category": "advertising"
+    },
+    {
+      "pattern": "static\\.ads-twitter\\.com",
+      "flags": "",
+      "label": "Ads (Twitter/X Ads pixel)",
+      "confidence": "LOW",
+      "category": "advertising"
+    },
+    {
+      "pattern": "twitter\\.com\\/i\\/adsct",
+      "flags": "",
+      "label": "Ads (Twitter/X conversion)",
+      "confidence": "LOW",
+      "category": "advertising"
+    },
+    {
+      "pattern": "analytics\\.tiktok\\.com",
+      "flags": "",
+      "label": "Ads (TikTok Analytics)",
+      "confidence": "LOW",
+      "category": "advertising"
+    },
+    {
+      "pattern": "business-api\\.tiktok\\.com",
+      "flags": "",
+      "label": "Ads (TikTok Business API)",
+      "confidence": "LOW",
+      "category": "advertising"
+    },
+    {
+      "pattern": "criteo\\.net",
+      "flags": "",
+      "label": "Ads (Criteo)",
+      "confidence": "LOW",
+      "category": "advertising"
+    },
+    {
+      "pattern": "criteo\\.com",
+      "flags": "",
+      "label": "Ads (Criteo)",
+      "confidence": "LOW",
+      "category": "advertising"
+    },
+    {
+      "pattern": "d\\.adroll\\.com",
+      "flags": "",
+      "label": "Ads (AdRoll)",
+      "confidence": "LOW",
+      "category": "advertising"
+    },
+    {
+      "pattern": "adroll",
+      "flags": "i",
+      "label": "Ads (AdRoll)",
+      "confidence": "LOW",
+      "category": "advertising"
+    },
+    {
+      "pattern": "adsrvr\\.org",
+      "flags": "",
+      "label": "Ads (The Trade Desk)",
+      "confidence": "LOW",
+      "category": "advertising"
+    },
+    {
+      "pattern": "adnxs\\.com",
+      "flags": "",
+      "label": "Ads (Xandr/AppNexus)",
+      "confidence": "LOW",
+      "category": "advertising"
+    },
+    {
+      "pattern": "rubiconproject\\.com",
+      "flags": "",
+      "label": "Ads (Magnite/Rubicon)",
+      "confidence": "LOW",
+      "category": "advertising"
+    },
+    {
+      "pattern": "pubmatic\\.com",
+      "flags": "",
+      "label": "Ads (PubMatic)",
+      "confidence": "LOW",
+      "category": "advertising"
+    },
+    {
+      "pattern": "openx\\.net",
+      "flags": "",
+      "label": "Ads (OpenX)",
+      "confidence": "LOW",
+      "category": "advertising"
+    },
+    {
+      "pattern": "openx\\.com",
+      "flags": "",
+      "label": "Ads (OpenX)",
+      "confidence": "LOW",
+      "category": "advertising"
+    },
+    {
+      "pattern": "indexexchange\\.com",
+      "flags": "",
+      "label": "Ads (Index Exchange)",
+      "confidence": "LOW",
+      "category": "advertising"
+    },
+    {
+      "pattern": "casalemedia\\.com",
+      "flags": "",
+      "label": "Ads (Casale/Index Exchange)",
+      "confidence": "LOW",
+      "category": "advertising"
+    },
+    {
+      "pattern": "cdn\\.taboola\\.com",
+      "flags": "",
+      "label": "Ads (Taboola CDN)",
+      "confidence": "LOW",
+      "category": "advertising"
+    },
+    {
+      "pattern": "taboola",
+      "flags": "i",
+      "label": "Ads (Taboola)",
+      "confidence": "LOW",
+      "category": "advertising"
+    },
+    {
+      "pattern": "outbrain",
+      "flags": "i",
+      "label": "Ads (Outbrain)",
+      "confidence": "LOW",
+      "category": "advertising"
+    },
+    {
+      "pattern": "ct\\.pinterest\\.com",
+      "flags": "",
+      "label": "Ads (Pinterest Tag)",
+      "confidence": "LOW",
+      "category": "advertising"
+    },
+    {
+      "pattern": "pintrk",
+      "flags": "",
+      "label": "Ads (Pinterest pixel)",
+      "confidence": "LOW",
+      "category": "advertising"
+    },
+    {
+      "pattern": "sc-static\\.net",
+      "flags": "",
+      "label": "Ads (Snapchat pixel CDN)",
+      "confidence": "LOW",
+      "category": "advertising"
+    },
+    {
+      "pattern": "snap\\.com\\/ads",
+      "flags": "",
+      "label": "Ads (Snapchat Ads)",
+      "confidence": "LOW",
+      "category": "advertising"
+    },
+    {
+      "pattern": "alb\\.reddit\\.com",
+      "flags": "",
+      "label": "Ads (Reddit pixel)",
+      "confidence": "LOW",
+      "category": "advertising"
+    },
+    {
+      "pattern": "bat\\.bing\\.com",
+      "flags": "",
+      "label": "Ads (Microsoft UET/Bing pixel)",
+      "confidence": "LOW",
+      "category": "advertising"
+    },
+    {
+      "pattern": "uet\\.bing\\.com",
+      "flags": "",
+      "label": "Ads (Microsoft UET)",
+      "confidence": "LOW",
+      "category": "advertising"
+    }
+  ]
+}

@@ -358,6 +358,69 @@ body {
   font-style: italic;
 }
 
+/* ── Copy button ── */
+.copy-btn {
+  background: transparent;
+  border: 1px solid #2a2d3e;
+  border-radius: 5px;
+  color: #475569;
+  font-size: 11px;
+  padding: 4px 6px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  line-height: 1;
+}
+.copy-btn:hover {
+  background: #1e2130;
+  color: #94a3b8;
+  border-color: #3a3d4e;
+}
+.copy-btn.copy-success {
+  color: #4ade80;
+  border-color: #4ade8044;
+}
+
+/* ── DB section in settings ── */
+.db-section {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid #2a2d3e;
+}
+.db-section-header {
+  font-size: 11px;
+  color: #64748b;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+.db-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.db-meta-label {
+  font-size: 11px;
+  color: #475569;
+  flex: 1;
+}
+.refresh-db-btn {
+  background: #1e2130;
+  border: 1px solid #2a2d3e;
+  border-radius: 5px;
+  color: #60a5fa;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 9px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+.refresh-db-btn:hover   { background: #2563eb; color: white; }
+.refresh-db-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
 /* ── Utilities ── */
 .hidden {
   display: none !important;

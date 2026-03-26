@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "NextDNS Medic",
   "short_name": "NextDNS Monitor",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Detects NextDNS blocks that break websites. Groups domains by risk level and lets you allowlist them instantly via the NextDNS API.",
   "permissions": [
     "webRequest",
@@ -10,10 +10,17 @@
     "storage",
     "activeTab",
     "webNavigation",
-    "<all_urls>"
+    "<all_urls>",
+    "https://raw.githubusercontent.com/jstoneky/nextdns-medic/*",
+    "clipboardWrite"
   ],
   "background": {
-    "scripts": ["browser-compat.js", "domain-db.js", "background.js"],
+    "scripts": [
+      "browser-compat.js",
+      "domain-db.js",
+      "db-loader.js",
+      "background.js"
+    ],
     "persistent": false
   },
   "browser_action": {
@@ -36,7 +43,9 @@
       "id": "nextdns-medic@jstoneky.github.io",
       "strict_min_version": "109.0",
       "data_collection_permissions": {
-        "required": ["none"],
+        "required": [
+          "none"
+        ],
         "optional": []
       }
     }

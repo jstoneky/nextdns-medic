@@ -8,6 +8,8 @@ if (typeof ext === "undefined" && typeof module !== "undefined") {
     runtime:       { onMessage: { addListener: () => {} } },
   };
   global.classifyDomain = (h) => ({ label: "Unknown Domain", confidence: "MEDIUM", category: "unknown", known: false });
+  global.forceRefreshDB = async () => ({ ok: false, error: "stub" });
+  global.getDBMeta = () => ({ source: "stub", fetchedAt: null, count: 0, version: "stub" });
 }
 
 // NextDNS Traffic Monitor — Background Service Worker
@@ -17,6 +19,7 @@ if (typeof ext === "undefined" && typeof module !== "undefined") {
 // Firefox loads them via background.scripts in manifest — these will no-op silently.
 try { importScripts("browser-compat.js"); } catch (e) {}
 try { importScripts("domain-db.js"); } catch (e) {}
+try { importScripts("db-loader.js"); } catch (e) {}
 
 // In-memory store: tabId -> { url, hostname, blocks: Map<domain, blockInfo> }
 const tabData = new Map();
@@ -192,6 +195,16 @@ ext.runtime.onMessage.addListener((msg, sender, sendResponse) => {
       updateBadge(msg.tabId, 0);
     }
     sendResponse({ ok: true });
+    return true;
+  }
+
+  if (msg.type === "REFRESH_DB") {
+    forceRefreshDB().then(result => sendResponse(result));
+    return true; // async
+  }
+
+  if (msg.type === "GET_DB_META") {
+    sendResponse(getDBMeta());
     return true;
   }
 });

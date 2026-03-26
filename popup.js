@@ -37,6 +37,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("btn-settings").addEventListener("click", toggleSettings);
   document.getElementById("btn-clear").addEventListener("click", clearBlocks);
   document.getElementById("btn-save-settings").addEventListener("click", saveSettings);
+  document.getElementById("btn-refresh-db").addEventListener("click", handleRefreshDB);
 });
 
 // ── Load & Render Blocks ──────────────────────────────────────────────────────
@@ -143,6 +144,7 @@ function renderBlocks(blocks) {
         </div>
       </div>
       <div class="block-actions">
+        <button class="copy-btn" data-domain="${block.domain}" title="Copy domain">📋</button>
         <button class="allowlist-btn" data-domain="${block.domain}" ${(!apiKey || !profileId) ? "disabled title='Add API key in settings'" : ""}>
           + Allowlist
         </button>
@@ -156,6 +158,27 @@ function renderBlocks(blocks) {
   listEl.querySelectorAll(".allowlist-btn:not([disabled])").forEach(btn => {
     btn.addEventListener("click", () => addToAllowlist(btn));
   });
+
+  // Wire up copy buttons
+  listEl.querySelectorAll(".copy-btn").forEach(btn => {
+    btn.addEventListener("click", () => copyDomain(btn));
+  });
+}
+
+// ── Copy to clipboard ─────────────────────────────────────────────────────────
+async function copyDomain(btn) {
+  const domain = btn.dataset.domain;
+  if (!domain) return;
+  try {
+    await navigator.clipboard.writeText(domain);
+    const orig = btn.textContent;
+    btn.textContent = "✓";
+    btn.classList.add("copy-success");
+    setTimeout(() => { btn.textContent = orig; btn.classList.remove("copy-success"); }, 1500);
+  } catch (_) {
+    btn.textContent = "✗";
+    setTimeout(() => { btn.textContent = "📋"; }, 1500);
+  }
 }
 
 // ── NextDNS Allowlist ──────────────────────────────────────────────────────────
@@ -195,9 +218,25 @@ async function addToAllowlist(btn) {
 }
 
 // ── Settings ──────────────────────────────────────────────────────────────────
-function toggleSettings() {
+async function toggleSettings() {
   const panel = document.getElementById("settings-panel");
+  const isHidden = panel.classList.contains("hidden");
   panel.classList.toggle("hidden");
+  if (isHidden) await refreshDBMeta();
+}
+
+async function refreshDBMeta() {
+  const meta = await sendMessage({ type: "GET_DB_META" });
+  if (!meta) return;
+  const el = document.getElementById("db-meta-label");
+  if (!el) return;
+  if (meta.source === "bundled") {
+    el.textContent = `Bundled DB • ${meta.count} entries`;
+  } else {
+    const age = meta.fetchedAt ? Math.floor((Date.now() - meta.fetchedAt) / 86400000) : "?";
+    const ageStr = age === 0 ? "today" : age === 1 ? "1 day ago" : `${age} days ago`;
+    el.textContent = `${meta.source === "remote" ? "Remote" : "Cached"} DB v${meta.version} • ${meta.count} entries • fetched ${ageStr}`;
+  }
 }
 
 async function saveSettings() {
@@ -221,4 +260,25 @@ async function saveSettings() {
 async function clearBlocks() {
   await sendMessage({ type: "CLEAR_TAB_DATA", tabId: currentTabId });
   loadBlocks();
+}
+
+// ── DB Refresh ────────────────────────────────────────────────────────────────
+async function handleRefreshDB() {
+  const btn = document.getElementById("btn-refresh-db");
+  const label = document.getElementById("db-meta-label");
+  btn.disabled = true;
+  btn.textContent = "Refreshing...";
+  label.textContent = "Fetching from GitHub...";
+
+  const result = await sendMessage({ type: "REFRESH_DB" });
+
+  if (result?.ok) {
+    btn.textContent = "✓ Updated";
+    await refreshDBMeta();
+    setTimeout(() => { btn.textContent = "↻ Refresh"; btn.disabled = false; }, 2000);
+  } else {
+    btn.textContent = "✗ Failed";
+    label.textContent = result?.error || "Unknown error";
+    setTimeout(() => { btn.textContent = "↻ Refresh"; btn.disabled = false; }, 2500);
+  }
 }
