@@ -40,22 +40,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 // ── Load & Render Blocks ──────────────────────────────────────────────────────
-// Messaging helper — Chrome uses callbacks, Firefox browser.* is Promise-based.
-// Using chrome.runtime directly works in both (Firefox supports Chrome compat API).
+// Messaging helper — Firefox browser.* is Promise-based; Chrome uses callbacks.
+// Check for real `browser` (Firefox) first; fall back to chrome callback style.
 function sendMessage(msg) {
+  if (typeof browser !== "undefined" && browser.runtime) {
+    // Firefox: browser.runtime.sendMessage returns a native Promise
+    return browser.runtime.sendMessage(msg).catch(() => null);
+  }
+  // Chrome: callback-based
   return new Promise((resolve) => {
-    if (typeof chrome !== "undefined" && chrome.runtime) {
-      chrome.runtime.sendMessage(msg, (response) => {
-        if (chrome.runtime.lastError) {
-          console.warn("sendMessage:", chrome.runtime.lastError.message);
-          resolve(null);
-        } else {
-          resolve(response);
-        }
-      });
-    } else {
-      browser.runtime.sendMessage(msg).then(resolve).catch(() => resolve(null));
-    }
+    chrome.runtime.sendMessage(msg, (response) => {
+      if (chrome.runtime.lastError) resolve(null);
+      else resolve(response);
+    });
   });
 }
 

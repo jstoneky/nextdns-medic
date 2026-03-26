@@ -16,9 +16,12 @@ const DNS_BLOCK_ERRORS = [
   "net::ERR_NAME_NOT_RESOLVED",
   "net::ERR_CERT_AUTHORITY_INVALID",
   "net::ERR_BLOCKED_BY_ADMINISTRATOR",
-  // Firefox — NextDNS block page returns a self-signed cert, causing these:
-  "Peer's Certificate issuer is not recognized.",
-  "You have received an invalid certificate",
+  // Firefox — NextDNS block page returns a self-signed cert, causing these.
+  // Note: avoid apostrophes — Firefox may use curly quotes (U+2019) vs straight (U+0027)
+  "Certificate issuer is not recognized",   // covers "Peer's Certificate issuer is not recognized."
+  "received an invalid certificate",         // covers "You have received an invalid certificate..."
+  "uses an invalid security certificate",    // another Firefox cert error variant
+  "SEC_ERROR_UNKNOWN_ISSUER",               // raw Firefox cert error code
   "NS_ERROR_UNKNOWN_HOST",
   "NS_ERROR_NET_ON_RESOLVING",
 ];
@@ -57,6 +60,7 @@ function getTabHostname(tabId) {
 ext.webNavigation.onCommitted.addListener((details) => {
   if (details.frameId !== 0) return; // top frame only
   const hostname = extractHostname(details.url);
+
   tabData.set(details.tabId, {
     url: details.url,
     hostname,
@@ -72,6 +76,7 @@ ext.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     const hostname = extractHostname(tab.url);
     const data = getOrCreateTabData(tabId);
     if (data.hostname !== hostname) {
+
       tabData.set(tabId, {
         url: tab.url,
         hostname,
@@ -154,6 +159,7 @@ function updateBadge(tabId, total, highCount = 0) {
 // Returns true (Chrome) to keep channel open; also handles Firefox Promise-based messaging.
 ext.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (msg.type === "GET_TAB_DATA") {
+
     const data = tabData.get(msg.tabId);
     const payload = data
       ? { blocks: [...data.blocks.values()], url: data.url, hostname: data.hostname, startTime: data.startTime }
