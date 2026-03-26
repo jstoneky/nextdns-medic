@@ -1,5 +1,5 @@
 {
-  "manifest_version": 3,
+  "manifest_version": 2,
   "name": "NextDNS Traffic Monitor",
   "short_name": "NextDNS Monitor",
   "version": "1.0.0",
@@ -9,15 +9,14 @@
     "tabs",
     "storage",
     "activeTab",
-    "webNavigation"
-  ],
-  "host_permissions": [
+    "webNavigation",
     "<all_urls>"
   ],
   "background": {
-    "scripts": ["browser-compat.js", "domain-db.js", "background.js"]
+    "scripts": ["browser-compat.js", "domain-db.js", "background.js"],
+    "persistent": false
   },
-  "action": {
+  "browser_action": {
     "default_popup": "popup.html",
     "default_title": "NextDNS Traffic Monitor",
     "default_icon": {
@@ -35,7 +34,7 @@
   "browser_specific_settings": {
     "gecko": {
       "id": "nextdns-monitor@jstoneky.github.io",
-      "strict_min_version": "128.0"
+      "strict_min_version": "109.0"
     }
   }
 }
