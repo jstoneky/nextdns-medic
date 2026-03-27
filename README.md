@@ -142,7 +142,7 @@ The database is maintained in [`domain-db.json`](./domain-db.json) in this repo.
 |---|---|---|---|
 | **NextDNS** | ✅ via REST API | ✅ (HaGeZi, AdGuard, etc.) | ✅ "This device" fingerprint |
 | **Pi-hole v5** | ✅ via API Token | — | — |
-| **Pi-hole v6** | ✅ via API Token | — | — |
+| **Pi-hole v6** | ✅ via API Token | ✅ (HaGeZi, OISD, Steven Black, etc.) | — |
 | **Any other** | 📋 Copy to clipboard | — | — |
 
 ---
