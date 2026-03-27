@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>PayloadContent</key>
+    <array>
+        <dict>
+            <key>DNSSettings</key>
+            <dict>
+                <key>DNSProtocol</key>
+                <string>Plain</string>
+                <key>ServerAddresses</key>
+                <array>
+                    <string>1.1.1.1</string>
+                    <string>1.0.0.1</string>
+                </array>
+                <key>ServerName</key>
+                <string>Cloudflare DNS</string>
+            </dict>
+            <key>PayloadDescription</key>
+            <string>Restores DNS to Cloudflare 1.1.1.1</string>
+            <key>PayloadDisplayName</key>
+            <string>Normal DNS (Cloudflare)</string>
+            <key>PayloadIdentifier</key>
+            <string>com.jstoneky.normal-dns.settings</string>
+            <key>PayloadType</key>
+            <string>com.apple.dnsSettings.managed</string>
+            <key>PayloadUUID</key>
+            <string>F3834518-D754-481F-8AB3-45A51E3D419C</string>
+            <key>PayloadVersion</key>
+            <integer>1</integer>
+        </dict>
+    </array>
+    <key>PayloadDescription</key>
+    <string>Restores DNS to Cloudflare 1.1.1.1 / 1.0.0.1. Install this to exit Pi-hole testing mode.</string>
+    <key>PayloadDisplayName</key>
+    <string>🌐 Normal DNS (Cloudflare)</string>
+    <key>PayloadIdentifier</key>
+    <string>com.jstoneky.normal-dns</string>
+    <key>PayloadOrganization</key>
+    <string>NextDNS Medic Dev</string>
+    <key>PayloadRemovalDisallowed</key>
+    <false/>
+    <key>PayloadType</key>
+    <string>Configuration</string>
+    <key>PayloadUUID</key>
+    <string>F554EA75-264E-43D9-ABDE-6F2008495627</string>
+    <key>PayloadVersion</key>
+    <integer>1</integer>
+</dict>
+</plist>
