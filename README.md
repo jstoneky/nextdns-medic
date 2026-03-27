@@ -1,6 +1,8 @@
 # NextDNS Medic
 
-A browser extension for **Chrome** and **Firefox** that watches your network traffic in real-time and flags requests that NextDNS may be blocking — specifically ones that could silently break website functionality.
+**See exactly what your DNS blocker is blocking — and why it matters.**
+
+A browser extension for **Chrome** and **Firefox** that watches your network traffic in real-time, identifies domains blocked by NextDNS or Pi-hole, and tells you the *functional impact* — whether a block might break login, stop videos from loading, prevent checkout, hide maps, or silence support chat.
 
 [![Chrome](https://img.shields.io/badge/Chrome-MV3-4285F4?logo=googlechrome&logoColor=white)](https://chromewebstore.google.com)
 [![Firefox](https://img.shields.io/badge/Firefox-MV2-FF7139?logo=firefox&logoColor=white)](https://addons.mozilla.org)
@@ -9,9 +11,9 @@ A browser extension for **Chrome** and **Firefox** that watches your network tra
 
 ## The Problem
 
-NextDNS (and other DNS-level blockers) work great for privacy, but they can cause subtle breakage on websites. A feature flag service gets blocked, and suddenly an inventory page won't load. A session replay tool is blocked, and the site's A/B test logic fails silently. You reload the page six times wondering what's wrong, never knowing DNS was the culprit.
+NextDNS, Pi-hole, and other DNS-level blockers work great for privacy, but they can cause subtle breakage on websites. A feature flag service gets blocked, and suddenly an inventory page won't load. An auth provider is blocked, and login silently fails. A payment processor is blocked, and checkout never completes. You reload the page six times wondering what's wrong, never knowing DNS was the culprit.
 
-This extension makes that visible.
+This extension makes that visible — and tells you exactly what's at stake.
 
 ---
 
@@ -19,12 +21,14 @@ This extension makes that visible.
 
 1. **Monitors network errors** on every tab using the browser's `webRequest` API
 2. **Identifies DNS-block signatures** — certificate issuer failures, name resolution errors, and other patterns that indicate a DNS-level block (not a server error or timeout)
-3. **Classifies every blocked domain** against a database of 346+ known services, grouped by how likely they are to break site functionality:
-   - 🔴 **High** — Feature flags, authentication, payment processors, search APIs, core CDNs. These break sites.
-   - 🟡 **Medium** — Tag managers, support chat, consent platforms, session replay, error monitoring. May affect functionality depending on the site.
+3. **Classifies every blocked domain** against a database of **492 known services across 13 categories**, grouped by how likely they are to break site functionality:
+   - 🔴 **High** — Feature flags, authentication, payment processors, search APIs, core CDNs, CAPTCHA. These break sites.
+   - 🟡 **Medium** — Support chat, video players, maps, image CDNs, error monitoring, e-commerce. May affect functionality depending on the site.
    - 🟢 **Low** — Pure analytics and advertising. Almost never affects how a site works.
-4. **Unknown domains** fall back to Medium — worth reviewing, but not necessarily critical
-5. **Badge updates** on the extension icon: count of blocked domains, red = high-risk detected
+4. **Shows a functional impact badge** on every blocked domain — so you know at a glance *what breaks*, not just *that something broke*
+5. **Attributes the block** to a specific blocklist (HaGeZi, AdGuard, uBlock, etc.) so you know which rule flagged it
+6. **Unknown domains** fall back to Medium — worth reviewing, but not necessarily critical
+7. **Badge updates** on the extension icon: count of blocked domains, red = high-risk detected
 
 ---
 
@@ -32,10 +36,31 @@ This extension makes that visible.
 
 Click the extension icon on any page to see:
 
-- **Stats bar** — counts of High / Medium / Low blocked domains
+- **Stats bar** — counts of High / Medium / Low blocked domains; click any level to filter
+- **Impact badge** — color-coded tag on every domain showing the functional consequence of blocking it (see [Impact Badges](#impact-badges) below)
+- **Blocklist attribution** — which blocklist rule flagged the domain (HaGeZi, AdGuard, uBlock Origin, etc.)
 - **Grouped list** — blocked domains sorted by risk, showing service name, error type, and hit count
-- **📋 Copy button** — copies the domain to clipboard; works with any DNS blocker (Pi-hole, AdGuard, etc.)
-- **+ Allowlist button** — one click adds the domain to your NextDNS allowlist via the API (requires credentials)
+- **📋 Copy button** — copies the domain to clipboard; works with NextDNS, Pi-hole, AdGuard, or any DNS blocker
+- **+ Allowlist button** — one click adds the domain to your **NextDNS** or **Pi-hole** allowlist (requires credentials)
+- **DNS flush reminder** — appears after every allowlist/copy action with the exact command for your OS
+- **Profile indicator** — NextDNS profiles are fingerprint-matched; your current device's profile is labeled "This device"
+
+---
+
+## Impact Badges
+
+Every blocked domain carries a color-coded badge showing the **functional impact** of the block — not just how risky it is, but specifically what it might break:
+
+| Badge | Color | What it means | Example categories |
+|-------|-------|---------------|--------------------|
+| login/forms | 🔴 Red | Could prevent login, registration, or form submission | Auth, payments, CAPTCHA |
+| media/maps/assets | 🔵 Blue | Could break video playback, maps, or page assets | Video players, maps, image CDNs, CDN |
+| chat | 🟢 Green | Could hide or disable support chat widgets | Support chat, real-time |
+| feature flags | 🟣 Purple | Could silently change or disable site features | Feature flags |
+| search | 🩵 Cyan | Could break search or autocomplete | Search APIs |
+| monitoring | ⚫ Black | Could disable error reporting or observability | Error monitoring |
+
+These badges are independent of the High/Medium/Low risk rating — a "Low" domain can still carry a `monitoring` badge so you know what's affected.
 
 ---
 
@@ -53,6 +78,15 @@ Click the extension icon on any page to see:
 Click the extension icon → ⚙️ Settings and enter:
 - **NextDNS API Key** — found at [my.nextdns.io](https://my.nextdns.io) → Account → API
 - **Profile ID** — the 6-character ID in your NextDNS dashboard URL
+
+The extension auto-detects which NextDNS profile belongs to this device (fingerprint match) and labels it **"This device"** in the profile list.
+
+### Configure Pi-hole credentials (optional)
+Click the extension icon → ⚙️ Settings and enter:
+- **Pi-hole URL** — e.g. `http://pi.hole` or your Pi-hole's IP address
+- **API Token** — found in Pi-hole's web interface → Settings → API
+
+Both **Pi-hole v5** and **Pi-hole v6** are supported. The extension auto-detects the API version.
 
 Without credentials the extension still monitors and classifies — you just won't have the one-click allowlist button. You can always use the 📋 copy button to manually add domains in your DNS blocker's dashboard.
 
@@ -72,31 +106,42 @@ Without credentials the extension still monitors and classifies — you just won
 
 ## Domain Classification Database
 
-The extension ships with a bundled database of **346+ entries** and automatically fetches updates from this repository. The database is cached locally for 7 days and can be force-refreshed from the Settings panel at any time.
+The extension ships with a bundled database of **492 entries across 13 categories** and automatically fetches updates from this repository. The database is cached locally for 7 days and can be force-refreshed from the Settings panel at any time.
 
 ### Coverage
 
-| Category | Examples | Risk |
-|---|---|---|
-| Feature Flags | Statsig, LaunchDarkly, Split.io, Optimizely, PostHog, GrowthBook, ConfigCat | 🔴 High |
-| Authentication | Auth0, Okta, Clerk, Kinde, Stytch, WorkOS, Firebase Auth, AWS Cognito, Azure AD | 🔴 High |
-| Payment Processors | Stripe, Braintree, PayPal, Klarna, Adyen, Affirm, Afterpay, Square | 🔴 High |
-| Search APIs | Algolia, Constructor.io, Searchspring, Klevu, Bloomreach, Coveo, Yext | 🔴 High |
-| Core CDNs | Cloudflare, Fastly, Akamai, jsDelivr, unpkg, Google APIs, AWS | 🔴 High |
-| Real-time / WebSocket | Pusher, Ably, Twilio, LiveKit, Daily.co, Agora | 🔴 High |
-| Tag Managers | GTM, Tealium, Adobe Launch, Segment, mParticle | 🟡 Medium |
-| Support / Chat | Intercom, Zendesk, HubSpot, Drift, Crisp, Freshchat, LiveChat | 🟡 Medium |
-| Error Monitoring | Sentry, Datadog RUM, New Relic, Bugsnag, Rollbar, Raygun | 🟡 Medium |
-| Session Replay | Hotjar, FullStory, LogRocket, Clarity, Mouseflow, Quantum Metric | 🟡 Medium |
-| Consent Platforms | OneTrust, Cookiebot, TrustArc, Didomi, Usercentrics | 🟡 Medium |
-| Analytics | Google Analytics, Mixpanel, Amplitude, Heap, Pendo, Plausible | 🟢 Low |
-| Advertising | DoubleClick, Meta Pixel, LinkedIn Insight, TikTok, Criteo, AdRoll | 🟢 Low |
+| Category | Examples | Risk | Impact Badge |
+|---|---|---|---|
+| Feature Flags | Statsig, LaunchDarkly, Split.io, Optimizely, PostHog, GrowthBook, ConfigCat | 🔴 High | 🟣 feature flags |
+| Authentication | Auth0, Okta, Clerk, Kinde, Stytch, WorkOS, Firebase Auth, AWS Cognito, Azure AD | 🔴 High | 🔴 login/forms |
+| Payment Processors | Stripe, Braintree, PayPal, Klarna, Adyen, Affirm, Afterpay, Square | 🔴 High | 🔴 login/forms |
+| Search APIs | Algolia, Constructor.io, Searchspring, Klevu, Bloomreach, Coveo, Yext | 🔴 High | 🩵 search |
+| CDN | Cloudflare, Fastly, Akamai, jsDelivr, unpkg, Google APIs, AWS | 🔴 High | 🔵 media/maps/assets |
+| Real-time / WebSocket | Pusher, Ably, Twilio, LiveKit, Daily.co, Agora | 🔴 High | 🟢 chat |
+| CAPTCHA | reCAPTCHA, hCaptcha, Turnstile, FunCAPTCHA, GeeTest | 🔴 High | 🔴 login/forms |
+| Video Players | YouTube Embed, Vimeo, Wistia, Mux, Brightcove, JW Player | 🟡 Medium | 🔵 media/maps/assets |
+| Maps | Google Maps, Mapbox, HERE Maps, MapTiler, OpenStreetMap tiles | 🟡 Medium | 🔵 media/maps/assets |
+| Support Chat | Intercom, Zendesk, HubSpot, Drift, Crisp, Freshchat, LiveChat | 🟡 Medium | 🟢 chat |
+| Image CDNs | Cloudinary, Imgix, Fastly Image Optimizer, Thumbor, ImageKit | 🟡 Medium | 🔵 media/maps/assets |
+| Error Monitoring | Sentry, Datadog RUM, New Relic, Bugsnag, Rollbar, Raygun | 🟡 Medium | ⚫ monitoring |
+| E-commerce | Shopify, Affirm, Klarna widgets, Yotpo, Bazaarvoice, Stamped | 🟡 Medium | 🔴 login/forms |
 
 ### Dynamic updates
 
-The database is maintained in [`domain-db.json`](./domain-db.json) in this repo. On first load the extension fetches the latest version and caches it for 7 days. If the fetch fails for any reason, the bundled fallback is used transparently.
+The database is maintained in [`domain-db.json`](./domain-db.json) in this repo. On first load the extension fetches the latest version and caches it for 7 days. If the fetch fails for any reason, the bundled fallback is used transparently. No version bump required — the DB updates silently in the background.
 
 **Security:** The remote DB is fetched as JSON only — never eval'd or executed. Every entry is validated against a strict schema (pattern allowlist, length caps, confidence enum) before being compiled into RegExp objects. Each regex test is wrapped in try/catch for ReDoS isolation.
+
+---
+
+## Supported DNS Blockers
+
+| Provider | One-click Allowlist | Blocklist Attribution | Profile Auto-detect |
+|---|---|---|---|
+| **NextDNS** | ✅ via REST API | ✅ (HaGeZi, AdGuard, etc.) | ✅ "This device" fingerprint |
+| **Pi-hole v5** | ✅ via API Token | — | — |
+| **Pi-hole v6** | ✅ via API Token | — | — |
+| **Any other** | 📋 Copy to clipboard | — | — |
 
 ---
 
@@ -127,7 +172,7 @@ Output goes to `store/dist/`.
 npm test
 
 # Run specific suites
-npm run test:domain   # Domain classification (89 tests)
+npm run test:domain   # Domain classification (492 entries, 13 categories)
 npm run test:errors   # Error string detection (24 tests)
 npm run test:build    # Build artifact validation (41 tests)
 ```
@@ -192,9 +237,11 @@ store/
 
 PRs welcome. Most useful contributions:
 
-- **New entries in `domain-db.json`** — add real hostnames with correct confidence and category
+- **New entries in `domain-db.json`** — add real hostnames with correct confidence, category, and impact badge
 - **Confidence corrections** — if a domain is miscategorized, open a PR with justification
-- **New categories** — e.g. A/B testing tools, e-commerce platforms, video infrastructure
+- **Impact badge corrections** — if the functional impact label is wrong, fix it with reasoning
+- **Blocklist attribution data** — if you know which blocklist targets a domain, add it
+- **New categories** — e.g. A/B testing tools, identity verification, streaming infrastructure
 - **Edge / Safari port**
 - **Automated integration tests**
 

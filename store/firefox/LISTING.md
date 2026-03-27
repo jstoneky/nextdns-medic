@@ -4,15 +4,34 @@
 NextDNS Medic
 
 ## Summary (250 chars max)
-Detects DNS-blocked requests that silently break websites. Filter by risk level, copy domains to clipboard, and get the exact DNS flush command for your OS — works with NextDNS, Pi-hole, AdGuard, and more.
+See what your DNS blocker is blocking — and why it matters. Impact badges, blocklist attribution, one-click allowlist for NextDNS & Pi-hole. 492 known domains across 13 categories.
 
 ## Description
 
 **Ever wonder why a website isn't loading properly — even though your internet is fine?**
 
-If you use NextDNS (or any DNS-based blocker), the answer is often a silently blocked domain. A feature flag service gets blocked, and the inventory page never loads. An auth provider is blocked, and login breaks. You reload six times and never find the cause.
+If you use NextDNS, Pi-hole, or any DNS-based blocker, the answer is often a silently blocked domain. A CAPTCHA provider is blocked, and login fails. A feature flag service is blocked, and the page loads empty. A video CDN is blocked, and the player is just a white box. You reload six times and never find the cause.
 
-**NextDNS Medic makes it visible.**
+**NextDNS Medic makes it visible — and tells you exactly what's at stake.**
+
+---
+
+**See what's blocked and why it matters**
+
+Most DNS debuggers just show you a list of blocked domains. NextDNS Medic shows you the *functional impact* — a color-coded badge on every blocked domain telling you what breaks:
+
+🔴 **login/forms** — Could prevent login, sign-up, or checkout (auth, payments, CAPTCHA)
+🔵 **media/maps/assets** — Could break video playback, maps, or page images
+🟢 **chat** — Could hide or disable support chat widgets
+🟣 **feature flags** — Could silently change or disable site features
+🩵 **search** — Could break search or autocomplete
+⚫ **monitoring** — Could disable error reporting
+
+---
+
+**Blocklist attribution**
+
+See exactly which blocklist flagged each domain — HaGeZi Multi PRO++, AdGuard DNS filter, and more. Fetched automatically from your DNS provider's logs.
 
 ---
 
@@ -20,27 +39,26 @@ If you use NextDNS (or any DNS-based blocker), the answer is often a silently bl
 
 • Monitors every network request on every tab in real-time
 • Detects DNS-level blocks (certificate issuer errors, name resolution failures, and similar)
-• Classifies blocked domains by how likely they are to break site functionality
-• Shows a live badge on the icon — red means high-risk blocks are active right now
+• Shows functional impact badges — know immediately whether a block matters
+• Shows which blocklist caused each block
+• Live badge on the icon — red means high-risk blocks are active right now
 • Filter by risk level with a single click on the stats bar
-• Copy any domain to clipboard — works with Pi-hole, AdGuard, or any DNS blocker
-• One-click allowlist via the NextDNS API (API key required)
-• DNS flush reminder after every allowlist or copy action — exact command for your OS, ready to copy
+• Copy any domain to clipboard — works with any DNS blocker
+• One-click allowlist for NextDNS and Pi-hole (v5 + v6)
+• DNS flush reminder after every allowlist or copy — exact command for your OS, ready to copy
 
 ---
 
 **Risk levels**
 
 🔴 High — May break this site
-Feature flag services (Statsig, LaunchDarkly, Optimizely, PostHog), authentication providers (Auth0, Okta, Clerk), search APIs (Algolia, Bloomreach), payment processors (Stripe, Braintree, Adyen), and core CDNs. When these are blocked, sites often fail silently or show broken/empty states.
+Feature flags (Statsig, LaunchDarkly, PostHog), auth (Auth0, Okta, Clerk), payments (Stripe, Braintree), search (Algolia), CAPTCHA (reCAPTCHA, hCaptcha, Turnstile), video (Vimeo, Wistia, Loom), maps (Google Maps, Mapbox), image CDNs (Imgix, Cloudinary).
 
 🟡 Medium — Worth reviewing
-Tag managers (GTM, Tealium, Segment), support chat (Intercom, Zendesk, Drift), error monitoring (Sentry, Datadog, New Relic), session replay tools (Hotjar, FullStory, LogRocket), and consent platforms (OneTrust, Cookiebot). May affect functionality depending on how the site is built.
+Tag managers, support chat (Intercom, Zendesk, Drift, Crisp), error monitoring (Sentry, Datadog), session replay (Hotjar, FullStory), consent platforms.
 
 🟢 Low — Safe to ignore
-Pure analytics (Google Analytics, Mixpanel, Amplitude, Heap) and advertising pixels (Meta, LinkedIn, TikTok). Blocking these is usually intentional and rarely breaks anything.
-
-Unknown domains are flagged as Medium by default.
+Pure analytics and advertising pixels. Blocking these is usually intentional and rarely breaks anything.
 
 ---
 
@@ -52,25 +70,26 @@ Click High, Medium, or Low in the stats bar to filter the list instantly. Click 
 
 **Copy to clipboard**
 
-Every blocked domain has a 📋 copy button. No NextDNS account needed — copy the domain and paste it into any DNS blocker's dashboard.
+Every blocked domain has a 📋 copy button. No account needed — copy and paste into any DNS blocker's dashboard.
 
 ---
 
 **DNS flush reminder**
 
-After you allowlist or copy a domain, a banner appears with the exact DNS flush command for your OS (macOS, Windows, or Linux) — with its own copy button. Changes don't take effect until DNS is flushed.
+After you allowlist or copy a domain, a banner shows the exact DNS flush command for your OS (macOS, Windows, or Linux) — with its own copy button.
 
 ---
 
-**One-click allowlist (NextDNS users)**
+**One-click allowlist — NextDNS and Pi-hole**
 
-Connect your NextDNS account (API key + profile ID from my.nextdns.io) and every blocked domain gets a + Allowlist button. One click — domain added, no dashboard required.
+• **NextDNS**: Enter your API key, auto-detect your active profile via fingerprint matching, one-click allowlist
+• **Pi-hole v5 + v6**: Enter your URL and password, auto-detects version, one-click allowlist
 
 ---
 
-**346+ domain database, always up to date**
+**492+ domain database, always up to date**
 
-Ships with a curated database of 346+ known services across 13 categories. The database is automatically fetched from GitHub and cached locally for 7 days. Force-refresh anytime from the Settings panel.
+Ships with a curated database of 492+ known services across 13 categories: feature flags, auth, payments, search, CDN, real-time, CAPTCHA, video, maps, support chat, image CDNs, error monitoring, and e-commerce. Auto-fetched from GitHub, cached 7 days, force-refresh anytime.
 
 ---
 
