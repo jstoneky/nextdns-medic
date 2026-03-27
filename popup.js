@@ -842,10 +842,8 @@ async function validateNextDNSKey(key) {
       headers: { "X-Api-Key": key },
       credentials: "omit"
     });
-    console.log("[NextDNS Medic] key validation status:", resp.status);
     return resp.ok; // 200 = valid, 401/403 = invalid
-  } catch (e) {
-    console.warn("[NextDNS Medic] key validation fetch error:", e);
+  } catch (_) {
     return null; // network error — can't validate
   }
 }
@@ -859,12 +857,10 @@ async function saveSettings() {
   const status = document.getElementById("settings-status");
 
   // Validate NextDNS key before saving
-  console.log("[NextDNS Medic] saveSettings — provider:", newProvider, "key length:", newKey.length);
   if (newProvider === "nextdns" && newKey) {
     status.textContent = "Validating…";
     status.style.color = "";
     const valid = await validateNextDNSKey(newKey);
-    console.log("[NextDNS Medic] validation result:", valid);
     if (valid === false) {
       status.textContent = "✗ Invalid API key";
       status.style.color = "#f87171";
