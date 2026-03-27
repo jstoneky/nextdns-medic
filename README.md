@@ -258,8 +258,12 @@ Run `npm test` before submitting — the test suite validates every entry and wi
 
 ## Changelog
 
-### v2.2.0
-- **Pi-hole blocklist attribution** — for Pi-hole users, blocked domains now show which gravity list flagged them (uses `/api/search/{domain}`). Includes a pretty-name map for 30+ popular lists: HaGeZi, Steven Black, OISD, AdGuard DNS filter, EasyList/EasyPrivacy, Disconnect.me, Energized, URLhaus, and more. Unknown lists fall back to their hostname.
+### v2.3.1
+- **Fixed popup icon** — replaced hardcoded 🛡️ emoji with the actual extension icon
+
+### v2.3.0
+- **Pi-hole blocklist attribution** — blocked domains now show which gravity list flagged them (uses `/api/search/{domain}`). Pretty-name map for 30+ popular lists: HaGeZi, Steven Black, OISD, AdGuard DNS filter, EasyList/EasyPrivacy, Disconnect.me, Energized, URLhaus, and more. Unknown lists fall back to their hostname.
+- Previously only available for NextDNS users — now works for Pi-hole v6 too
 
 ### v2.1.0
 - **Expanded domain database** — 492 entries across 13 categories (+146 new entries: CAPTCHA, video players, maps, support chat, image CDNs, error monitoring)
