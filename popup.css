@@ -16,13 +16,13 @@ body {
 }
 
 /* Firefox Android: fill the full panel width */
-@media (max-width: 480px) {
+@media (max-width: 430px) {
   body {
-    width: 100%;
-    min-width: unset;
-    max-width: 100%;
-    min-height: unset;
-    max-height: 100vh;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    min-height: 0 !important;
+    max-height: 100vh !important;
     font-size: 14px;
   }
 }
