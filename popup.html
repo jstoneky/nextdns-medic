@@ -2,7 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=440px">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>
+    // Set layout class before CSS renders to avoid flash
+    document.documentElement.classList.add(/Android/i.test(navigator.userAgent) ? 'is-mobile' : 'is-desktop');
+    document.addEventListener('DOMContentLoaded', function() {
+      document.body.classList.add(/Android/i.test(navigator.userAgent) ? 'mobile' : 'desktop');
+    });
+  </script>
   <title>NextDNS Medic</title>
   <link rel="stylesheet" href="popup.css">
 </head>
