@@ -64,7 +64,12 @@ Unknown domains are flagged as Medium by default.
 
 ### Blocklist attribution
 
-For NextDNS users, each blocked domain shows *which blocklist rule* flagged it — HaGeZi Multi PRO, AdGuard DNS, uBlock Origin, and more. So you know exactly where the block is coming from and can make an informed call about whether to allowlist it.
+Each blocked domain shows *which blocklist rule* flagged it — works for both NextDNS and Pi-hole:
+
+• **NextDNS** — pulled directly from the NextDNS logs API, showing the exact list name
+• **Pi-hole** — uses the gravity search API to look up which of your enabled lists contains the domain, with pretty names for 30+ popular lists: HaGeZi, Steven Black, OISD, AdGuard DNS filter, EasyList, EasyPrivacy, Disconnect.me, Energized, URLhaus, and more
+
+So you know exactly where the block is coming from and can make an informed call about whether to allowlist it.
 
 ---
 

@@ -31,7 +31,7 @@ Most DNS debuggers just show you a list of blocked domains. NextDNS Medic shows 
 
 **Blocklist attribution**
 
-See exactly which blocklist flagged each domain — HaGeZi Multi PRO++, AdGuard DNS filter, and more. Fetched automatically from your DNS provider's logs.
+See exactly which blocklist flagged each domain — works for NextDNS and Pi-hole. NextDNS pulls from the logs API. Pi-hole uses the gravity search API to match your enabled lists, with pretty names for 30+ popular lists: HaGeZi, Steven Black, OISD, AdGuard DNS filter, EasyList, Disconnect.me, and more.
 
 ---
 

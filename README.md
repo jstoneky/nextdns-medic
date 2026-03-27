@@ -26,7 +26,7 @@ This extension makes that visible — and tells you exactly what's at stake.
    - 🟡 **Medium** — Support chat, video players, maps, image CDNs, error monitoring, e-commerce. May affect functionality depending on the site.
    - 🟢 **Low** — Pure analytics and advertising. Almost never affects how a site works.
 4. **Shows a functional impact badge** on every blocked domain — so you know at a glance *what breaks*, not just *that something broke*
-5. **Attributes the block** to a specific blocklist (HaGeZi, AdGuard, uBlock, etc.) so you know which rule flagged it
+5. **Attributes the block** to a specific blocklist — works for both **NextDNS** (from the logs API) and **Pi-hole v6** (via the gravity search API, with pretty names for 30+ common lists)
 6. **Unknown domains** fall back to Medium — worth reviewing, but not necessarily critical
 7. **Badge updates** on the extension icon: count of blocked domains, red = high-risk detected
 
@@ -251,6 +251,38 @@ When adding entries to `domain-db.json`, match the schema:
 ```
 
 Run `npm test` before submitting — the test suite validates every entry and will catch malformed patterns or invalid confidence values.
+
+---
+
+## Changelog
+
+### v2.2.0
+- **Pi-hole blocklist attribution** — for Pi-hole users, blocked domains now show which gravity list flagged them (uses `/api/search/{domain}`). Includes a pretty-name map for 30+ popular lists: HaGeZi, Steven Black, OISD, AdGuard DNS filter, EasyList/EasyPrivacy, Disconnect.me, Energized, URLhaus, and more. Unknown lists fall back to their hostname.
+
+### v2.1.0
+- **Expanded domain database** — 492 entries across 13 categories (+146 new entries: CAPTCHA, video players, maps, support chat, image CDNs, error monitoring)
+- **Functional impact badges** — every blocked domain now shows a color-coded badge describing the specific consequence (login, media, maps, chat, features, assets, monitoring, notifications)
+- **New extension icon** — dark shield with cyan medical cross and pulse line
+
+### v2.0.0
+- **Pi-hole support** — allowlist directly to Pi-hole v5 or v6 (auto-detected)
+- **NextDNS profile auto-detect** — fingerprints your device against your profiles; no manual profile ID needed
+- **DNS provider toggle** — switch between NextDNS and Pi-hole in settings
+
+### v1.4.0 – v1.4.1
+- Risk-level filter — click HIGH / MEDIUM / LOW stats bar to filter the block list
+- DNS flush reminder banner — shows exact OS-aware command after every allowlist/copy action
+
+### v1.3.0
+- DNS flush banner after allowlist actions
+
+### v1.2.0
+- Copy to clipboard button
+- Remote domain database with 7-day cache and force-refresh
+
+### v1.1.0
+- Firefox support (MV2)
+- Dynamic remote domain database
 
 ---
 

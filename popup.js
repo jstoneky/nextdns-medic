@@ -162,9 +162,66 @@ async function fetchNextDNSReasons(domains) {
   }
 }
 
-async function fetchPiholeReasons(domains) {
+// Pretty display names for common Pi-hole blocklist URLs
+const PIHOLE_LIST_NAMES = {
+  // Steven Black
+  "raw.githubusercontent.com/StevenBlack/hosts/master/hosts":                        "Steven Black Unified",
+  "raw.githubusercontent.com/StevenBlack/hosts/master/alternates/fakenews-gambling-porn/hosts": "Steven Black (Extended)",
+  // HaGeZi
+  "raw.githubusercontent.com/hagezi/dns-blocklists/main/hosts/multi.txt":             "HaGeZi — Multi",
+  "raw.githubusercontent.com/hagezi/dns-blocklists/main/hosts/pro.txt":               "HaGeZi — Pro",
+  "raw.githubusercontent.com/hagezi/dns-blocklists/main/hosts/pro.plus.txt":          "HaGeZi — Pro++",
+  "raw.githubusercontent.com/hagezi/dns-blocklists/main/hosts/ultimate.txt":          "HaGeZi — Ultimate",
+  "raw.githubusercontent.com/hagezi/dns-blocklists/main/hosts/tif.txt":               "HaGeZi — Threat Intelligence",
+  "raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/multi.txt":           "HaGeZi — Multi (adblock)",
+  "raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.plus.txt":        "HaGeZi — Pro++ (adblock)",
+  "raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/ultimate.txt":        "HaGeZi — Ultimate (adblock)",
+  // OISD
+  "dbl.oisd.nl":                                                                       "OISD Full",
+  "dbl.oisd.nl/basic":                                                                 "OISD Basic",
+  "small.oisd.nl":                                                                     "OISD Small",
+  // AdGuard
+  "adguardteam.github.io/AdGuardSDNSFilter/Filters/filter.txt":                       "AdGuard DNS filter",
+  "raw.githubusercontent.com/AdguardTeam/FiltersRegistry/master/filters/filter_15_DnsFilter/filter.txt": "AdGuard DNS filter",
+  // EasyList / EasyPrivacy
+  "easylist-downloads.adblockplus.org/easylist.txt":                                   "EasyList",
+  "easylist-downloads.adblockplus.org/easyprivacy.txt":                                "EasyPrivacy",
+  "raw.githubusercontent.com/easylist/easylist/master/easylist.txt":                  "EasyList",
+  "raw.githubusercontent.com/easylist/easylist/master/easyprivacy.txt":               "EasyPrivacy",
+  // Disconnect
+  "s3.amazonaws.com/lists.disconnect.me/simple_ad.txt":                               "Disconnect.me Ads",
+  "s3.amazonaws.com/lists.disconnect.me/simple_tracking.txt":                         "Disconnect.me Tracking",
+  "s3.amazonaws.com/lists.disconnect.me/simple_malware.txt":                          "Disconnect.me Malware",
+  // Malware / security
+  "raw.githubusercontent.com/nicehash/NiceHash-Blocklist/main/blocklist.txt":         "NiceHash Blocklist",
+  "raw.githubusercontent.com/crazy-max/WindowsSpyBlocker/master/data/hosts/spy.txt":  "WindowsSpyBlocker",
+  "raw.githubusercontent.com/nicehash/nicehash-blocklist/main/blocklist.txt":         "NiceHash Blocklist",
+  "urlhaus-filter.pages.dev/urlhaus-filter-hosts.txt":                                "URLhaus Malware",
+  "raw.githubusercontent.com/RPiList/specials/master/Blocklisten/notserious":          "RPiList Not-Serious",
+  // Energized
+  "block.energized.pro/downloads/basic.txt":                                           "Energized Basic",
+  "block.energized.pro/downloads/blu.txt":                                             "Energized BLU",
+  "block.energized.pro/downloads/ultimate.txt":                                        "Energized Ultimate",
+};
+
+function piholeListPrettyName(address) {
+  if (!address) return "Pi-hole blocklist";
   try {
-    // Pi-hole v6: get session then query log per domain
+    const host = new URL(address).hostname + new URL(address).pathname;
+    // Check for exact or partial match
+    for (const [key, name] of Object.entries(PIHOLE_LIST_NAMES)) {
+      if (host.includes(key)) return name;
+    }
+  } catch (_) {}
+  // Fall back to hostname only
+  try { return new URL(address).hostname; } catch (_) {}
+  return "Pi-hole blocklist";
+}
+
+async function fetchPiholeReasons(domains) {
+  if (!domains.length) return;
+  try {
+    // Auth
     const authRes = await fetch(`${piholeUrl}/api/auth`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -176,21 +233,26 @@ async function fetchPiholeReasons(domains) {
     const sid = authData?.session?.sid;
     if (!sid) return;
 
+    // For each blocked domain, use the gravity search endpoint
     for (const domain of domains) {
       try {
         const res = await fetch(
-          `${piholeUrl}/api/queries?blocked=true&domain=${encodeURIComponent(domain)}&limit=10`,
+          `${piholeUrl}/api/search/${encodeURIComponent(domain)}`,
           { headers: { "X-FTL-SID": sid }, signal: AbortSignal.timeout(6000) }
         );
         if (!res.ok) continue;
         const data = await res.json();
-        const queries = data.data || data.queries || [];
+        const gravityHits = data?.search?.gravity || [];
+        if (!gravityHits.length) continue;
+
+        // Deduplicate by list address and map to pretty names
+        const seen = new Set();
         const reasons = [];
-        for (const q of queries) {
-          if (q.list_id || q.adlist || q.gravity) {
-            const name = q.adlist?.comment || q.adlist?.address || q.list_id || "Pi-hole blocklist";
-            if (!reasons.find(r => r.name === name)) reasons.push({ id: String(q.list_id || ""), name });
-          }
+        for (const hit of gravityHits) {
+          const address = hit.address || "";
+          if (seen.has(address)) continue;
+          seen.add(address);
+          reasons.push({ id: String(hit.id || ""), name: piholeListPrettyName(address) });
         }
         if (reasons.length) blocklistCache[domain] = reasons;
       } catch (_) {}
