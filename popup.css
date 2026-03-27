@@ -5,7 +5,9 @@
 }
 
 body {
-  width: 400px;
+  width: 100%;
+  min-width: 320px;
+  max-width: 480px;
   min-height: 120px;
   max-height: 600px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -13,6 +15,13 @@ body {
   background: #0f1117;
   color: #e2e8f0;
   overflow-y: auto;
+}
+
+@media (max-width: 420px) {
+  body {
+    max-height: 100vh;
+    font-size: 14px;
+  }
 }
 
 /* ── Header ── */
@@ -691,4 +700,28 @@ body {
 /* ── Utilities ── */
 .hidden {
   display: none !important;
+}
+
+/* ── Mobile responsive ── */
+@media (max-width: 420px) {
+  .subtitle {
+    max-width: 55vw;
+  }
+
+  .block-domain {
+    max-width: 100%;
+  }
+
+  .blocklist-tag {
+    max-width: 40vw;
+  }
+
+  .allow-btn {
+    min-height: 36px;
+    padding: 6px 10px;
+  }
+
+  .settings-section {
+    padding: 10px 12px;
+  }
 }
