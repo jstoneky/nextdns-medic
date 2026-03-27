@@ -35,8 +35,10 @@ body {
 }
 
 .logo {
-  font-size: 20px;
-  line-height: 1;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  display: block;
 }
 
 .title {
