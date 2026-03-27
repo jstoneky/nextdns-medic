@@ -4,6 +4,22 @@ All notable changes to NextDNS Medic are documented here.
 
 ---
 
+## [2.4.0] — 2026-03-27
+
+### Added
+- **Firefox for Android support** — extension now works on mobile; popup fills the full panel width on narrow viewports
+- **API key validation on save** — NextDNS API key is validated before saving; invalid keys show a red error and are not stored; network errors show a warning but save anyway
+
+### Fixed
+- **Cookie bypass** — all NextDNS API calls now use `credentials: "omit"` to prevent browser session cookies from silently authenticating garbage keys
+- **Android DNS flush banner** — on Android, the flush command is replaced with "Toggle Airplane Mode or restart Firefox to flush DNS" and a Reload button instead of a copyable shell command
+- **Popup width** — increased from 400px to 440px on desktop
+
+### Docs
+- README feature matrix updated: Pi-hole v6 now shows ✅ for blocklist attribution
+
+---
+
 ## [2.3.1] — 2026-03-26
 
 ### Added
