@@ -12,7 +12,8 @@
     "build:firefox": "./build.sh firefox",
     "pihole:start": "./scripts/pihole-dev.sh start",
     "pihole:stop": "./scripts/pihole-dev.sh stop",
-    "pihole:reset": "./scripts/pihole-dev.sh reset"
+    "pihole:reset": "./scripts/pihole-dev.sh reset",
+    "db:research": "npm run db:research"
   },
   "license": "MIT"
 }
