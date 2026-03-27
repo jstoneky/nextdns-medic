@@ -57,31 +57,39 @@ echo ""
 # ── Build setup ────────────────────────────────────────────────────────────────
 mkdir -p "$DIST"
 
-EXCLUDE=(
-  "*.git*"
-  "*.DS_Store*"
-  "*.sh"
-  "manifest.firefox.json"
-  "store/dist/*"
-  "store/*.zip"
-  "node_modules/*"
-  "tests/*"
-)
-
 build_exclude_args() {
-  local args=()
-  for pat in "${EXCLUDE[@]}"; do
-    args+=(--exclude "$pat")
-  done
-  echo "${args[@]}"
+  echo "--exclude=*.git* --exclude=*.DS_Store* --exclude=*.sh --exclude=*.md \
+    --exclude=manifest.firefox.json --exclude=store/* --exclude=icons/concepts/* \
+    --exclude=node_modules/* --exclude=tests/* --exclude=scripts/* \
+    --exclude=package.json --exclude=package-lock.json \
+    --exclude=proposed-additions.json --exclude=.gitignore"
 }
 
 # ── Chrome ─────────────────────────────────────────────────────────────────────
 build_chrome() {
   echo "▶ Building Chrome v${VERSION}..."
   local out="$DIST/nextdns-medic-chrome-v${VERSION}.zip"
+  local tmp
+  tmp="$(mktemp -d)"
   rm -f "$out"
-  zip -r "$out" . $(build_exclude_args) > /dev/null
+
+  rsync -a \
+    --exclude=".git" --exclude=".gitignore" --exclude=".DS_Store" \
+    --exclude="*.sh" --exclude="*.md" \
+    --exclude="manifest.firefox.json" \
+    --exclude="store" \
+    --exclude="icons/concepts" \
+    --exclude="node_modules" \
+    --exclude="tests" \
+    --exclude="scripts" \
+    --exclude="package.json" \
+    --exclude="package-lock.json" \
+    --exclude="proposed-additions.json" \
+    . "$tmp/"
+
+  (cd "$tmp" && zip -r - . --exclude "*.DS_Store*") > "$out" 2>/dev/null
+  rm -rf "$tmp"
+
   echo -e "  ${GREEN}✓ $(du -sh "$out" | cut -f1)  →  $out${NC}"
 }
 
@@ -94,8 +102,10 @@ build_firefox() {
   tmp="$(mktemp -d)"
 
   rsync -a --exclude=".git" --exclude=".DS_Store" --exclude="*.sh" \
-    --exclude="manifest.firefox.json" --exclude="store/dist" \
-    --exclude="store/*.zip" --exclude="tests" \
+    --exclude="*.md" --exclude="manifest.firefox.json" --exclude="store" \
+    --exclude="icons/concepts" --exclude="tests" --exclude="scripts" \
+    --exclude="node_modules" --exclude="package.json" --exclude="package-lock.json" \
+    --exclude="proposed-additions.json" \
     . "$tmp/"
 
   cp manifest.firefox.json "$tmp/manifest.json"
