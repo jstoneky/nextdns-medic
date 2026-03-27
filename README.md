@@ -2,10 +2,11 @@
 
 **See exactly what your DNS blocker is blocking — and why it matters.**
 
-A browser extension for **Chrome** and **Firefox** that watches your network traffic in real-time, identifies domains blocked by NextDNS or Pi-hole, and tells you the *functional impact* — whether a block might break login, stop videos from loading, prevent checkout, hide maps, or silence support chat.
+A browser extension for **Chrome**, **Firefox**, and **Firefox for Android** that watches your network traffic in real-time, identifies domains blocked by NextDNS or Pi-hole, and tells you the *functional impact* — whether a block might break login, stop videos from loading, prevent checkout, hide maps, or silence support chat.
 
 [![Chrome](https://img.shields.io/badge/Chrome-MV3-4285F4?logo=googlechrome&logoColor=white)](https://chromewebstore.google.com)
 [![Firefox](https://img.shields.io/badge/Firefox-MV2-FF7139?logo=firefox&logoColor=white)](https://addons.mozilla.org)
+[![Firefox Android](https://img.shields.io/badge/Firefox_Android-MV2-FF7139?logo=firefox&logoColor=white)](https://addons.mozilla.org)
 
 ![NextDNS Medic](store/chrome/marquee-1400x560-v2.3.jpg)
 
@@ -74,7 +75,9 @@ These badges are independent of the High/Medium/Low risk rating — a "Low" doma
 
 **Firefox:** Load via `about:debugging` → This Firefox → Load Temporary Add-on (select the zip)
 
-*Both will be available on their respective extension stores once reviewed.*
+**Firefox for Android:** Install Firefox Nightly → open `about:config` → set `xpinstall.signatures.required` to `false` → open `about:Firefox` → tap the logo 5× to unlock debug menu → Install Extension from File → select the `.xpi`
+
+*Chrome and Firefox desktop will be available on their respective extension stores once reviewed.*
 
 ### Configure NextDNS credentials (optional)
 Click the extension icon → ⚙️ Settings and enter:
@@ -100,9 +103,12 @@ Without credentials the extension still monitors and classifies — you just won
 |---|---|---|---|
 | Chrome 109+ | MV3 | Service Worker | ✅ Supported |
 | Firefox 109+ | MV2 | Background Scripts | ✅ Supported |
+| Firefox for Android | MV2 | Background Scripts | ✅ Supported |
 | Edge | MV3 | Service Worker | ✅ Should work (untested) |
 
 **Firefox note:** NextDNS blocks appear as certificate issuer errors in Firefox (e.g. "Peer's Certificate issuer is not recognized"). The extension detects these correctly, including the curly-apostrophe variant (U+2019) that Firefox uses internally.
+
+**Firefox for Android:** Install via Firefox Nightly. Enable debug mode: `about:Firefox` → tap the logo 5× → Install Extension from File. The popup is fully responsive and fills the panel width on mobile.
 
 ---
 
