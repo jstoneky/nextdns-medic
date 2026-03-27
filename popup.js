@@ -407,11 +407,15 @@ function renderBlocks(blocks) {
 }
 
 // ── DNS Flush Banner ──────────────────────────────────────────────────────────
+function isAndroid() {
+  return /Android/i.test(navigator.userAgent);
+}
+
 function getDNSFlushCommand() {
   const ua = navigator.userAgent;
-  if (ua.includes("Mac"))  return "sudo dscacheutil -flushcache && sudo killall -HUP mDNSResponder";
-  if (ua.includes("Win"))  return "ipconfig /flushdns";
-  // Linux — systemd-resolved is most common; show both common options
+  if (/Android/i.test(ua))  return null; // handled separately
+  if (ua.includes("Mac"))   return "sudo dscacheutil -flushcache && sudo killall -HUP mDNSResponder";
+  if (ua.includes("Win"))   return "ipconfig /flushdns";
   return "sudo systemd-resolve --flush-caches  # or: sudo service nscd restart";
 }
 
@@ -424,18 +428,29 @@ function showFlushBanner(title = "✓ Added — flush DNS to apply") {
 
   if (!banner) return;
   titleEl.textContent = title;
-  cmdEl.textContent = getDNSFlushCommand();
+
+  if (isAndroid()) {
+    cmdEl.textContent = "Toggle Airplane Mode or restart Firefox to flush DNS";
+    copyBtn.textContent = "↺ Reload";
+    copyBtn.onclick = () => {
+      ext.tabs.reload(currentTabId);
+      banner.classList.add("hidden");
+    };
+  } else {
+    const cmd = getDNSFlushCommand();
+    cmdEl.textContent = cmd;
+    copyBtn.textContent = "copy";
+    copyBtn.onclick = async () => {
+      try {
+        await navigator.clipboard.writeText(cmd);
+        const orig = copyBtn.textContent;
+        copyBtn.textContent = "✓";
+        setTimeout(() => { copyBtn.textContent = orig; }, 1500);
+      } catch (_) {}
+    };
+  }
+
   banner.classList.remove("hidden");
-
-  copyBtn.onclick = async () => {
-    try {
-      await navigator.clipboard.writeText(getDNSFlushCommand());
-      const orig = copyBtn.textContent;
-      copyBtn.textContent = "✓";
-      setTimeout(() => { copyBtn.textContent = orig; }, 1500);
-    } catch (_) {}
-  };
-
   dismiss.onclick = () => banner.classList.add("hidden");
 }
 
@@ -804,13 +819,43 @@ async function handleLookupProfiles() {
   lockApiKeyField();
 }
 
-async function saveSettings() {
-  const newKey = document.getElementById("api-key-input").value.trim();
-  const newProfile = profileId; // set by renderProfileList click or auto-detect
+async function validateNextDNSKey(key) {
+  try {
+    const resp = await fetch("https://api.nextdns.io/profiles", {
+      headers: { "X-Api-Key": key }
+    });
+    return resp.ok; // 200 = valid, 401/403 = invalid
+  } catch (_) {
+    return null; // network error — can't validate
+  }
+}
 
-  const newProvider     = document.getElementById("provider-select").value;
+async function saveSettings() {
+  const newKey      = document.getElementById("api-key-input").value.trim();
+  const newProfile  = profileId;
+  const newProvider = document.getElementById("provider-select").value;
   const newPiholeUrl    = normalizePiholeUrl(document.getElementById("pihole-url-input").value);
   const newPiholeToken  = document.getElementById("pihole-token-input").value.trim();
+  const status = document.getElementById("settings-status");
+
+  // Validate NextDNS key before saving
+  if (newProvider === "nextdns" && newKey) {
+    status.textContent = "Validating…";
+    status.style.color = "";
+    const valid = await validateNextDNSKey(newKey);
+    if (valid === false) {
+      status.textContent = "✗ Invalid API key";
+      status.style.color = "#f87171";
+      setTimeout(() => { status.textContent = ""; status.style.color = ""; }, 3000);
+      return; // don't save
+    }
+    if (valid === null) {
+      status.textContent = "⚠ Network error — saved anyway";
+      status.style.color = "#fbbf24";
+      setTimeout(() => { status.textContent = ""; status.style.color = ""; }, 3000);
+      // fall through and save
+    }
+  }
 
   await ext.storage.sync.set({
     apiKey: newKey, profileId: newProfile,
@@ -824,10 +869,10 @@ async function saveSettings() {
 
   if (newKey && newProvider === "nextdns") lockApiKeyField();
 
-  const status = document.getElementById("settings-status");
+  status.style.color = "#4ade80";
   status.textContent = "✓ Saved";
-  setTimeout(() => { status.textContent = ""; }, 1200);
-  loadBlocks(); // Re-render to enable/disable allowlist buttons
+  setTimeout(() => { status.textContent = ""; status.style.color = ""; }, 1200);
+  loadBlocks();
 }
 
 // ── Clear ─────────────────────────────────────────────────────────────────────
