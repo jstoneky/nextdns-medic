@@ -38,6 +38,8 @@ start_container() {
     docker run -d \
       --name "$CONTAINER" \
       -p "${PORT}:80" \
+      -p 53:53/udp \
+      -p 53:53/tcp \
       -e WEBPASSWORD="$PASSWORD" \
       --restart unless-stopped \
       "$IMAGE" >/dev/null
