@@ -135,7 +135,7 @@ nextdns, pi-hole, dns, blocker, network monitor, privacy, allowlist, debugging, 
 
 ---
 
-## What's New (v2.2.0)
+## What's New (v2.3.0)
 Pi-hole users now get full blocklist attribution — see exactly which gravity list flagged each blocked domain. Includes pretty names for 30+ popular lists: HaGeZi, Steven Black, OISD, AdGuard DNS filter, EasyList, EasyPrivacy, Disconnect.me, Energized, URLhaus, and more. Previously only available for NextDNS users.
 
 ---
