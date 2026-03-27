@@ -508,7 +508,15 @@ body.mobile {
   display: flex;
   gap: 6px;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
+}
+.api-key-error {
+  font-size: 11px;
+  color: #f87171;
+  margin-bottom: 8px;
+}
+.api-key-error.hidden {
+  display: none;
 }
 .api-key-input {
   margin-bottom: 0 !important;

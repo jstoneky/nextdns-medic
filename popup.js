@@ -811,8 +811,23 @@ async function handleLookupProfiles() {
   const key = document.getElementById("api-key-input").value.trim();
   if (!key) return;
   const btn = document.getElementById("btn-lookup-profiles");
+  const errEl = document.getElementById("api-key-error");
+
   btn.textContent = "…";
   btn.disabled = true;
+  errEl.classList.add("hidden");
+  errEl.textContent = "";
+
+  const valid = await validateNextDNSKey(key);
+  if (valid === false) {
+    btn.textContent = "→";
+    btn.disabled = false;
+    errEl.textContent = "✗ Invalid API key";
+    errEl.classList.remove("hidden");
+    setTimeout(() => { errEl.classList.add("hidden"); errEl.textContent = ""; }, 3000);
+    return;
+  }
+
   profilesFetchInFlight = false;
   await fetchDeviceFingerprint();
   await fetchAndMatchProfiles(key);
