@@ -318,8 +318,8 @@ function renderBlocks(blocks) {
         <div class="block-meta">
           <span class="block-error">${errorShort}</span>
           ${block.count > 1 ? `<span class="block-count">×${block.count}</span>` : ""}
-          ${renderImpactBadge(block.classification.functionalImpact)}
         </div>
+        ${renderImpactBadge(block.classification.functionalImpact)}
         ${renderBlockedBy(block.domain)}
       </div>
       <div class="block-actions">
