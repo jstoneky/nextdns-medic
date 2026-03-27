@@ -14,6 +14,7 @@ let detectedFingerprint   = null;
 let detectedDeviceName    = null;
 let profilesList          = []; // [{ id, name, fingerprint }]
 let profilesFetchInFlight = false;
+let blocklistCache        = {}; // domain → [{ id, name }] — cleared on each popup open
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", async () => {
@@ -107,7 +108,102 @@ function sendMessage(msg) {
 
 async function loadBlocks() {
   const response = await sendMessage({ type: "GET_TAB_DATA", tabId: currentTabId });
-  renderBlocks(response?.blocks || []);
+  const blocks = response?.blocks || [];
+  blocklistCache = {}; // reset on each load
+  renderBlocks(blocks);
+
+  // Fetch blocklist reasons in background, then re-render
+  const blockedDomains = blocks.map(b => b.domain);
+  if (blockedDomains.length) {
+    fetchBlocklistReasons(blockedDomains).then(() => renderBlocks(blocks));
+  }
+}
+
+// ── Blocklist reason lookup ───────────────────────────────────────────────────
+async function fetchBlocklistReasons(domains) {
+  if (!domains.length) return;
+
+  if (provider === "nextdns" && apiKey && profileId) {
+    await fetchNextDNSReasons(domains);
+  } else if (provider === "pihole" && piholeUrl && piholeToken) {
+    await fetchPiholeReasons(domains);
+  }
+}
+
+async function fetchNextDNSReasons(domains) {
+  const domainSet = new Set(domains);
+  let fetched = 0;
+  let cursor  = null;
+
+  // Fetch up to 1000 recent blocked entries (paginate if needed)
+  while (domainSet.size > 0 && fetched < 1000) {
+    const url = `https://api.nextdns.io/profiles/${profileId}/logs?status=blocked&limit=1000${cursor ? `&cursor=${cursor}` : ""}`;
+    try {
+      const res = await fetch(url, {
+        headers: { "X-Api-Key": apiKey },
+        signal: AbortSignal.timeout(8000)
+      });
+      if (!res.ok) break;
+      const data = await res.json();
+      const entries = data.data || [];
+      fetched += entries.length;
+
+      for (const entry of entries) {
+        if (domainSet.has(entry.domain) && entry.reasons?.length) {
+          blocklistCache[entry.domain] = entry.reasons;
+          domainSet.delete(entry.domain);
+        }
+      }
+
+      // Stop if all found or no more pages
+      cursor = data.meta?.cursor || null;
+      if (!cursor || !entries.length) break;
+    } catch (_) { break; }
+  }
+}
+
+async function fetchPiholeReasons(domains) {
+  try {
+    // Pi-hole v6: get session then query log per domain
+    const authRes = await fetch(`${piholeUrl}/api/auth`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password: piholeToken }),
+      signal: AbortSignal.timeout(6000)
+    });
+    if (!authRes.ok) return;
+    const authData = await authRes.json();
+    const sid = authData?.session?.sid;
+    if (!sid) return;
+
+    for (const domain of domains) {
+      try {
+        const res = await fetch(
+          `${piholeUrl}/api/queries?blocked=true&domain=${encodeURIComponent(domain)}&limit=10`,
+          { headers: { "X-FTL-SID": sid }, signal: AbortSignal.timeout(6000) }
+        );
+        if (!res.ok) continue;
+        const data = await res.json();
+        const queries = data.data || data.queries || [];
+        const reasons = [];
+        for (const q of queries) {
+          if (q.list_id || q.adlist || q.gravity) {
+            const name = q.adlist?.comment || q.adlist?.address || q.list_id || "Pi-hole blocklist";
+            if (!reasons.find(r => r.name === name)) reasons.push({ id: String(q.list_id || ""), name });
+          }
+        }
+        if (reasons.length) blocklistCache[domain] = reasons;
+      } catch (_) {}
+    }
+  } catch (_) {}
+}
+
+function renderBlockedBy(domain) {
+  const reasons = blocklistCache[domain];
+  if (!reasons?.length) return "";
+  return `<div class="block-reasons">${
+    reasons.map(r => `<span class="blocklist-tag" title="${r.id}">${r.name}</span>`).join("")
+  }</div>`;
 }
 
 function renderBlocks(blocks) {
@@ -205,6 +301,7 @@ function renderBlocks(blocks) {
           <span class="block-error">${errorShort}</span>
           ${block.count > 1 ? `<span class="block-count">×${block.count}</span>` : ""}
         </div>
+        ${renderBlockedBy(block.domain)}
       </div>
       <div class="block-actions">
         <button class="copy-btn" data-domain="${block.domain}" title="Copy domain">📋</button>

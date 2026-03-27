@@ -423,6 +423,26 @@ body {
 }
 .flush-copy-btn:hover { opacity: 1; }
 
+/* ── Blocklist tags ── */
+.block-reasons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+.blocklist-tag {
+  font-size: 10px;
+  color: #94a3b8;
+  background: #1e2130;
+  border: 1px solid #2a2d3e;
+  border-radius: 4px;
+  padding: 1px 6px;
+  white-space: nowrap;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* ── Copy button ── */
 .copy-btn {
   background: transparent;
