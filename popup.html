@@ -54,9 +54,9 @@
       <div id="provider-pihole" class="provider-fields hidden">
         <label class="settings-label">Pi-hole URL</label>
         <input type="text" id="pihole-url-input" placeholder="http://pi.hole or http://192.168.1.100" class="settings-input" />
-        <label class="settings-label">API Token</label>
-        <input type="password" id="pihole-token-input" placeholder="Paste your Pi-hole API token" class="settings-input" />
-        <div class="pihole-token-hint">Found in Pi-hole Admin → Settings → API / Web interface</div>
+        <label class="settings-label">Password / API Token</label>
+        <input type="password" id="pihole-token-input" placeholder="Web UI password (v6) or API token (v5)" class="settings-input" />
+        <div class="pihole-token-hint">Pi-hole v6: your web UI password · Pi-hole v5: Admin → Settings → API</div>
         <div class="pihole-version-row">
           <span id="pihole-version-label" class="pihole-version-label"></span>
           <button id="btn-test-pihole" class="test-btn">Test Connection</button>
