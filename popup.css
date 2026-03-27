@@ -439,7 +439,7 @@ body.mobile {
 
 /* ── Functional impact badge ── */
 .impact-badge {
-  display: block;
+  display: inline-block;
   margin-top: 5px;
   font-size: 10px;
   font-weight: 600;
