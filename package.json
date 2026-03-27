@@ -1,6 +1,6 @@
 {
   "name": "nextdns-medic",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "description": "NextDNS Medic — browser extension for Chrome and Firefox",
   "scripts": {
     "test": "node --test tests/*.test.js",

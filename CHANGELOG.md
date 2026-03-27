@@ -4,6 +4,14 @@ All notable changes to NextDNS Medic are documented here.
 
 ---
 
+## [2.5.0] — 2026-03-27
+
+### Fixed
+- **Flush banner copy button** — replaced invisible emoji button with a visible styled "Copy" button; turns green and shows "Copied!" on success
+- **Android flush banner** — removed confusing "Reload" button; replaced with full plain-English instructions that wrap correctly on mobile ("Toggle Airplane Mode → wait 5 seconds → toggle back…")
+
+---
+
 ## [2.4.0] — 2026-03-27
 
 ### Added

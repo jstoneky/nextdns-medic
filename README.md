@@ -264,6 +264,10 @@ Run `npm test` before submitting — the test suite validates every entry and wi
 
 ## Changelog
 
+### v2.5.0
+- **Flush banner copy button** — visible styled button with "Copied!" confirmation state
+- **Android flush banner** — removed Reload button; shows full plain-English instructions with proper text wrapping
+
 ### v2.4.0
 - **Firefox for Android support** — responsive layout fills the full panel width on mobile
 - **API key validation** — entering a bad key on the → button now shows a red error; nothing is saved
