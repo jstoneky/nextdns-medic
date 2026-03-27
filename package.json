@@ -13,7 +13,9 @@
     "pihole:start": "./scripts/pihole-dev.sh start",
     "pihole:stop": "./scripts/pihole-dev.sh stop",
     "pihole:reset": "./scripts/pihole-dev.sh reset",
-    "db:research": "npm run db:research"
+    "db:research": "npm run db:research",
+    "dns:pihole": "bash scripts/dns-pihole.sh",
+    "dns:restore": "bash scripts/dns-restore.sh"
   },
   "license": "MIT"
 }
