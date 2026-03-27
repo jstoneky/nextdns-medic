@@ -7,7 +7,7 @@ A browser extension for **Chrome** and **Firefox** that watches your network tra
 [![Chrome](https://img.shields.io/badge/Chrome-MV3-4285F4?logo=googlechrome&logoColor=white)](https://chromewebstore.google.com)
 [![Firefox](https://img.shields.io/badge/Firefox-MV2-FF7139?logo=firefox&logoColor=white)](https://addons.mozilla.org)
 
-![NextDNS Medic](store/chrome/marquee-1400x560.jpg)
+![NextDNS Medic](store/chrome/screenshots/screenshot-2.jpg)
 
 ---
 
