@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Silently restore profile list in background (no spinner)
     fetchDeviceFingerprint().then(() => fetchAndMatchProfiles(apiKey));
   }
-  if (profileId)   document.getElementById("profile-id-input").value = profileId;
+  // profileId is managed in memory; no input field to sync
   if (piholeUrl)   document.getElementById("pihole-url-input").value = piholeUrl;
   if (piholeToken) document.getElementById("pihole-token-input").value = piholeToken;
 
