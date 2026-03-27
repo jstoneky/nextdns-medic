@@ -9,7 +9,10 @@
     "test:build": "node --test tests/build.test.js",
     "build": "./build.sh all",
     "build:chrome": "./build.sh chrome",
-    "build:firefox": "./build.sh firefox"
+    "build:firefox": "./build.sh firefox",
+    "pihole:start": "./scripts/pihole-dev.sh start",
+    "pihole:stop": "./scripts/pihole-dev.sh stop",
+    "pihole:reset": "./scripts/pihole-dev.sh reset"
   },
   "license": "MIT"
 }
