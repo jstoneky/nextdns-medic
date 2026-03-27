@@ -648,11 +648,8 @@ async function saveSettings() {
 
   const status = document.getElementById("settings-status");
   status.textContent = "✓ Saved";
-  setTimeout(() => {
-    status.textContent = "";
-    document.getElementById("settings-panel").classList.add("hidden");
-    loadBlocks(); // Re-render to enable/disable allowlist buttons
-  }, 1200);
+  setTimeout(() => { status.textContent = ""; }, 1200);
+  loadBlocks(); // Re-render to enable/disable allowlist buttons
 }
 
 // ── Clear ─────────────────────────────────────────────────────────────────────
