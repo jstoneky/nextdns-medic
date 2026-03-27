@@ -844,10 +844,12 @@ async function saveSettings() {
   const status = document.getElementById("settings-status");
 
   // Validate NextDNS key before saving
+  console.log("[NextDNS Medic] saveSettings — provider:", newProvider, "key length:", newKey.length);
   if (newProvider === "nextdns" && newKey) {
     status.textContent = "Validating…";
     status.style.color = "";
     const valid = await validateNextDNSKey(newKey);
+    console.log("[NextDNS Medic] validation result:", valid);
     if (valid === false) {
       status.textContent = "✗ Invalid API key";
       status.style.color = "#f87171";
