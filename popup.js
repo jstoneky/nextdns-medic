@@ -827,8 +827,10 @@ async function validateNextDNSKey(key) {
       headers: { "X-Api-Key": key },
       credentials: "omit"
     });
+    console.log("[NextDNS Medic] key validation status:", resp.status);
     return resp.ok; // 200 = valid, 401/403 = invalid
-  } catch (_) {
+  } catch (e) {
+    console.warn("[NextDNS Medic] key validation fetch error:", e);
     return null; // network error — can't validate
   }
 }
