@@ -431,7 +431,7 @@ function showFlushBanner(title = "✓ Added — flush DNS to apply") {
 
   if (isAndroid()) {
     cmdEl.textContent = "Toggle Airplane Mode or restart Firefox to flush DNS";
-    copyBtn.textContent = "↺ Reload";
+    copyBtn.textContent = "Reload";
     copyBtn.onclick = () => {
       ext.tabs.reload(currentTabId);
       banner.classList.add("hidden");
@@ -439,13 +439,16 @@ function showFlushBanner(title = "✓ Added — flush DNS to apply") {
   } else {
     const cmd = getDNSFlushCommand();
     cmdEl.textContent = cmd;
-    copyBtn.textContent = "copy";
+    copyBtn.textContent = "Copy";
     copyBtn.onclick = async () => {
       try {
         await navigator.clipboard.writeText(cmd);
-        const orig = copyBtn.textContent;
-        copyBtn.textContent = "✓";
-        setTimeout(() => { copyBtn.textContent = orig; }, 1500);
+        copyBtn.textContent = "Copied!";
+        copyBtn.classList.add("copied");
+        setTimeout(() => {
+          copyBtn.textContent = "Copy";
+          copyBtn.classList.remove("copied");
+        }, 1500);
       } catch (_) {}
     };
   }
