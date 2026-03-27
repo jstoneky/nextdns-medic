@@ -4,7 +4,7 @@ All notable changes to NextDNS Medic are documented here.
 
 ---
 
-## [2.3.0] — 2026-03-26
+## [2.3.1] — 2026-03-26
 
 ### Added
 - **Pi-hole blocklist attribution** — for Pi-hole v6 users, blocked domains now show which gravity list flagged them (e.g. "Steven Black Unified", "HaGeZi — Multi", "OISD Full"). Uses the Pi-hole `/api/search/{domain}` gravity endpoint. Includes a pretty-name map for 30+ popular lists:
