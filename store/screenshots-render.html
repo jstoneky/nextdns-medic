@@ -137,6 +137,30 @@
     letter-spacing: 0.02em;
   }
   .caption strong { color: rgba(255,255,255,0.8); }
+
+  .impact-badge-mock {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 4px;
+    margin-top: 4px;
+  }
+  .impact-login  { background: #2d0a0a; border: 1px solid #dc262655; color: #f87171; }
+  .impact-features-mock { background: #1a0a2d; border: 1px solid #a855f755; color: #d8b4fe; }
+  .impact-map-mock { background: #0a1a2d; border: 1px solid #3b82f655; color: #93c5fd; }
+  .impact-chat-mock { background: #0d1a0d; border: 1px solid #22c55e55; color: #86efac; }
+  .blocklist-tag-mock {
+    display: inline-block;
+    font-size: 10px;
+    color: #94a3b8;
+    background: #1e2130;
+    border: 1px solid #2a2d3e;
+    border-radius: 4px;
+    padding: 1px 6px;
+    margin-top: 3px;
+    margin-right: 3px;
+  }
 </style>
 </head>
 <body>
@@ -148,7 +172,7 @@ const state = parseInt(params.get('state') || '1');
 
 const states = {
   1: {
-    caption: '<strong>High-risk blocks detected</strong> — Feature flag services blocked on checkout page',
+    caption: '<strong>High-risk blocks detected</strong> — See which blocklist blocked it and what breaks',
     url: 'shop.example.com',
     popup: `
       <div class="header">
@@ -172,6 +196,8 @@ const states = {
           <div class="block-domain">featureassets.org</div>
           <div class="block-label">Feature Flags (Statsig)</div>
           <div class="block-meta"><span class="block-error">Certificate issuer not recognized</span><span class="block-count">×4</span></div>
+          <span class="impact-badge-mock impact-features-mock">🚩 Feature flags affected</span>
+          <div><span class="blocklist-tag-mock">HaGeZi — Multi PRO++</span><span class="blocklist-tag-mock">AdGuard DNS filter</span></div>
         </div>
         <div class="block-actions"><button class="allowlist-btn">+ Allowlist</button></div>
       </div>
@@ -181,13 +207,15 @@ const states = {
           <div class="block-domain">app.launchdarkly.com</div>
           <div class="block-label">Feature Flags (LaunchDarkly)</div>
           <div class="block-meta"><span class="block-error">Certificate issuer not recognized</span><span class="block-count">×2</span></div>
+          <span class="impact-badge-mock impact-features-mock">🚩 Feature flags affected</span>
+          <div><span class="blocklist-tag-mock">HaGeZi — Multi PRO++</span></div>
         </div>
         <div class="block-actions"><button class="allowlist-btn">+ Allowlist</button></div>
       </div>
     `
   },
   2: {
-    caption: '<strong>Full breakdown</strong> — Multiple services blocked across risk levels',
+    caption: '<strong>Full breakdown</strong> — Impact badges show exactly what each block affects',
     url: 'dashboard.example.com',
     popup: `
       <div class="header">
@@ -211,6 +239,8 @@ const states = {
           <div class="block-domain">cdn.auth0.com</div>
           <div class="block-label">Authentication (Auth0)</div>
           <div class="block-meta"><span class="block-error">NS_ERROR_UNKNOWN_HOST</span><span class="block-count">×1</span></div>
+          <span class="impact-badge-mock impact-login">⚠️ May prevent login</span>
+          <div><span class="blocklist-tag-mock">OISD Full</span></div>
         </div>
         <div class="block-actions"><button class="allowlist-btn">+ Allowlist</button></div>
       </div>
@@ -315,6 +345,8 @@ const states = {
           <div class="block-domain">featureassets.org</div>
           <div class="block-label">Feature Flags (Statsig)</div>
           <div class="block-meta"><span class="block-error">Certificate issuer not recognized</span><span class="block-count">×4</span></div>
+          <span class="impact-badge-mock impact-features-mock">🚩 Feature flags affected</span>
+          <div><span class="blocklist-tag-mock">HaGeZi — Multi PRO++</span></div>
         </div>
         <div class="block-actions"><button class="allowlist-btn success">✓ Added</button></div>
       </div>
@@ -324,6 +356,8 @@ const states = {
           <div class="block-domain">app.launchdarkly.com</div>
           <div class="block-label">Feature Flags (LaunchDarkly)</div>
           <div class="block-meta"><span class="block-error">Certificate issuer not recognized</span><span class="block-count">×2</span></div>
+          <span class="impact-badge-mock impact-features-mock">🚩 Feature flags affected</span>
+          <div><span class="blocklist-tag-mock">HaGeZi — Multi PRO++</span></div>
         </div>
         <div class="block-actions"><button class="allowlist-btn">+ Allowlist</button></div>
       </div>
