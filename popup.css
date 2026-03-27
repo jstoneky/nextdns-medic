@@ -425,6 +425,12 @@ body.mobile {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+body.mobile .flush-cmd-text {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
+  line-height: 1.5;
+}
 .flush-copy-btn {
   background: #1e293b;
   border: 1px solid #334155;

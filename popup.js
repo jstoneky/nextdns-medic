@@ -430,13 +430,11 @@ function showFlushBanner(title = "✓ Added — flush DNS to apply") {
   titleEl.textContent = title;
 
   if (isAndroid()) {
-    cmdEl.textContent = "Toggle Airplane Mode or restart Firefox to flush DNS";
-    copyBtn.textContent = "Reload";
-    copyBtn.onclick = () => {
-      ext.tabs.reload(currentTabId);
-      banner.classList.add("hidden");
-    };
+    cmdEl.textContent = "Toggle Airplane Mode → wait 5 seconds → toggle back. Or close and reopen Firefox. This forces Android to re-resolve blocked domains.";
+    copyBtn.style.display = "none";
   } else {
+    copyBtn.style.display = "";
+  
     const cmd = getDNSFlushCommand();
     cmdEl.textContent = cmd;
     copyBtn.textContent = "Copy";
