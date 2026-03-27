@@ -308,3 +308,7 @@ Run `npm test` before submitting — the test suite validates every entry and wi
 ## License
 
 MIT
+
+---
+
+*This application was built with the help of AI.*
