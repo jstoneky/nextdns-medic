@@ -4,6 +4,44 @@ All notable changes to DNS Medic are documented here.
 
 ---
 
+## [3.1.0] — 2026-03-28
+
+### Added
+- **Safari for macOS support** — DNS Medic now runs as a native Safari Web Extension via a macOS app wrapper (MV2, persistent background)
+  - Detects blocked requests via Safari's `net::ERR_ABORTED` signal — known tracker domains classified immediately
+  - Unknown aborted domains shown in a separate **"⚪ Unverified — Aborted Requests"** section (muted, with disclaimer)
+  - For NextDNS users: unverified domains auto-confirmed via NextDNS logs API when popup opens — promoted to main HIGH/MEDIUM/LOW list with blocklist tag
+  - `build-safari.sh` added; `build.sh all` now includes Safari
+  - Distributable: `dns-medic-safari-macOS-v3.1.0.zip` (unsigned — right-click → Open to install)
+- **Bug reporting system**
+  - "🐛 Report a Bug" link in settings panel — pre-fills GitHub issue with version, browser, DNS provider, DB meta, recent error log
+  - `diagnostics.html` standalone page — environment info, reachability test, copyable bug report, one-click GitHub issue
+  - `.github/ISSUE_TEMPLATE/bug_report.md` — structured issue template
+- **27 new tests** for bug reporting (error logger, message handlers, URL construction, file existence)
+
+### Fixed
+- Badge/data desync — popup no longer shows "Nothing here" when badge has a non-zero count; `onUpdated` no longer wipes `tabData` on `loading` status; `onCommitted` is sole reset owner
+- Stale tab ID error — `No tab with id` error silenced when tab closes during popup init
+- Firefox Android popup height — `100vh` → `100dvh` + dynamic `max-height` for blocks list
+
+### Changed
+- All 49 bare keyword patterns anchored to canonical TLD domains — eliminates false positives from substring matches
+- 3 over-broad patterns corrected: `fathom` → `usefathom\.com`, `pages\.dev` → `\.pages\.dev`, `daily\.co` → `(^|\.)daily\.co$`
+
+### Domain Database (492 → 561 entries, +69)
+- **Notifications:** OneSignal, Pushwoosh, Airship, Braze, Iterable, Attentive, Klaviyo
+- **Headless CMS:** Contentful (ctfassets.net), Storyblok, Sanity, DatoCMS
+- **A/B Testing:** VWO, AB Tasty, Convert.com
+- **Reviews:** Yotpo, Bazaarvoice
+- **Auth:** Frontegg, Descope, PropelAuth, Hanko, Corbado
+- **Payments:** Lemon Squeezy, Checkout.com, Spreedly, Primer
+- **Feature flags:** DevCycle, Hypertune
+- **CAPTCHA:** GeeTest v3/v4, MTCaptcha
+- **Video:** Kaltura, SproutVideo
+- **Other:** LottieFiles (animation), Crowdin (localization), call-tracking, SEO, maps
+
+---
+
 ## [3.0.0] — 2026-03-27
 
 ### Added
