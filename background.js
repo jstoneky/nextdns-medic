@@ -167,7 +167,6 @@ ext.webRequest.onErrorOccurred.addListener(
     const isSafariAbort = !isDefiniteBlock && !isPossibleBlock && error === "net::ERR_ABORTED";
     if (isSafariAbort) {
       const classification = classifyDomain(reqHostname);
-      if (!classification.known) return; // unknown domain abort — skip
       // Treat as possible block for known domains
       const data = getOrCreateTabData(details.tabId);
       const existing = data.blocks.get(reqHostname);

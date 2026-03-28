@@ -278,9 +278,10 @@ body.mobile .blocks-list {
   gap: 6px;
 }
 
-.section-header.high   { color: #f87171; }
-.section-header.medium { color: #fbbf24; }
-.section-header.low    { color: #4ade80; }
+.section-header.high       { color: #f87171; }
+.section-header.medium     { color: #fbbf24; }
+.section-header.low        { color: #4ade80; }
+.section-header.unverified { color: #64748b; }
 
 .section-header::after {
   content: "";
@@ -315,9 +316,10 @@ body.mobile .blocks-list {
   flex-shrink: 0;
 }
 
-.confidence-dot.HIGH   { background: #f87171; box-shadow: 0 0 6px #f87171aa; }
-.confidence-dot.MEDIUM { background: #fbbf24; box-shadow: 0 0 6px #fbbf24aa; }
-.confidence-dot.LOW    { background: #4ade80; }
+.confidence-dot.HIGH    { background: #f87171; box-shadow: 0 0 6px #f87171aa; }
+.confidence-dot.MEDIUM  { background: #fbbf24; box-shadow: 0 0 6px #fbbf24aa; }
+.confidence-dot.LOW     { background: #4ade80; }
+.confidence-dot.UNKNOWN { background: #475569; }
 
 .block-info {
   flex: 1;
@@ -785,6 +787,19 @@ body.mobile .flush-cmd-text {
   .settings-section {
     padding: 10px 12px;
   }
+}
+
+/* ── Unverified aborts section ── */
+.block-item-unverified {
+  opacity: 0.55;
+}
+
+.unverified-disclaimer {
+  font-size: 11px;
+  color: #475569;
+  padding: 4px 12px 8px;
+  font-style: italic;
+  line-height: 1.4;
 }
 
 /* ── Bug report link ── */

@@ -298,15 +298,51 @@ function renderBlocks(blocks) {
     listEl.appendChild(note);
   }
 
-  const visibleBlocks = activeFilter
-    ? blocks.filter(b => b.classification.confidence === activeFilter)
-    : blocks;
+  // Split into known (confirmed) and unknown (unverified Safari aborts)
+  const knownBlocks   = blocks.filter(b => b.classification.known);
+  const unknownBlocks = blocks.filter(b => !b.classification.known);
 
+  const visibleKnown = activeFilter
+    ? knownBlocks.filter(b => b.classification.confidence === activeFilter)
+    : knownBlocks;
+
+  function renderBlockItem(block, muted = false) {
+    const conf = block.classification.known ? block.classification.confidence : "UNKNOWN";
+    const item = document.createElement("div");
+    item.className = "block-item" + (muted ? " block-item-unverified" : "");
+
+    const errorShort = block.error
+      .replace("net::", "")
+      .replace("ERR_", "")
+      .replace(/_/g, " ")
+      .toLowerCase();
+
+    item.innerHTML = `
+      <div class="confidence-dot ${muted ? "UNKNOWN" : conf}"></div>
+      <div class="block-info">
+        <div class="block-domain" title="${esc(block.domain)}">${esc(block.domain)}</div>
+        <div class="block-label">${muted ? "Unknown domain" : esc(block.classification.label)}</div>
+        <div class="block-meta">
+          <span class="block-error">${esc(errorShort)}</span>
+          ${block.count > 1 ? `<span class="block-count">×${block.count}</span>` : ""}
+        </div>
+        ${muted ? "" : renderImpactBadge(block.classification.functionalImpact)}
+        ${muted ? "" : renderBlockedBy(block.domain)}
+      </div>
+      <div class="block-actions">
+        <button class="copy-btn" data-domain="${esc(block.domain)}" title="Copy domain">📋</button>
+        <button class="allowlist-btn" data-domain="${esc(block.domain)}" ${!hasCredentials ? "disabled title='Configure your DNS provider in settings'" : ""}>
+          + Allowlist
+        </button>
+      </div>
+    `;
+    return item;
+  }
+
+  // ── Render known blocks ──
   let lastConfidence = null;
-
-  for (const block of visibleBlocks) {
+  for (const block of visibleKnown) {
     const conf = block.classification.confidence;
-
     if (conf !== lastConfidence) {
       const header = document.createElement("div");
       header.className = `section-header ${conf.toLowerCase()}`;
@@ -319,37 +355,24 @@ function renderBlocks(blocks) {
       listEl.appendChild(header);
       lastConfidence = conf;
     }
+    listEl.appendChild(renderBlockItem(block, false));
+  }
 
-    const item = document.createElement("div");
-    item.className = "block-item";
+  // ── Render unverified aborts (unknown domains, Safari only) ──
+  if (unknownBlocks.length && !activeFilter) {
+    const header = document.createElement("div");
+    header.className = "section-header unverified";
+    header.textContent = "⚪ Unverified — Aborted Requests";
+    listEl.appendChild(header);
 
-    const errorShort = block.error
-      .replace("net::", "")
-      .replace("ERR_", "")
-      .replace(/_/g, " ")
-      .toLowerCase();
+    const disclaimer = document.createElement("div");
+    disclaimer.className = "unverified-disclaimer";
+    disclaimer.textContent = "These requests were aborted — may be DNS blocks or cancelled by the browser.";
+    listEl.appendChild(disclaimer);
 
-    item.innerHTML = `
-      <div class="confidence-dot ${conf}"></div>
-      <div class="block-info">
-        <div class="block-domain" title="${esc(block.domain)}">${esc(block.domain)}</div>
-        <div class="block-label">${esc(block.classification.label)}</div>
-        <div class="block-meta">
-          <span class="block-error">${esc(errorShort)}</span>
-          ${block.count > 1 ? `<span class="block-count">×${block.count}</span>` : ""}
-        </div>
-        ${renderImpactBadge(block.classification.functionalImpact)}
-        ${renderBlockedBy(block.domain)}
-      </div>
-      <div class="block-actions">
-        <button class="copy-btn" data-domain="${esc(block.domain)}" title="Copy domain">📋</button>
-        <button class="allowlist-btn" data-domain="${esc(block.domain)}" ${!hasCredentials ? "disabled title='Configure your DNS provider in settings'" : ""}>
-          + Allowlist
-        </button>
-      </div>
-    `;
-
-    listEl.appendChild(item);
+    for (const block of unknownBlocks) {
+      listEl.appendChild(renderBlockItem(block, true));
+    }
   }
 
   listEl.querySelectorAll(".allowlist-btn:not([disabled])").forEach(btn => {
