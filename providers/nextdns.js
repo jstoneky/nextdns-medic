@@ -1,4 +1,4 @@
-// providers/nextdns.js — NextDNS provider for NextDNS Medic
+// providers/nextdns.js — NextDNS provider for DNS Medic
 // Registered on window.NDMProviders.nextdns
 
 (function () {

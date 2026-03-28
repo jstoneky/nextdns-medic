@@ -1,4 +1,4 @@
-// Domain categorization database for NextDNS Medic
+// Domain categorization database for DNS Medic
 // Confidence levels: HIGH, MEDIUM, LOW
 //   HIGH   = very likely to break site functionality if blocked
 //            (feature flags, auth, payments, core APIs, CDNs, search)

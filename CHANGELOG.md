@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to NextDNS Medic are documented here.
+All notable changes to DNS Medic are documented here.
 
 ---
 

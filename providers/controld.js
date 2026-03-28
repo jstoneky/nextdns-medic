@@ -1,4 +1,4 @@
-// providers/controld.js — Control D provider for NextDNS Medic
+// providers/controld.js — Control D provider for DNS Medic
 // Registered on window.NDMProviders.controld
 //
 // API base: https://api.controld.com

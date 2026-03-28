@@ -1,10 +1,10 @@
-# Privacy Policy — NextDNS Medic
+# Privacy Policy — DNS Medic
 
 Last updated: March 2026
 
 ## Summary
 
-NextDNS Medic does not collect, store, or transmit any personal data or browsing history. It is a local-only tool.
+DNS Medic does not collect, store, or transmit any personal data or browsing history. It is a local-only tool.
 
 ## Data collected
 

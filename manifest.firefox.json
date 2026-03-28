@@ -1,9 +1,9 @@
 {
   "manifest_version": 2,
-  "name": "NextDNS Medic",
+  "name": "DNS Medic",
   "short_name": "NextDNS Monitor",
   "version": "3.0.0",
-  "description": "Detects NextDNS blocks that break websites. Groups domains by risk level and lets you allowlist them instantly via the NextDNS API.",
+  "description": "Detects DNS blocks that break websites. Supports NextDNS, Pi-hole, and Control D. Groups domains by risk level and lets you allowlist them instantly.",
   "permissions": [
     "webRequest",
     "tabs",
@@ -25,7 +25,7 @@
   },
   "browser_action": {
     "default_popup": "popup.html",
-    "default_title": "NextDNS Medic",
+    "default_title": "DNS Medic",
     "default_icon": {
       "16": "icons/icon16.png",
       "48": "icons/icon48.png",
@@ -40,7 +40,7 @@
   "homepage_url": "https://github.com/jstoneky/nextdns-medic",
   "browser_specific_settings": {
     "gecko": {
-      "id": "nextdns-medic@jstoneky.github.io",
+      "id": "dns-medic@jstoneky.github.io",
       "strict_min_version": "109.0",
       "data_collection_permissions": {
         "required": [
