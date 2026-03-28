@@ -21,6 +21,11 @@ try { importScripts("browser-compat.js"); } catch (e) {}
 try { importScripts("domain-db.js"); } catch (e) {}
 try { importScripts("db-loader.js"); } catch (e) {}
 
+// Detect Safari — its extension URLs start with "safari-web-extension://"
+const IS_SAFARI = (typeof ext !== "undefined" && typeof ext.runtime?.getURL === "function")
+  ? ext.runtime.getURL("").startsWith("safari-web-extension://")
+  : false;
+
 // In-memory store: tabId -> { url, hostname, blocks: Map<domain, blockInfo> }
 const tabData = new Map();
 
@@ -164,7 +169,7 @@ ext.webRequest.onErrorOccurred.addListener(
     // Safari reports ERR_ABORTED for DNS blocks instead of ERR_NAME_NOT_RESOLVED.
     // ERR_ABORTED is too broad on its own (also fires for cancelled prefetches, etc.)
     // so we only treat it as a block when the domain is known in our database.
-    const isSafariAbort = !isDefiniteBlock && !isPossibleBlock && error === "net::ERR_ABORTED";
+    const isSafariAbort = IS_SAFARI && !isDefiniteBlock && !isPossibleBlock && error === "net::ERR_ABORTED";
     if (isSafariAbort) {
       const classification = classifyDomain(reqHostname);
       // Treat as possible block for known domains
