@@ -49,6 +49,49 @@ function sendMessage(msg) {
   });
 }
 
+// ── DNS Routing Status Chip ───────────────────────────────────────────────────
+async function checkDNSRouting() {
+  const chip = document.getElementById("dns-status-chip");
+  if (!chip) return;
+
+  // Only NextDNS and Control D have detection endpoints; Pi-hole: skip
+  if (providerKey === "pihole") {
+    chip.classList.add("hidden");
+    return;
+  }
+
+  chip.textContent = "checking…";
+  chip.className = "dns-status-chip checking";
+  chip.classList.remove("hidden");
+
+  let active = null;
+
+  if (providerKey === "nextdns") {
+    const nextdns = window.NDMProviders?.nextdns;
+    if (nextdns) {
+      const result = await nextdns.detectDeviceFingerprint();
+      // status field: "unconfigured" means not using NextDNS
+      active = result?.status && result.status !== "unconfigured";
+    }
+  } else if (providerKey === "controld") {
+    const controld = window.NDMProviders?.controld;
+    if (controld) {
+      const result = await controld.detectUsage();
+      active = result?.active === true;
+    }
+  }
+
+  if (active === true) {
+    chip.textContent = "✓ active";
+    chip.className = "dns-status-chip active";
+  } else if (active === false) {
+    chip.textContent = "⚠ not routing";
+    chip.className = "dns-status-chip inactive";
+  } else {
+    chip.classList.add("hidden");
+  }
+}
+
 // ── Init ──────────────────────────────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", async () => {
   const stored = await ext.storage.sync.get([
@@ -84,6 +127,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     fetchDeviceFingerprint().then(() => fetchAndMatchProfiles(creds.apiKey));
   }
 
+  // DNS routing status chip
+  checkDNSRouting();
+
   // Get active tab
   const [tab] = await ext.tabs.query({ active: true, currentWindow: true });
   if (!tab) return;
@@ -110,6 +156,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("provider-select").addEventListener("change", e => {
     updateProviderUI(e.target.value);
   });
+
+  // Re-check DNS routing after save
+  document.getElementById("btn-save-settings").addEventListener("click", () => {
+    setTimeout(checkDNSRouting, 500);
+  }, { capture: true });
 
   ["HIGH", "MEDIUM", "LOW"].forEach(level => {
     const el = document.getElementById(`stat-${level.toLowerCase()}`).closest(".stat");
