@@ -54,12 +54,6 @@ async function checkDNSRouting() {
   const chip = document.getElementById("dns-status-chip");
   if (!chip) return;
 
-  // Only check if credentials exist
-  if (!getProvider()?.hasCredentials(creds)) {
-    chip.classList.add("hidden");
-    return;
-  }
-
   chip.textContent = "checking…";
   chip.className = "dns-status-chip checking";
   chip.classList.remove("hidden");
