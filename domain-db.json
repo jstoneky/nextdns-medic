@@ -1003,7 +1003,7 @@
       "functionalImpact": "assets"
     },
     {
-      "pattern": "pages\\.dev",
+      "pattern": "\\.pages\\.dev",
       "flags": "",
       "label": "Hosting (Cloudflare Pages)",
       "confidence": "HIGH",
@@ -1307,7 +1307,7 @@
       "functionalImpact": "notifications"
     },
     {
-      "pattern": "daily\\.co",
+      "pattern": "(^|\\.)daily\\.co$",
       "flags": "",
       "label": "Real-time (Daily.co)",
       "confidence": "HIGH",
@@ -2483,7 +2483,7 @@
       "functionalImpact": "monitoring"
     },
     {
-      "pattern": "fathom",
+      "pattern": "usefathom\\.com",
       "flags": "i",
       "label": "Analytics (Fathom)",
       "confidence": "LOW",
