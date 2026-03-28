@@ -70,8 +70,7 @@ async function checkDNSRouting() {
     const nextdns = window.NDMProviders?.nextdns;
     if (nextdns) {
       const result = await nextdns.detectDeviceFingerprint();
-      // status field: "unconfigured" means not using NextDNS
-      active = result?.status && result.status !== "unconfigured";
+      active = result?.status === "ok";
     }
   } else if (providerKey === "controld") {
     const controld = window.NDMProviders?.controld;
