@@ -38,6 +38,7 @@ start_container() {
     docker run -d \
       --name "$CONTAINER" \
       -p "${PORT}:80" \
+      -p 8443:443 \
       -p 53:53/udp \
       -p 53:53/tcp \
       -e WEBPASSWORD="$PASSWORD" \
@@ -70,6 +71,11 @@ start_container() {
   echo "      Provider:  Pi-hole"
   echo "      URL:       http://localhost:${PORT}"
   echo "      API Token: ${PASSWORD}"
+  echo ""
+  echo "    To route Chrome/Firefox DNS through Pi-hole (DoH):"
+  echo "      1. Visit https://localhost:8443 → accept the self-signed cert"
+  echo "      2. Chrome: chrome://settings/security → Use secure DNS → Custom → https://localhost:8443/dns-query"
+  echo "      3. Firefox: about:preferences#privacy → DNS over HTTPS → Custom → https://localhost:8443/dns-query"
 }
 
 case "$ACTION" in
