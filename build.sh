@@ -139,9 +139,10 @@ echo ""
 case "$TARGET" in
   chrome)  build_chrome ;;
   firefox) build_firefox ;;
-  all)     build_chrome; build_firefox ;;
+  safari)  bash build-safari.sh ;;
+  all)     build_chrome; build_firefox; bash build-safari.sh ;;
   *)
-    echo -e "${RED}Usage: ./build.sh [chrome|firefox|all|clean]${NC}"
+    echo -e "${RED}Usage: ./build.sh [chrome|firefox|safari|all|clean]${NC}"
     exit 1
     ;;
 esac
