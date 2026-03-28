@@ -310,7 +310,20 @@ function renderBlocks(blocks) {
     }
   }
 
-  // Split into known (confirmed) and unknown (unverified Safari aborts)
+  // Promote definite DNS blocks (ERR_NAME_NOT_RESOLVED etc.) on unknown domains
+  // to known MEDIUM — these are real blocks, just not in our database yet
+  for (const block of blocks) {
+    if (!block.classification.known && block.isDefiniteBlock) {
+      block.classification = {
+        ...block.classification,
+        known: true,
+        label: "Unknown Domain",
+        confidence: "MEDIUM",
+      };
+    }
+  }
+
+  // Split into known (confirmed) and unknown (unverified Safari aborts only)
   const knownBlocks   = blocks.filter(b => b.classification.known);
   const unknownBlocks = blocks.filter(b => !b.classification.known);
 
