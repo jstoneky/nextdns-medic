@@ -97,11 +97,10 @@ async function checkDNSRouting() {
   if (active === true) {
     chip.textContent = `✓ ${label} active`;
     chip.className = "dns-status-chip active";
-  } else if (active === false) {
+  } else {
+    // false or null (error/timeout) — show warning either way
     chip.textContent = `⚠ Not routing to ${label}`;
     chip.className = "dns-status-chip inactive";
-  } else {
-    chip.classList.add("hidden");
   }
 }
 

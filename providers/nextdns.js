@@ -105,12 +105,14 @@
           signal: AbortSignal.timeout(5000),
         });
         const data = await res.json();
+        // status: "ok" = using NextDNS, "unconfigured" = not using NextDNS
         return {
           fingerprint: data.profile || null,
           deviceName: data.deviceName || data.clientName || null,
+          status: data.status || (data.profile ? "ok" : "unconfigured"),
         };
       } catch (_) {
-        return { fingerprint: null, deviceName: null };
+        return { fingerprint: null, deviceName: null, status: "error" };
       }
     },
   };
