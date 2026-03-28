@@ -1,7 +1,7 @@
 {
   "generated": "2026-03-28",
   "source": "db-research-agent-v2",
-  "totalCandidates": 25,
+  "totalCandidates": 36,
   "candidates": [
     {
       "pattern": "cdn\\.onesignal\\.com",
@@ -252,6 +252,116 @@
       "functionalImpact": "features",
       "reason": "sdk.iad-XX.braze.com endpoints are the Braze SDK data centers (e.g. sdk.iad-06.braze.com). Blocking them prevents in-app messages, push notifications, and content cards from being fetched and displayed.",
       "source": "Braze SDK configuration docs; confirmed as region-specific SDK endpoints"
+    },
+    {
+      "pattern": "staticw2\\.yotpo\\.com",
+      "flags": "",
+      "label": "Reviews (Yotpo widget CDN)",
+      "confidence": "HIGH",
+      "category": "reviews",
+      "functionalImpact": "features",
+      "reason": "staticw2.yotpo.com serves the Yotpo reviews widget JS. Blocking it removes product review sections from e-commerce product pages. Mozilla filed Firefox bug #1707758 specifically because ETP Strict mode breaks Yotpo reviews on shopping sites.",
+      "source": "Mozilla Bugzilla #1707758 'Yotpo review widget is broken by ETP strict mode'; Pi-hole community; Yotpo implementation docs"
+    },
+    {
+      "pattern": "api\\.bazaarvoice\\.com",
+      "flags": "",
+      "label": "Reviews (Bazaarvoice API)",
+      "confidence": "HIGH",
+      "category": "reviews",
+      "functionalImpact": "features",
+      "reason": "api.bazaarvoice.com is the Bazaarvoice reviews API. Blocking it removes product review sections from major retailer sites (Belkin, Banana Republic, Neiman Marcus, Saks Fifth Avenue). Pi-hole users regularly report needing to whitelist bazaarvoice.com to view product reviews.",
+      "source": "Reddit r/pihole 'White list product reviews from third party blocked website'; Pi-hole discourse thread #3192; Reddit r/pihole Belkin post"
+    },
+    {
+      "pattern": "display\\.ugc\\.bazaarvoice\\.com",
+      "flags": "",
+      "label": "Reviews (Bazaarvoice display CDN)",
+      "confidence": "HIGH",
+      "category": "reviews",
+      "functionalImpact": "features",
+      "reason": "display.ugc.bazaarvoice.com serves Bazaarvoice review display widgets. Blocking it prevents product reviews from rendering. Same functional impact as api.bazaarvoice.com.",
+      "source": "Reddit r/pihole Belkin website post listing blocked domains; Pi-hole community whitelist guides"
+    },
+    {
+      "pattern": "apps\\.bazaarvoice\\.com",
+      "flags": "",
+      "label": "Reviews (Bazaarvoice app CDN)",
+      "confidence": "HIGH",
+      "category": "reviews",
+      "functionalImpact": "features",
+      "reason": "apps.bazaarvoice.com serves Bazaarvoice application scripts for ratings and reviews. Blocking it prevents review submission forms from loading.",
+      "source": "Reddit r/pihole Belkin website post; pi-hole.net whitelist discussions"
+    },
+    {
+      "pattern": "analytics-static\\.ugc\\.bazaarvoice\\.com",
+      "flags": "",
+      "label": "Reviews (Bazaarvoice analytics-static)",
+      "confidence": "MEDIUM",
+      "category": "reviews",
+      "functionalImpact": "monitoring",
+      "reason": "analytics-static.ugc.bazaarvoice.com is used for Bazaarvoice tracking/analytics in the review widget context. Lower impact than api/display, but often grouped with the other Bazaarvoice domains in user-generated content blocks.",
+      "source": "Reddit r/pihole Belkin website post listing blocked domains"
+    },
+    {
+      "pattern": "images\\.ctfassets\\.net",
+      "flags": "",
+      "label": "Headless CMS (Contentful image CDN)",
+      "confidence": "HIGH",
+      "category": "headless-cms",
+      "functionalImpact": "assets",
+      "reason": "images.ctfassets.net is the Contentful CMS image CDN. It was accidentally added to a DNS blocklist (bjornstar/hosts). Blocking it breaks images on any website using Contentful as their CMS.",
+      "source": "github.com/bjornstar/hosts/issues/8 'images.ctfassets.net \u2013 Is this intentionally blocked?'; Contentful docs"
+    },
+    {
+      "pattern": "assets\\.ctfassets\\.net",
+      "flags": "",
+      "label": "Headless CMS (Contentful assets CDN)",
+      "confidence": "HIGH",
+      "category": "headless-cms",
+      "functionalImpact": "assets",
+      "reason": "assets.ctfassets.net is the Contentful CMS assets CDN for non-image files (PDFs, videos, etc). Blocking breaks file downloads and media on Contentful-powered websites.",
+      "source": "Contentful documentation; sister domain to images.ctfassets.net"
+    },
+    {
+      "pattern": "img2\\.storyblok\\.com",
+      "flags": "",
+      "label": "Headless CMS (Storyblok image CDN v2)",
+      "confidence": "MEDIUM",
+      "category": "headless-cms",
+      "functionalImpact": "assets",
+      "reason": "img2.storyblok.com is the Storyblok Image Service CDN. Blocking it causes all images served via the Storyblok image transformation pipeline to fail to load.",
+      "source": "Storyblok documentation; Image Service uses img2.storyblok.com as base URL"
+    },
+    {
+      "pattern": "a\\.storyblok\\.com",
+      "flags": "",
+      "label": "Headless CMS (Storyblok assets CDN)",
+      "confidence": "MEDIUM",
+      "category": "headless-cms",
+      "functionalImpact": "assets",
+      "reason": "a.storyblok.com is the Storyblok original assets CDN (for unprocessed media files). Blocking it causes original images and files in Storyblok-powered sites to fail to load.",
+      "source": "Storyblok documentation; primary assets domain alongside img2.storyblok.com"
+    },
+    {
+      "pattern": "\\.propelauthtest\\.com",
+      "flags": "",
+      "label": "Auth (PropelAuth hosted login)",
+      "confidence": "MEDIUM",
+      "category": "auth",
+      "functionalImpact": "login",
+      "reason": "*.propelauthtest.com and propelauth.com are used by PropelAuth's hosted login pages. Blocking breaks SSO redirect flows for B2B SaaS apps using PropelAuth.",
+      "source": "PropelAuth documentation; confirmed as primary hosted login domain"
+    },
+    {
+      "pattern": "\\.propelauth\\.com",
+      "flags": "",
+      "label": "Auth (PropelAuth API and login)",
+      "confidence": "MEDIUM",
+      "category": "auth",
+      "functionalImpact": "login",
+      "reason": "propelauth.com subdomains serve both the hosted login page and the auth API. Blocking prevents user sign-in for B2B apps using PropelAuth.",
+      "source": "PropelAuth documentation; auth provider used by hundreds of B2B SaaS apps"
     }
   ]
 }
