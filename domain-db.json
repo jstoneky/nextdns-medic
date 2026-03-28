@@ -3937,6 +3937,286 @@
       "confidence": "LOW",
       "category": "monitoring",
       "functionalImpact": "monitoring"
+    },
+    {
+      "pattern": "frontegg\\.com",
+      "flags": "",
+      "label": "Auth (Frontegg)",
+      "confidence": "HIGH",
+      "category": "auth",
+      "functionalImpact": "login",
+      "reason": "B2B SaaS identity platform — blocking breaks user login, SSO, and org management on any app using Frontegg.",
+      "source": "emerging auth provider research 2025"
+    },
+    {
+      "pattern": "cdn\\.frontegg\\.com",
+      "flags": "",
+      "label": "Auth (Frontegg CDN)",
+      "confidence": "HIGH",
+      "category": "auth",
+      "functionalImpact": "login",
+      "reason": "Frontegg JS SDK and auth UI assets — blocking prevents login UI from rendering.",
+      "source": "emerging auth provider research 2025"
+    },
+    {
+      "pattern": "descope\\.com",
+      "flags": "",
+      "label": "Auth (Descope)",
+      "confidence": "HIGH",
+      "category": "auth",
+      "functionalImpact": "login",
+      "reason": "No-code auth platform with passkeys/magic links — blocking breaks login flows on apps using Descope.",
+      "source": "emerging auth provider research 2025"
+    },
+    {
+      "pattern": "propelauth\\.com",
+      "flags": "",
+      "label": "Auth (PropelAuth)",
+      "confidence": "HIGH",
+      "category": "auth",
+      "functionalImpact": "login",
+      "reason": "B2B authentication platform — auth.propelauth.com hosts the login UI; blocking breaks sign-in for any app using it.",
+      "source": "emerging auth provider research 2025"
+    },
+    {
+      "pattern": "cloud\\.hanko\\.io",
+      "flags": "",
+      "label": "Auth (Hanko Cloud)",
+      "confidence": "HIGH",
+      "category": "auth",
+      "functionalImpact": "login",
+      "reason": "Hanko Cloud API endpoint — blocking breaks passkey/WebAuthn login on apps using Hanko Cloud.",
+      "source": "emerging auth provider research 2025"
+    },
+    {
+      "pattern": "passkeys\\.hanko\\.io",
+      "flags": "",
+      "label": "Auth (Hanko Passkey API)",
+      "confidence": "HIGH",
+      "category": "auth",
+      "functionalImpact": "login",
+      "reason": "Hanko Passkey API endpoint — blocking breaks passkey authentication for apps using Hanko Passkey API.",
+      "source": "docs.hanko.io passkey API research"
+    },
+    {
+      "pattern": "corbado\\.com",
+      "flags": "",
+      "label": "Auth (Corbado)",
+      "confidence": "MEDIUM",
+      "category": "auth",
+      "functionalImpact": "login",
+      "reason": "Passkey-first auth platform — blocking breaks login flows on apps using Corbado Complete or Connect.",
+      "source": "emerging auth provider research 2025"
+    },
+    {
+      "pattern": "js\\.lemonsqueezy\\.com",
+      "flags": "",
+      "label": "Payments (Lemon Squeezy JS)",
+      "confidence": "HIGH",
+      "category": "payments",
+      "functionalImpact": "forms",
+      "reason": "Lemon Squeezy checkout overlay JS — blocking prevents the purchase modal from loading on any Lemon Squeezy store.",
+      "source": "emerging payments provider research 2025"
+    },
+    {
+      "pattern": "assets\\.lemonsqueezy\\.com",
+      "flags": "",
+      "label": "Payments (Lemon Squeezy assets)",
+      "confidence": "HIGH",
+      "category": "payments",
+      "functionalImpact": "forms",
+      "reason": "Lemon Squeezy checkout assets CDN — blocking breaks checkout UI rendering.",
+      "source": "emerging payments provider research 2025"
+    },
+    {
+      "pattern": "lemonsqueezy\\.com",
+      "flags": "",
+      "label": "Payments (Lemon Squeezy)",
+      "confidence": "HIGH",
+      "category": "payments",
+      "functionalImpact": "forms",
+      "reason": "Lemon Squeezy payment platform widely used by indie developers — blocking breaks checkout completely.",
+      "source": "emerging payments provider research 2025"
+    },
+    {
+      "pattern": "js\\.checkout\\.com",
+      "flags": "",
+      "label": "Payments (Checkout.com JS)",
+      "confidence": "HIGH",
+      "category": "payments",
+      "functionalImpact": "forms",
+      "reason": "Checkout.com Frames JS library — blocking breaks card payment forms on e-commerce sites using Checkout.com.",
+      "source": "emerging payments provider research 2025"
+    },
+    {
+      "pattern": "cdn\\.checkout\\.com",
+      "flags": "",
+      "label": "Payments (Checkout.com CDN)",
+      "confidence": "HIGH",
+      "category": "payments",
+      "functionalImpact": "forms",
+      "reason": "Checkout.com assets CDN — blocking prevents payment forms and checkout UI from loading.",
+      "source": "emerging payments provider research 2025"
+    },
+    {
+      "pattern": "checkout\\.com",
+      "flags": "",
+      "label": "Payments (Checkout.com)",
+      "confidence": "HIGH",
+      "category": "payments",
+      "functionalImpact": "forms",
+      "reason": "Major global payment processor used by enterprise merchants — blocking breaks all payment flows.",
+      "source": "emerging payments provider research 2025"
+    },
+    {
+      "pattern": "core\\.spreedly\\.com",
+      "flags": "",
+      "label": "Payments (Spreedly)",
+      "confidence": "HIGH",
+      "category": "payments",
+      "functionalImpact": "forms",
+      "reason": "Spreedly payment orchestration iframe endpoint — blocking breaks card tokenization on sites using Spreedly.",
+      "source": "emerging payments provider research 2025"
+    },
+    {
+      "pattern": "spreedly\\.com",
+      "flags": "",
+      "label": "Payments (Spreedly)",
+      "confidence": "HIGH",
+      "category": "payments",
+      "functionalImpact": "forms",
+      "reason": "Spreedly payment orchestration platform — blocking breaks hosted payment forms.",
+      "source": "emerging payments provider research 2025"
+    },
+    {
+      "pattern": "sdk\\.primer\\.io",
+      "flags": "",
+      "label": "Payments (Primer SDK)",
+      "confidence": "MEDIUM",
+      "category": "payments",
+      "functionalImpact": "forms",
+      "reason": "Primer payment orchestration SDK — blocking prevents checkout UI from loading on sites using Primer.",
+      "source": "emerging payments provider research 2025"
+    },
+    {
+      "pattern": "primer\\.io",
+      "flags": "",
+      "label": "Payments (Primer)",
+      "confidence": "MEDIUM",
+      "category": "payments",
+      "functionalImpact": "forms",
+      "reason": "Primer payment orchestration platform — blocking breaks payment flows for apps using Primer.",
+      "source": "emerging payments provider research 2025"
+    },
+    {
+      "pattern": "js\\.devcycle\\.com",
+      "flags": "",
+      "label": "Feature Flags (DevCycle CDN)",
+      "confidence": "HIGH",
+      "category": "feature-flags",
+      "functionalImpact": "features",
+      "reason": "DevCycle JS SDK CDN endpoint (js.devcycle.com/devcycle.min.js) — blocking silently disables feature flags causing missing UI or broken flows.",
+      "source": "docs.devcycle.com SDK install docs"
+    },
+    {
+      "pattern": "bucketing-api\\.devcycle\\.com",
+      "flags": "",
+      "label": "Feature Flags (DevCycle API)",
+      "confidence": "HIGH",
+      "category": "feature-flags",
+      "functionalImpact": "features",
+      "reason": "DevCycle server-side bucketing API — blocking disables server SDK feature flag evaluation.",
+      "source": "docs.devcycle.com bucketing API"
+    },
+    {
+      "pattern": "devcycle\\.com",
+      "flags": "",
+      "label": "Feature Flags (DevCycle)",
+      "confidence": "HIGH",
+      "category": "feature-flags",
+      "functionalImpact": "features",
+      "reason": "DevCycle feature flag platform — blocking breaks any feature flag evaluation, causing apps to fall back to defaults silently.",
+      "source": "emerging feature flag provider research 2025"
+    },
+    {
+      "pattern": "edge\\.hypertune\\.com",
+      "flags": "",
+      "label": "Feature Flags (Hypertune Edge)",
+      "confidence": "MEDIUM",
+      "category": "feature-flags",
+      "functionalImpact": "features",
+      "reason": "Hypertune GraphQL edge endpoint for feature flags — blocking causes flag evaluation to fail or fall back to defaults.",
+      "source": "emerging feature flag provider research 2025"
+    },
+    {
+      "pattern": "hypertune\\.com",
+      "flags": "",
+      "label": "Feature Flags (Hypertune)",
+      "confidence": "MEDIUM",
+      "category": "feature-flags",
+      "functionalImpact": "features",
+      "reason": "Hypertune type-safe feature flag platform — blocking breaks feature flag evaluation in apps using it.",
+      "source": "emerging feature flag provider research 2025"
+    },
+    {
+      "pattern": "gcaptcha4?\\.geetest\\.com",
+      "flags": "",
+      "label": "CAPTCHA (Geetest)",
+      "confidence": "HIGH",
+      "category": "captcha",
+      "functionalImpact": "login",
+      "reason": "Geetest CAPTCHA (v3/v4) used widely in Asian-market apps and global SaaS — blocking breaks login, signup, and form submissions.",
+      "source": "captcha provider research 2025"
+    },
+    {
+      "pattern": "api\\.geetest\\.com",
+      "flags": "",
+      "label": "CAPTCHA (Geetest API)",
+      "confidence": "HIGH",
+      "category": "captcha",
+      "functionalImpact": "login",
+      "reason": "Geetest CAPTCHA verification API — blocking prevents challenge completion, breaking login and form flows.",
+      "source": "captcha provider research 2025"
+    },
+    {
+      "pattern": "service\\.mtcaptcha\\.com",
+      "flags": "",
+      "label": "CAPTCHA (MTCaptcha)",
+      "confidence": "MEDIUM",
+      "category": "captcha",
+      "functionalImpact": "login",
+      "reason": "MTCaptcha GDPR-compliant CAPTCHA service endpoint — blocking breaks form submissions and login on sites using it.",
+      "source": "captcha provider research 2025"
+    },
+    {
+      "pattern": "cdnapi\\.kaltura\\.com",
+      "flags": "",
+      "label": "Video (Kaltura CDN API)",
+      "confidence": "HIGH",
+      "category": "video",
+      "functionalImpact": "media",
+      "reason": "Kaltura video platform CDN API — widely used in education and enterprise; blocking breaks video playback entirely.",
+      "source": "video platform research 2025"
+    },
+    {
+      "pattern": "kaltura\\.com",
+      "flags": "",
+      "label": "Video (Kaltura)",
+      "confidence": "HIGH",
+      "category": "video",
+      "functionalImpact": "media",
+      "reason": "Kaltura enterprise video platform (major in education/LMS) — blocking breaks video players and media delivery.",
+      "source": "video platform research 2025"
+    },
+    {
+      "pattern": "cdn\\.sproutvideo\\.com",
+      "flags": "",
+      "label": "Video (SproutVideo CDN)",
+      "confidence": "MEDIUM",
+      "category": "video",
+      "functionalImpact": "media",
+      "reason": "SproutVideo marketing video platform CDN — blocking breaks embedded video players on business websites.",
+      "source": "video platform research 2025"
     }
   ]
 }

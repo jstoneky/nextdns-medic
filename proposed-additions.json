@@ -174,7 +174,7 @@
       "source": "emerging payments provider research 2025"
     },
     {
-      "pattern": "js\.devcycle\.com",
+      "pattern": "js\\.devcycle\\.com",
       "flags": "",
       "label": "Feature Flags (DevCycle CDN)",
       "confidence": "HIGH",
