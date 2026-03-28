@@ -54,8 +54,8 @@ async function checkDNSRouting() {
   const chip = document.getElementById("dns-status-chip");
   if (!chip) return;
 
-  // Only NextDNS and Control D have detection endpoints; Pi-hole: skip
-  if (providerKey === "pihole") {
+  // Only check if credentials exist
+  if (!getProvider()?.hasCredentials(creds)) {
     chip.classList.add("hidden");
     return;
   }
@@ -77,6 +77,12 @@ async function checkDNSRouting() {
     const controld = window.NDMProviders?.controld;
     if (controld) {
       const result = await controld.detectUsage();
+      active = result?.active === true;
+    }
+  } else if (providerKey === "pihole") {
+    const pihole = window.NDMProviders?.pihole;
+    if (pihole) {
+      const result = await pihole.detectUsage({ piholeUrl: creds.piholeUrl });
       active = result?.active === true;
     }
   }
