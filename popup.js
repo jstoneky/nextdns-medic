@@ -371,7 +371,7 @@ function renderBlocks(blocks) {
   }
 
   // ── Render unverified aborts (unknown domains, Safari only) ──
-  if (unknownBlocks.length && !activeFilter) {
+  if (unknownBlocks.length && (!activeFilter || activeFilter === "MEDIUM")) {
     const header = document.createElement("div");
     header.className = "section-header unverified";
     header.textContent = "⚪ Unverified — Aborted Requests";
