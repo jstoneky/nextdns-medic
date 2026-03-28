@@ -20,9 +20,14 @@ body.mobile {
   min-width: 0;
   max-width: 100%;
   min-height: 0;
-  max-height: 100vh;
+  max-height: 100vh;        /* fallback for older Firefox Android */
+  max-height: 100dvh;       /* dynamic viewport — respects browser chrome */
   font-size: 14px;
   overflow-y: auto;
+}
+
+body.mobile .blocks-list {
+  max-height: calc(100dvh - 180px); /* let list breathe on mobile */
 }
 
 /* ── Header ── */
