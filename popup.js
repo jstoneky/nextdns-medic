@@ -28,6 +28,9 @@ let detectedDeviceName    = null;
 let profilesList          = [];
 let profilesFetchInFlight = false;
 
+// Control D cached profiles (persisted for settings re-render)
+let controldProfilesList = [];
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function getProvider() {
   return window.NDMProviders?.[providerKey];
@@ -372,6 +375,9 @@ async function toggleSettings() {
       ? profilesList.find(p => p.fingerprint === detectedFingerprint) : null;
     renderProfileList(fingerprintMatch?.id || null);
   }
+  if (controldProfilesList.length > 0) {
+    renderControldProfileList(controldProfilesList, creds.controldToken);
+  }
   const panel = document.getElementById("settings-panel");
   panel.classList.toggle("hidden");
   if (!panel.classList.contains("hidden")) await refreshDBMeta();
@@ -497,6 +503,7 @@ async function handleLookupControldProfiles() {
     return;
   }
 
+  controldProfilesList = profiles;
   renderControldProfileList(profiles, token);
 }
 
