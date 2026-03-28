@@ -1,7 +1,7 @@
 {
   "generated": "2026-03-28",
   "source": "db-research-agent-v2",
-  "totalCandidates": 39,
+  "totalCandidates": 42,
   "candidates": [
     {
       "pattern": "cdn\\.onesignal\\.com",
@@ -392,6 +392,36 @@
       "functionalImpact": "features",
       "reason": "bc0a.com is the BrightEdge AutoPilot SEO platform domain. Wrongly categorized in multiple blocklists. BrightEdge confirmed this is a non-tracking CDN domain used for content optimization delivery.",
       "source": "github.com/mypdns/Support/issues/2; BrightEdge official statement"
+    },
+    {
+      "pattern": "cdn\\.sanity\\.io",
+      "flags": "",
+      "label": "Headless CMS (Sanity image CDN)",
+      "confidence": "HIGH",
+      "category": "headless-cms",
+      "functionalImpact": "assets",
+      "reason": "cdn.sanity.io is the Sanity.io headless CMS image CDN. On March 29, 2024, Cloudflare incorrectly flagged cdn.sanity.io as malware, causing widespread broken images across all Sanity-powered websites. This is a confirmed real-world blocklist false positive incident.",
+      "source": "sanity.io/answers/cloudflare-dns-issue-impacts-sanity-io-users (March 2024 incident); Sanity official post-mortem"
+    },
+    {
+      "pattern": "apicdn\\.sanity\\.io",
+      "flags": "",
+      "label": "Headless CMS (Sanity API CDN)",
+      "confidence": "MEDIUM",
+      "category": "headless-cms",
+      "functionalImpact": "assets",
+      "reason": "apicdn.sanity.io is the Sanity.io cached API CDN endpoint. Blocking it forces all requests to the uncached API, increasing latency, and can degrade content delivery performance.",
+      "source": "Sanity.io CDN documentation; apicdn.sanity.io is the CDN-enabled API endpoint"
+    },
+    {
+      "pattern": "www\\.datocms-assets\\.com",
+      "flags": "",
+      "label": "Headless CMS (DatoCMS asset CDN)",
+      "confidence": "HIGH",
+      "category": "headless-cms",
+      "functionalImpact": "assets",
+      "reason": "www.datocms-assets.com is the primary shared asset CDN for all DatoCMS-powered websites. Blocking it causes all images, videos, and media files served from DatoCMS to fail to load.",
+      "source": "DatoCMS documentation 'Custom assets domain'; datocms-assets.com is the default shared CDN domain"
     }
   ]
 }
