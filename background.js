@@ -232,6 +232,9 @@ function updateBadge(tabId, total, highCount = 0) {
     return;
   }
   ext.action.setBadgeText({ text: String(total), tabId });
+  // NOTE: Safari ignores setBadgeBackgroundColor — always renders red regardless.
+  // This is a known Safari Web Extensions bug (developer.apple.com/forums/thread/656868).
+  // Chrome and Firefox respect the color correctly.
   ext.action.setBadgeBackgroundColor({
     color: highCount > 0 ? "#e53935" : "#f59e0b",
     tabId,
