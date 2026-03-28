@@ -4,6 +4,22 @@ All notable changes to NextDNS Medic are documented here.
 
 ---
 
+## [3.0.0] — 2026-03-27
+
+### Added
+- **Control D support** — allowlist directly to Control D; profile picker loads your profiles via API token; one-click allowlist creates a BYPASS rule in the selected profile
+- **DNS routing status chip** — header now shows a live green/red indicator confirming whether your browser's DNS is actually routing through the selected provider:
+  - NextDNS: probes `test.nextdns.io`
+  - Control D: probes `{random}.dns.controld.com/detect`
+  - Pi-hole: probes `http://pi.hole` (magic domain; resolves only if DNS goes through Pi-hole)
+- **Provider abstraction layer** — internal refactor; all DNS provider logic extracted into `providers/nextdns.js`, `providers/pihole.js`, `providers/controld.js`; `popup.js` is now provider-agnostic
+
+### Changed
+- Settings panel now has a three-way provider toggle: **NextDNS**, **Pi-hole**, **Control D**
+- Status chip always visible after credentials are configured — shows active state or warning; never silently hides
+
+---
+
 ## [2.5.0] — 2026-03-27
 
 ### Fixed

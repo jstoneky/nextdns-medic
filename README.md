@@ -2,7 +2,7 @@
 
 **See exactly what your DNS blocker is blocking — and why it matters.**
 
-A browser extension for **Chrome**, **Firefox**, and **Firefox for Android** that watches your network traffic in real-time, identifies domains blocked by NextDNS or Pi-hole, and tells you the *functional impact* — whether a block might break login, stop videos from loading, prevent checkout, hide maps, or silence support chat.
+A browser extension for **Chrome**, **Firefox**, and **Firefox for Android** that watches your network traffic in real-time, identifies domains blocked by **NextDNS**, **Pi-hole**, or **Control D**, and tells you the *functional impact* — whether a block might break login, stop videos from loading, prevent checkout, hide maps, or silence support chat.
 
 [![Chrome](https://img.shields.io/badge/Chrome-MV3-4285F4?logo=googlechrome&logoColor=white)](https://chromewebstore.google.com)
 [![Firefox](https://img.shields.io/badge/Firefox-MV2-FF7139?logo=firefox&logoColor=white)](https://addons.mozilla.org)
@@ -30,8 +30,9 @@ This extension makes that visible — and tells you exactly what's at stake.
    - 🟢 **Low** — Pure analytics and advertising. Almost never affects how a site works.
 4. **Shows a functional impact badge** on every blocked domain — so you know at a glance *what breaks*, not just *that something broke*
 5. **Attributes the block** to a specific blocklist — works for both **NextDNS** (from the logs API) and **Pi-hole v6** (via the gravity search API, with pretty names for 30+ common lists)
-6. **Unknown domains** fall back to Medium — worth reviewing, but not necessarily critical
-7. **Badge updates** on the extension icon: count of blocked domains, red = high-risk detected
+6. **Confirms DNS routing** — a live status chip in the header shows whether your browser is actually sending DNS through your selected provider (green = active, red = not routing)
+7. **Unknown domains** fall back to Medium — worth reviewing, but not necessarily critical
+8. **Badge updates** on the extension icon: count of blocked domains, red = high-risk detected
 
 ---
 
@@ -44,8 +45,9 @@ Click the extension icon on any page to see:
 - **Blocklist attribution** — which blocklist rule flagged the domain (HaGeZi, AdGuard, uBlock Origin, etc.)
 - **Grouped list** — blocked domains sorted by risk, showing service name, error type, and hit count
 - **📋 Copy button** — copies the domain to clipboard; works with NextDNS, Pi-hole, AdGuard, or any DNS blocker
-- **+ Allowlist button** — one click adds the domain to your **NextDNS** or **Pi-hole** allowlist (requires credentials)
+- **+ Allowlist button** — one click adds the domain to your **NextDNS**, **Pi-hole**, or **Control D** allowlist (requires credentials)
 - **DNS flush reminder** — appears after every allowlist/copy action with the exact command for your OS
+- **DNS routing status chip** — green/red indicator in the header confirming your DNS is actually going through the selected provider
 - **Profile indicator** — NextDNS profiles are fingerprint-matched; your current device's profile is labeled "This device"
 
 ---
@@ -79,21 +81,24 @@ These badges are independent of the High/Medium/Low risk rating — a "Low" doma
 
 *Chrome and Firefox desktop will be available on their respective extension stores once reviewed.*
 
-### Configure NextDNS credentials (optional)
-Click the extension icon → ⚙️ Settings and enter:
-- **NextDNS API Key** — found at [my.nextdns.io](https://my.nextdns.io) → Account → API
-- **Profile ID** — the 6-character ID in your NextDNS dashboard URL
+### Configure your DNS provider (optional)
 
-The extension auto-detects which NextDNS profile belongs to this device (fingerprint match) and labels it **"This device"** in the profile list.
+Click the extension icon → ⚙️ Settings → select your provider:
 
-### Configure Pi-hole credentials (optional)
-Click the extension icon → ⚙️ Settings and enter:
-- **Pi-hole URL** — e.g. `http://pi.hole` or your Pi-hole's IP address
-- **API Token** — found in Pi-hole's web interface → Settings → API
+**NextDNS**
+- **API Key** — found at [my.nextdns.io](https://my.nextdns.io) → Account → API; hit → to load profiles
+- The extension fingerprint-matches your device to the right profile and labels it **"This device"**
 
-Both **Pi-hole v5** and **Pi-hole v6** are supported. The extension auto-detects the API version.
+**Pi-hole**
+- **URL** — e.g. `http://pi.hole` or your Pi-hole's IP address
+- **API Token** — Pi-hole v6: your web UI password · Pi-hole v5: Settings → API
+- Both Pi-hole v5 and v6 are auto-detected
 
-Without credentials the extension still monitors and classifies — you just won't have the one-click allowlist button. You can always use the 📋 copy button to manually add domains in your DNS blocker's dashboard.
+**Control D**
+- **API Token** — generate at [controld.com](https://controld.com) → Account → API Tokens (use Write permission)
+- Hit → to load your profiles and select the one to allowlist into
+
+Without credentials the extension still monitors and classifies — you just won't have the one-click allowlist button. Use the 📋 copy button to manually add domains in your DNS blocker's dashboard.
 
 ---
 
@@ -144,12 +149,13 @@ The database is maintained in [`domain-db.json`](./domain-db.json) in this repo.
 
 ## Supported DNS Blockers
 
-| Provider | One-click Allowlist | Blocklist Attribution | Profile Auto-detect |
-|---|---|---|---|
-| **NextDNS** | ✅ via REST API | ✅ (HaGeZi, AdGuard, etc.) | ✅ "This device" fingerprint |
-| **Pi-hole v5** | ✅ via API Token | — | — |
-| **Pi-hole v6** | ✅ via API Token | ✅ (HaGeZi, OISD, Steven Black, etc.) | — |
-| **Any other** | 📋 Copy to clipboard | — | — |
+| Provider | One-click Allowlist | Blocklist Attribution | Profile Auto-detect | Routing Detection |
+|---|---|---|---|---|
+| **NextDNS** | ✅ via REST API | ✅ (HaGeZi, AdGuard, etc.) | ✅ "This device" fingerprint | ✅ test.nextdns.io |
+| **Pi-hole v5** | ✅ via API Token | — | — | ✅ pi.hole magic domain |
+| **Pi-hole v6** | ✅ via API Token | ✅ (HaGeZi, OISD, Steven Black, etc.) | — | ✅ pi.hole magic domain |
+| **Control D** | ✅ via API Token | — | ✅ profile picker | ✅ dns.controld.com |
+| **Any other** | 📋 Copy to clipboard | — | — | — |
 
 ---
 
