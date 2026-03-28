@@ -33,6 +33,7 @@
       <select id="provider-select" class="settings-input settings-select">
         <option value="nextdns">NextDNS</option>
         <option value="pihole">Pi-hole</option>
+        <option value="controld">Control D</option>
       </select>
 
       <!-- NextDNS fields -->
@@ -63,6 +64,23 @@
           <span id="pihole-version-label" class="pihole-version-label"></span>
           <button id="btn-test-pihole" class="test-btn">Test Connection</button>
         </div>
+      </div>
+
+      <!-- Control D fields -->
+      <div id="provider-controld" class="provider-fields hidden">
+        <label class="settings-label">API Token</label>
+        <div class="api-key-row">
+          <input type="password" id="controld-token-input" placeholder="Control D API token" class="settings-input api-key-input" />
+          <button id="btn-lookup-controld-profiles" class="lookup-btn" title="Look up profiles">→</button>
+        </div>
+        <div id="controld-token-error" class="api-key-error hidden"></div>
+        <label class="settings-label">Profile ID</label>
+        <input type="text" id="controld-profile-input" placeholder="Select profile above or paste ID" class="settings-input" />
+        <!-- Profile picker — shown after lookup -->
+        <div id="controld-profile-section" class="hidden">
+          <div id="controld-profile-list" class="ndm-profile-list"></div>
+        </div>
+        <div class="pihole-token-hint">Generate an API token at controld.com → Account → API</div>
       </div>
 
       <button id="btn-save-settings" class="save-btn">Save Settings</button>
@@ -120,6 +138,9 @@
 
   <script src="browser-compat.js"></script>
   <script src="domain-db.js"></script>
+  <script src="providers/nextdns.js"></script>
+  <script src="providers/pihole.js"></script>
+  <script src="providers/controld.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>

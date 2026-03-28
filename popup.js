@@ -1,62 +1,91 @@
-// NextDNS Monitor — Popup Script
+// NextDNS Medic — Popup Script (v3.0 — multi-provider)
 
-const NEXTDNS_API = "https://api.nextdns.io";
-
+// ── State ─────────────────────────────────────────────────────────────────────
 let currentTabId = null;
-let apiKey = "";
-let profileId = "";
 let activeFilter = null; // "HIGH" | "MEDIUM" | "LOW" | null
-let provider = "nextdns"; // "nextdns" | "pihole"
-let piholeUrl = "";
-let piholeToken = "";
-let piholeVersion = null; // 5 | 6 | null (cached detection result)
+let blocklistCache = {}; // domain → [{ id, name }] — cleared on each popup open
+
+// Provider ID: "nextdns" | "pihole" | "controld"
+let providerKey = "nextdns";
+
+// Per-provider credential stores
+let creds = {
+  // NextDNS
+  apiKey:    "",
+  profileId: "",
+  // Pi-hole
+  piholeUrl:     "",
+  piholeToken:   "",
+  piholeVersion: null,
+  // Control D
+  controldToken:     "",
+  controldProfileId: "",
+};
+
+// NextDNS-specific UI state
 let detectedFingerprint   = null;
 let detectedDeviceName    = null;
-let profilesList          = []; // [{ id, name, fingerprint }]
+let profilesList          = [];
 let profilesFetchInFlight = false;
-let blocklistCache        = {}; // domain → [{ id, name }] — cleared on each popup open
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function getProvider() {
+  return window.NDMProviders?.[providerKey];
+}
+
+// Messaging helper — Firefox browser.* is Promise-based; Chrome uses callbacks.
+function sendMessage(msg) {
+  if (typeof browser !== "undefined" && browser.runtime) {
+    return browser.runtime.sendMessage(msg).catch(() => null);
+  }
+  return new Promise((resolve) => {
+    chrome.runtime.sendMessage(msg, (response) => {
+      if (chrome.runtime.lastError) resolve(null);
+      else resolve(response);
+    });
+  });
+}
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", async () => {
-  // Load settings
-  const stored = await ext.storage.sync.get(["apiKey", "profileId", "provider", "piholeUrl", "piholeToken"]);
-  apiKey     = stored.apiKey     || "";
-  profileId  = stored.profileId  || "";
-  provider   = stored.provider   || "nextdns";
-  piholeUrl  = stored.piholeUrl  || "";
-  piholeToken = stored.piholeToken || "";
+  const stored = await ext.storage.sync.get([
+    "apiKey", "profileId", "provider",
+    "piholeUrl", "piholeToken",
+    "controldToken", "controldProfileId",
+  ]);
 
-  // Restore cached version detection from local storage
+  providerKey = stored.provider || "nextdns";
+  creds.apiKey    = stored.apiKey    || "";
+  creds.profileId = stored.profileId || "";
+  creds.piholeUrl    = stored.piholeUrl    || "";
+  creds.piholeToken  = stored.piholeToken  || "";
+  creds.controldToken     = stored.controldToken     || "";
+  creds.controldProfileId = stored.controldProfileId || "";
+
   const local = await ext.storage.local.get(["piholeVersion"]);
-  piholeVersion = local.piholeVersion || null;
+  creds.piholeVersion = local.piholeVersion || null;
 
-  if (apiKey) {
-    document.getElementById("api-key-input").value = apiKey;
-    lockApiKeyField();
-    // Silently restore profile list in background (no spinner)
-    fetchDeviceFingerprint().then(() => fetchAndMatchProfiles(apiKey));
-  }
-  // profileId is managed in memory; no input field to sync
-  if (piholeUrl)   document.getElementById("pihole-url-input").value = piholeUrl;
-  if (piholeToken) document.getElementById("pihole-token-input").value = piholeToken;
+  // Restore UI fields
+  if (creds.apiKey)   { document.getElementById("api-key-input").value = creds.apiKey; lockApiKeyField(); }
+  if (creds.piholeUrl)   document.getElementById("pihole-url-input").value   = creds.piholeUrl;
+  if (creds.piholeToken) document.getElementById("pihole-token-input").value = creds.piholeToken;
+  if (creds.controldToken)     document.getElementById("controld-token-input").value      = creds.controldToken;
+  if (creds.controldProfileId) document.getElementById("controld-profile-input").value    = creds.controldProfileId;
 
-  document.getElementById("provider-select").value = provider;
-  updateProviderUI(provider);
-  if (piholeVersion) updatePiholeVersionLabel(piholeVersion);
+  document.getElementById("provider-select").value = providerKey;
+  updateProviderUI(providerKey);
+  if (creds.piholeVersion) updatePiholeVersionLabel(creds.piholeVersion);
 
-  // Auto-detect profile on load if NextDNS and API key already saved
-  if (provider === "nextdns" && apiKey) {
-    await fetchDeviceFingerprint();
-    await fetchAndMatchProfiles(apiKey);
+  // NextDNS: auto-detect profile on load
+  if (providerKey === "nextdns" && creds.apiKey) {
+    fetchDeviceFingerprint().then(() => fetchAndMatchProfiles(creds.apiKey));
   }
 
   // Get active tab
   const [tab] = await ext.tabs.query({ active: true, currentWindow: true });
   if (!tab) return;
-
   currentTabId = tab.id;
 
-  // Set page host in header
   try {
     const hostname = new URL(tab.url).hostname;
     document.getElementById("page-host").textContent = hostname;
@@ -64,22 +93,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("page-host").textContent = tab.url || "Unknown";
   }
 
-  // Load blocked domains for this tab
   loadBlocks();
 
-  // Wire up buttons
+  // Wire buttons
   document.getElementById("btn-settings").addEventListener("click", toggleSettings);
   document.getElementById("btn-clear").addEventListener("click", clearBlocks);
   document.getElementById("btn-save-settings").addEventListener("click", saveSettings);
   document.getElementById("btn-refresh-db").addEventListener("click", handleRefreshDB);
   document.getElementById("btn-test-pihole").addEventListener("click", handleTestPihole);
+  document.getElementById("btn-lookup-profiles").addEventListener("click", handleLookupProfiles);
+  document.getElementById("btn-clear-apikey").addEventListener("click", handleClearApiKey);
+  document.getElementById("btn-lookup-controld-profiles").addEventListener("click", handleLookupControldProfiles);
   document.getElementById("provider-select").addEventListener("change", e => {
     updateProviderUI(e.target.value);
   });
-  document.getElementById("btn-lookup-profiles").addEventListener("click", handleLookupProfiles);
-  document.getElementById("btn-clear-apikey").addEventListener("click", handleClearApiKey);
 
-  // Filter by confidence level on stat click
   ["HIGH", "MEDIUM", "LOW"].forEach(level => {
     const el = document.getElementById(`stat-${level.toLowerCase()}`).closest(".stat");
     el.addEventListener("click", () => {
@@ -90,29 +118,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 // ── Load & Render Blocks ──────────────────────────────────────────────────────
-// Messaging helper — Firefox browser.* is Promise-based; Chrome uses callbacks.
-// Check for real `browser` (Firefox) first; fall back to chrome callback style.
-function sendMessage(msg) {
-  if (typeof browser !== "undefined" && browser.runtime) {
-    // Firefox: browser.runtime.sendMessage returns a native Promise
-    return browser.runtime.sendMessage(msg).catch(() => null);
-  }
-  // Chrome: callback-based
-  return new Promise((resolve) => {
-    chrome.runtime.sendMessage(msg, (response) => {
-      if (chrome.runtime.lastError) resolve(null);
-      else resolve(response);
-    });
-  });
-}
-
 async function loadBlocks() {
   const response = await sendMessage({ type: "GET_TAB_DATA", tabId: currentTabId });
   const blocks = response?.blocks || [];
-  blocklistCache = {}; // reset on each load
+  blocklistCache = {};
   renderBlocks(blocks);
 
-  // Fetch blocklist reasons in background, then re-render
   const blockedDomains = blocks.map(b => b.domain);
   if (blockedDomains.length) {
     fetchBlocklistReasons(blockedDomains).then(() => renderBlocks(blocks));
@@ -122,144 +133,14 @@ async function loadBlocks() {
 // ── Blocklist reason lookup ───────────────────────────────────────────────────
 async function fetchBlocklistReasons(domains) {
   if (!domains.length) return;
+  const provider = getProvider();
+  if (!provider || !provider.hasCredentials(creds)) return;
 
-  if (provider === "nextdns" && apiKey && profileId) {
-    await fetchNextDNSReasons(domains);
-  } else if (provider === "pihole" && piholeUrl && piholeToken) {
-    await fetchPiholeReasons(domains);
-  }
+  const result = await provider.fetchBlocklistReasons(creds, domains);
+  Object.assign(blocklistCache, result);
 }
 
-async function fetchNextDNSReasons(domains) {
-  const domainSet = new Set(domains);
-  let fetched = 0;
-  let cursor  = null;
-
-  // Fetch up to 1000 recent blocked entries (paginate if needed)
-  while (domainSet.size > 0 && fetched < 1000) {
-    const url = `https://api.nextdns.io/profiles/${profileId}/logs?status=blocked&limit=1000${cursor ? `&cursor=${cursor}` : ""}`;
-    try {
-      const res = await fetch(url, {
-        headers: { "X-Api-Key": apiKey },
-        signal: AbortSignal.timeout(8000)
-      });
-      if (!res.ok) break;
-      const data = await res.json();
-      const entries = data.data || [];
-      fetched += entries.length;
-
-      for (const entry of entries) {
-        if (domainSet.has(entry.domain) && entry.reasons?.length) {
-          blocklistCache[entry.domain] = entry.reasons;
-          domainSet.delete(entry.domain);
-        }
-      }
-
-      // Stop if all found or no more pages
-      cursor = data.meta?.cursor || null;
-      if (!cursor || !entries.length) break;
-    } catch (_) { break; }
-  }
-}
-
-// Pretty display names for common Pi-hole blocklist URLs
-const PIHOLE_LIST_NAMES = {
-  // Steven Black
-  "raw.githubusercontent.com/StevenBlack/hosts/master/hosts":                        "Steven Black Unified",
-  "raw.githubusercontent.com/StevenBlack/hosts/master/alternates/fakenews-gambling-porn/hosts": "Steven Black (Extended)",
-  // HaGeZi
-  "raw.githubusercontent.com/hagezi/dns-blocklists/main/hosts/multi.txt":             "HaGeZi — Multi",
-  "raw.githubusercontent.com/hagezi/dns-blocklists/main/hosts/pro.txt":               "HaGeZi — Pro",
-  "raw.githubusercontent.com/hagezi/dns-blocklists/main/hosts/pro.plus.txt":          "HaGeZi — Pro++",
-  "raw.githubusercontent.com/hagezi/dns-blocklists/main/hosts/ultimate.txt":          "HaGeZi — Ultimate",
-  "raw.githubusercontent.com/hagezi/dns-blocklists/main/hosts/tif.txt":               "HaGeZi — Threat Intelligence",
-  "raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/multi.txt":           "HaGeZi — Multi (adblock)",
-  "raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.plus.txt":        "HaGeZi — Pro++ (adblock)",
-  "raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/ultimate.txt":        "HaGeZi — Ultimate (adblock)",
-  // OISD
-  "dbl.oisd.nl":                                                                       "OISD Full",
-  "dbl.oisd.nl/basic":                                                                 "OISD Basic",
-  "small.oisd.nl":                                                                     "OISD Small",
-  // AdGuard
-  "adguardteam.github.io/AdGuardSDNSFilter/Filters/filter.txt":                       "AdGuard DNS filter",
-  "raw.githubusercontent.com/AdguardTeam/FiltersRegistry/master/filters/filter_15_DnsFilter/filter.txt": "AdGuard DNS filter",
-  // EasyList / EasyPrivacy
-  "easylist-downloads.adblockplus.org/easylist.txt":                                   "EasyList",
-  "easylist-downloads.adblockplus.org/easyprivacy.txt":                                "EasyPrivacy",
-  "raw.githubusercontent.com/easylist/easylist/master/easylist.txt":                  "EasyList",
-  "raw.githubusercontent.com/easylist/easylist/master/easyprivacy.txt":               "EasyPrivacy",
-  // Disconnect
-  "s3.amazonaws.com/lists.disconnect.me/simple_ad.txt":                               "Disconnect.me Ads",
-  "s3.amazonaws.com/lists.disconnect.me/simple_tracking.txt":                         "Disconnect.me Tracking",
-  "s3.amazonaws.com/lists.disconnect.me/simple_malware.txt":                          "Disconnect.me Malware",
-  // Malware / security
-  "raw.githubusercontent.com/nicehash/NiceHash-Blocklist/main/blocklist.txt":         "NiceHash Blocklist",
-  "raw.githubusercontent.com/crazy-max/WindowsSpyBlocker/master/data/hosts/spy.txt":  "WindowsSpyBlocker",
-  "raw.githubusercontent.com/nicehash/nicehash-blocklist/main/blocklist.txt":         "NiceHash Blocklist",
-  "urlhaus-filter.pages.dev/urlhaus-filter-hosts.txt":                                "URLhaus Malware",
-  "raw.githubusercontent.com/RPiList/specials/master/Blocklisten/notserious":          "RPiList Not-Serious",
-  // Energized
-  "block.energized.pro/downloads/basic.txt":                                           "Energized Basic",
-  "block.energized.pro/downloads/blu.txt":                                             "Energized BLU",
-  "block.energized.pro/downloads/ultimate.txt":                                        "Energized Ultimate",
-};
-
-function piholeListPrettyName(address) {
-  if (!address) return "Pi-hole blocklist";
-  try {
-    const host = new URL(address).hostname + new URL(address).pathname;
-    // Check for exact or partial match
-    for (const [key, name] of Object.entries(PIHOLE_LIST_NAMES)) {
-      if (host.includes(key)) return name;
-    }
-  } catch (_) {}
-  // Fall back to hostname only
-  try { return new URL(address).hostname; } catch (_) {}
-  return "Pi-hole blocklist";
-}
-
-async function fetchPiholeReasons(domains) {
-  if (!domains.length) return;
-  try {
-    // Auth
-    const authRes = await fetch(`${piholeUrl}/api/auth`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password: piholeToken }),
-      signal: AbortSignal.timeout(6000)
-    });
-    if (!authRes.ok) return;
-    const authData = await authRes.json();
-    const sid = authData?.session?.sid;
-    if (!sid) return;
-
-    // For each blocked domain, use the gravity search endpoint
-    for (const domain of domains) {
-      try {
-        const res = await fetch(
-          `${piholeUrl}/api/search/${encodeURIComponent(domain)}`,
-          { headers: { "X-FTL-SID": sid }, signal: AbortSignal.timeout(6000) }
-        );
-        if (!res.ok) continue;
-        const data = await res.json();
-        const gravityHits = data?.search?.gravity || [];
-        if (!gravityHits.length) continue;
-
-        // Deduplicate by list address and map to pretty names
-        const seen = new Set();
-        const reasons = [];
-        for (const hit of gravityHits) {
-          const address = hit.address || "";
-          if (seen.has(address)) continue;
-          seen.add(address);
-          reasons.push({ id: String(hit.id || ""), name: piholeListPrettyName(address) });
-        }
-        if (reasons.length) blocklistCache[domain] = reasons;
-      } catch (_) {}
-    }
-  } catch (_) {}
-}
-
+// ── Render ────────────────────────────────────────────────────────────────────
 const IMPACT_LABELS = {
   login:        "⚠️ May prevent login",
   forms:        "⚠️ May break forms",
@@ -287,8 +168,8 @@ function renderBlockedBy(domain) {
 }
 
 function renderBlocks(blocks) {
-  const listEl = document.getElementById("blocks-list");
-  const emptyEl = document.getElementById("empty-state");
+  const listEl   = document.getElementById("blocks-list");
+  const emptyEl  = document.getElementById("empty-state");
   const statsBar = document.getElementById("stats-bar");
 
   if (!blocks.length) {
@@ -298,14 +179,12 @@ function renderBlocks(blocks) {
     return;
   }
 
-  // Sort: HIGH first, then MEDIUM, then LOW; within each group by count desc
   const order = { HIGH: 0, MEDIUM: 1, LOW: 2 };
   blocks.sort((a, b) => {
     const co = order[a.classification.confidence] - order[b.classification.confidence];
     return co !== 0 ? co : b.count - a.count;
   });
 
-  // Stats
   const highCount   = blocks.filter(b => b.classification.confidence === "HIGH").length;
   const mediumCount = blocks.filter(b => b.classification.confidence === "MEDIUM").length;
   const lowCount    = blocks.filter(b => b.classification.confidence === "LOW").length;
@@ -314,7 +193,6 @@ function renderBlocks(blocks) {
   document.getElementById("stat-medium").textContent = mediumCount;
   document.getElementById("stat-low").textContent    = lowCount;
 
-  // Update filter highlight
   ["HIGH", "MEDIUM", "LOW"].forEach(level => {
     const el = document.getElementById(`stat-${level.toLowerCase()}`).closest(".stat");
     el.classList.toggle("stat-active",  activeFilter === level);
@@ -326,28 +204,30 @@ function renderBlocks(blocks) {
   listEl.classList.remove("hidden");
   listEl.innerHTML = "";
 
-  // Apply filter
+  const provider = getProvider();
+  const hasCredentials = provider?.hasCredentials(creds) ?? false;
+
+  if (!hasCredentials) {
+    const note = document.createElement("div");
+    note.className = "no-api-key";
+    const labels = {
+      nextdns:  "⚙️ Add your NextDNS API key in settings to enable one-click allowlist",
+      pihole:   "⚙️ Enter your Pi-hole URL and API token in settings to enable one-click allowlist",
+      controld: "⚙️ Add your Control D token in settings to enable one-click allowlist",
+    };
+    note.textContent = labels[providerKey] || "⚙️ Configure your DNS provider in settings";
+    listEl.appendChild(note);
+  }
+
   const visibleBlocks = activeFilter
     ? blocks.filter(b => b.classification.confidence === activeFilter)
     : blocks;
 
   let lastConfidence = null;
 
-  // No API key note
-  const hasCredentials = provider === "pihole" ? (piholeUrl && piholeToken) : (apiKey && profileId);
-  if (!hasCredentials) {
-    const note = document.createElement("div");
-    note.className = "no-api-key";
-    note.textContent = provider === "pihole"
-      ? "⚙️ Enter your Pi-hole URL and API token in settings to enable one-click allowlist"
-      : "⚙️ Add your NextDNS API key in settings to enable one-click allowlist";
-    listEl.appendChild(note);
-  }
-
   for (const block of visibleBlocks) {
     const conf = block.classification.confidence;
 
-    // Section header when confidence group changes
     if (conf !== lastConfidence) {
       const header = document.createElement("div");
       header.className = `section-header ${conf.toLowerCase()}`;
@@ -361,11 +241,9 @@ function renderBlocks(blocks) {
       lastConfidence = conf;
     }
 
-    // Block item
     const item = document.createElement("div");
     item.className = "block-item";
 
-    // Error shortname
     const errorShort = block.error
       .replace("net::", "")
       .replace("ERR_", "")
@@ -395,12 +273,9 @@ function renderBlocks(blocks) {
     listEl.appendChild(item);
   }
 
-  // Wire up allowlist buttons
   listEl.querySelectorAll(".allowlist-btn:not([disabled])").forEach(btn => {
     btn.addEventListener("click", () => addToAllowlist(btn));
   });
-
-  // Wire up copy buttons
   listEl.querySelectorAll(".copy-btn").forEach(btn => {
     btn.addEventListener("click", () => copyDomain(btn));
   });
@@ -413,20 +288,20 @@ function isAndroid() {
 
 function getDNSFlushCommand() {
   const ua = navigator.userAgent;
-  if (/Android/i.test(ua))  return null; // handled separately
-  if (ua.includes("Mac"))   return "sudo dscacheutil -flushcache && sudo killall -HUP mDNSResponder";
-  if (ua.includes("Win"))   return "ipconfig /flushdns";
+  if (/Android/i.test(ua)) return null;
+  if (ua.includes("Mac"))  return "sudo dscacheutil -flushcache && sudo killall -HUP mDNSResponder";
+  if (ua.includes("Win"))  return "ipconfig /flushdns";
   return "sudo systemd-resolve --flush-caches  # or: sudo service nscd restart";
 }
 
 function showFlushBanner(title = "✓ Added — flush DNS to apply") {
-  const banner   = document.getElementById("flush-banner");
-  const titleEl  = document.querySelector(".flush-banner-title");
-  const cmdEl    = document.getElementById("flush-cmd");
-  const copyBtn  = document.getElementById("flush-copy");
-  const dismiss  = document.getElementById("flush-dismiss");
-
+  const banner  = document.getElementById("flush-banner");
+  const titleEl = document.querySelector(".flush-banner-title");
+  const cmdEl   = document.getElementById("flush-cmd");
+  const copyBtn = document.getElementById("flush-copy");
+  const dismiss = document.getElementById("flush-dismiss");
   if (!banner) return;
+
   titleEl.textContent = title;
 
   if (isAndroid()) {
@@ -434,7 +309,6 @@ function showFlushBanner(title = "✓ Added — flush DNS to apply") {
     copyBtn.style.display = "none";
   } else {
     copyBtn.style.display = "";
-  
     const cmd = getDNSFlushCommand();
     cmdEl.textContent = cmd;
     copyBtn.textContent = "Copy";
@@ -443,10 +317,7 @@ function showFlushBanner(title = "✓ Added — flush DNS to apply") {
         await navigator.clipboard.writeText(cmd);
         copyBtn.textContent = "Copied!";
         copyBtn.classList.add("copied");
-        setTimeout(() => {
-          copyBtn.textContent = "Copy";
-          copyBtn.classList.remove("copied");
-        }, 1500);
+        setTimeout(() => { copyBtn.textContent = "Copy"; copyBtn.classList.remove("copied"); }, 1500);
       } catch (_) {}
     };
   }
@@ -472,71 +343,38 @@ async function copyDomain(btn) {
   }
 }
 
-// ── NextDNS Allowlist ──────────────────────────────────────────────────────────
+// ── Allowlist ─────────────────────────────────────────────────────────────────
 async function addToAllowlist(btn) {
   const domain = btn.dataset.domain;
-  const canAllowlist = provider === "pihole" ? (piholeUrl && piholeToken) : (apiKey && profileId);
-  if (!domain || !canAllowlist) return;
+  const provider = getProvider();
+  if (!domain || !provider?.hasCredentials(creds)) return;
 
   btn.disabled = true;
   btn.textContent = "Adding...";
 
-  try {
-    // Route to the correct provider
-    if (provider === "pihole") {
-      const result = await piholeAllowlist(domain);
-      if (result.ok) {
-        btn.textContent = "✓ Added";
-        btn.classList.add("success");
-        showFlushBanner();
-      } else {
-        btn.textContent = "✗ Failed";
-        btn.title = result.error;
-        setTimeout(() => { btn.textContent = "+ Allowlist"; btn.title = ""; btn.disabled = false; }, 3000);
-      }
-      return;
-    }
+  const result = await provider.allowlistDomain(creds, domain);
 
-    const res = await fetch(`${NEXTDNS_API}/profiles/${profileId}/allowlist`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Api-Key": apiKey,
-      },
-      body: JSON.stringify({ id: domain, active: true }),
-    });
-
-    if (res.ok || res.status === 204 || res.status === 201) {
-      btn.textContent = "✓ Added";
-      btn.classList.add("success");
-      showFlushBanner();
-    } else {
-      const body = await res.text();
-      console.error("NextDNS API error:", res.status, body);
-      btn.textContent = `Error ${res.status}`;
-      btn.classList.add("error");
-      btn.disabled = false;
-    }
-  } catch (err) {
-    console.error("Allowlist request failed:", err);
-    btn.textContent = "Failed";
-    btn.classList.add("error");
-    btn.disabled = false;
+  if (result.ok) {
+    btn.textContent = "✓ Added";
+    btn.classList.add("success");
+    showFlushBanner();
+  } else {
+    btn.textContent = "✗ Failed";
+    btn.title = result.error || "Unknown error";
+    setTimeout(() => { btn.textContent = "+ Allowlist"; btn.title = ""; btn.disabled = false; }, 3000);
   }
 }
 
 // ── Settings ──────────────────────────────────────────────────────────────────
 async function toggleSettings() {
-  // Re-render profile list if already loaded (keeps selection in sync)
   if (profilesList.length > 0) {
     const fingerprintMatch = detectedFingerprint
       ? profilesList.find(p => p.fingerprint === detectedFingerprint) : null;
     renderProfileList(fingerprintMatch?.id || null);
   }
   const panel = document.getElementById("settings-panel");
-  const isHidden = panel.classList.contains("hidden");
   panel.classList.toggle("hidden");
-  if (isHidden) await refreshDBMeta();
+  if (!panel.classList.contains("hidden")) await refreshDBMeta();
 }
 
 async function refreshDBMeta() {
@@ -553,7 +391,20 @@ async function refreshDBMeta() {
   }
 }
 
-// ── API Key lock / clear ──────────────────────────────────────────────────────
+function updateProviderUI(selected) {
+  document.getElementById("provider-nextdns").classList.toggle("hidden",  selected !== "nextdns");
+  document.getElementById("provider-pihole").classList.toggle("hidden",   selected !== "pihole");
+  document.getElementById("provider-controld").classList.toggle("hidden", selected !== "controld");
+}
+
+function updatePiholeVersionLabel(version) {
+  const el = document.getElementById("pihole-version-label");
+  if (!el) return;
+  el.textContent = version ? `Pi-hole v${version} detected` : "";
+  el.className = "pihole-version-label" + (version ? " detected" : "");
+}
+
+// ── API Key (NextDNS) lock/clear ──────────────────────────────────────────────
 function lockApiKeyField() {
   const input = document.getElementById("api-key-input");
   const btn   = document.getElementById("btn-clear-apikey");
@@ -573,9 +424,8 @@ function unlockApiKeyField() {
 }
 
 async function handleClearApiKey() {
-  // Clear API key from storage and reset all NextDNS state
-  apiKey      = "";
-  profileId   = "";
+  creds.apiKey    = "";
+  creds.profileId = "";
   profilesList = [];
   detectedFingerprint = null;
   detectedDeviceName  = null;
@@ -585,105 +435,16 @@ async function handleClearApiKey() {
   await ext.storage.local.remove(["piholeVersion", "ndm_dbCache"]);
 
   unlockApiKeyField();
-
-  // Reset profile UI
-  profilesList = [];
   document.getElementById("ndm-profile-section").classList.add("hidden");
   document.getElementById("ndm-profile-list").innerHTML = "";
 }
 
-function updateProviderUI(selectedProvider) {
-  document.getElementById("provider-nextdns").classList.toggle("hidden", selectedProvider !== "nextdns");
-  document.getElementById("provider-pihole").classList.toggle("hidden",  selectedProvider !== "pihole");
-}
-
-function updatePiholeVersionLabel(version) {
-  const el = document.getElementById("pihole-version-label");
-  if (!el) return;
-  el.textContent = version ? `Pi-hole v${version} detected` : "";
-  el.className = "pihole-version-label" + (version ? " detected" : "");
-}
-
-// ── Pi-hole API ───────────────────────────────────────────────────────────────
-function normalizePiholeUrl(url) {
-  return url.replace(/\/+$/, "").trim();
-}
-
-async function detectPiholeVersion(url) {
-  // v6 exposes /api/auth; v5 does not
-  try {
-    const res = await fetch(`${url}/api/auth`, { method: "GET", signal: AbortSignal.timeout(4000) });
-    if (res.status === 200 || res.status === 401) return 6;
-  } catch (_) {}
-  return 5; // fallback — assume v5
-}
-
-async function piholeAllowlist(domain) {
-  const url = normalizePiholeUrl(piholeUrl);
-  if (!url || !piholeToken) return { ok: false, error: "No Pi-hole URL or token configured" };
-
-  // Auto-detect version if not yet cached
-  if (!piholeVersion) {
-    piholeVersion = await detectPiholeVersion(url);
-    await ext.storage.local.set({ piholeVersion });
-    updatePiholeVersionLabel(piholeVersion);
-  }
-
-  if (piholeVersion === 6) {
-    return await piholeV6Allowlist(url, domain);
-  } else {
-    return await piholeV5Allowlist(url, domain);
-  }
-}
-
-async function piholeV5Allowlist(url, domain) {
-  try {
-    const res = await fetch(
-      `${url}/admin/api.php?list=white&add=${encodeURIComponent(domain)}&auth=${encodeURIComponent(piholeToken)}`,
-      { signal: AbortSignal.timeout(8000) }
-    );
-    if (!res.ok) return { ok: false, error: `HTTP ${res.status}` };
-    const data = await res.json();
-    if (data.success) return { ok: true };
-    return { ok: false, error: data.message || "Pi-hole returned an error" };
-  } catch (e) {
-    return { ok: false, error: e.name === "TimeoutError" ? "Pi-hole unreachable — check your URL" : e.message };
-  }
-}
-
-async function piholeV6Allowlist(url, domain) {
-  try {
-    // Step 1: get session token
-    const authRes = await fetch(`${url}/api/auth`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password: piholeToken }),
-      signal: AbortSignal.timeout(8000)
-    });
-    if (!authRes.ok) return { ok: false, error: authRes.status === 401 ? "Invalid API token" : `Auth failed (HTTP ${authRes.status})` };
-    const authData = await authRes.json();
-    const sid = authData?.session?.sid;
-    if (!sid) return { ok: false, error: "Could not obtain Pi-hole session token" };
-
-    // Step 2: add to allowlist
-    const addRes = await fetch(`${url}/api/domains/allow/exact`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "X-FTL-SID": sid },
-      body: JSON.stringify({ domain, comment: "Added by NextDNS Medic" }),
-      signal: AbortSignal.timeout(8000)
-    });
-    if (!addRes.ok) return { ok: false, error: `HTTP ${addRes.status}` };
-    return { ok: true };
-  } catch (e) {
-    return { ok: false, error: e.name === "TimeoutError" ? "Pi-hole unreachable — check your URL" : e.message };
-  }
-}
-
+// ── Pi-hole test connection ───────────────────────────────────────────────────
 async function handleTestPihole() {
   const btn = document.getElementById("btn-test-pihole");
-  const url = normalizePiholeUrl(document.getElementById("pihole-url-input").value);
-  const token = document.getElementById("pihole-token-input").value.trim();
   const versionLabel = document.getElementById("pihole-version-label");
+  const url = document.getElementById("pihole-url-input").value;
+  const token = document.getElementById("pihole-token-input").value.trim();
 
   if (!url || !token) {
     versionLabel.textContent = "Enter URL and token first";
@@ -696,37 +457,16 @@ async function handleTestPihole() {
   versionLabel.textContent = "";
   versionLabel.className = "pihole-version-label";
 
-  try {
-    const version = await detectPiholeVersion(url);
+  const pihole = window.NDMProviders?.pihole;
+  const result = await pihole.testConnection({ piholeUrl: url, piholeToken: token });
 
-    // Validate the token works by doing a read-only API call
-    let tokenOk = false;
-    if (version === 5) {
-      const res = await fetch(`${url}/admin/api.php?summaryRaw&auth=${encodeURIComponent(token)}`, { signal: AbortSignal.timeout(6000) });
-      const data = await res.json().catch(() => null);
-      tokenOk = data && typeof data.domains_being_blocked !== "undefined";
-    } else {
-      const res = await fetch(`${url}/api/auth`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password: token }),
-        signal: AbortSignal.timeout(6000)
-      });
-      const data = await res.json().catch(() => null);
-      tokenOk = data?.session?.valid === true;
-    }
-
-    if (tokenOk) {
-      piholeVersion = version;
-      await ext.storage.local.set({ piholeVersion });
-      versionLabel.textContent = `✓ Connected (Pi-hole v${version})`;
-      versionLabel.className = "pihole-version-label success";
-    } else {
-      versionLabel.textContent = "✗ Invalid token — check Pi-hole settings";
-      versionLabel.className = "pihole-version-label error";
-    }
-  } catch (e) {
-    versionLabel.textContent = "✗ Unreachable — check your URL";
+  if (result.ok) {
+    creds.piholeVersion = result.version;
+    await ext.storage.local.set({ piholeVersion: result.version });
+    versionLabel.textContent = `✓ Connected (Pi-hole v${result.version})`;
+    versionLabel.className = "pihole-version-label success";
+  } else {
+    versionLabel.textContent = `✗ ${result.error || "Connection failed"}`;
     versionLabel.className = "pihole-version-label error";
   }
 
@@ -734,44 +474,88 @@ async function handleTestPihole() {
   btn.textContent = "Test Connection";
 }
 
+// ── Control D profile lookup ──────────────────────────────────────────────────
+async function handleLookupControldProfiles() {
+  const btn = document.getElementById("btn-lookup-controld-profiles");
+  const errEl = document.getElementById("controld-token-error");
+  const token = document.getElementById("controld-token-input").value.trim();
+  if (!token) return;
+
+  btn.disabled = true;
+  btn.textContent = "…";
+  errEl?.classList.add("hidden");
+
+  const controld = window.NDMProviders?.controld;
+  const profiles = await controld.fetchProfiles({ controldToken: token });
+
+  btn.disabled = false;
+  btn.textContent = "→";
+
+  if (!profiles) {
+    if (errEl) { errEl.textContent = "✗ Invalid token or CORS error"; errEl.classList.remove("hidden"); }
+    setTimeout(() => errEl?.classList.add("hidden"), 3000);
+    return;
+  }
+
+  renderControldProfileList(profiles, token);
+}
+
+function renderControldProfileList(profiles, token) {
+  const section = document.getElementById("controld-profile-section");
+  const list = document.getElementById("controld-profile-list");
+  if (!section || !list) return;
+  if (!profiles.length) { section.classList.add("hidden"); return; }
+
+  list.innerHTML = profiles.map(p => {
+    const isSelected = p.id === creds.controldProfileId;
+    return `<div class="ndm-profile-item${isSelected ? " selected" : ""}" data-id="${p.id}">
+      <div class="ndm-profile-item-info">
+        <span class="ndm-profile-item-name">${p.name}</span>
+        <span class="ndm-profile-item-id">${p.id}</span>
+      </div>
+      <div class="ndm-profile-item-right">
+        ${isSelected ? `<span class="ndm-profile-item-check">✓</span>` : ""}
+      </div>
+    </div>`;
+  }).join("");
+
+  list.querySelectorAll(".ndm-profile-item").forEach(el => {
+    el.addEventListener("click", () => {
+      creds.controldProfileId = el.dataset.id;
+      document.getElementById("controld-profile-input").value = el.dataset.id;
+      renderControldProfileList(profiles, token);
+    });
+  });
+
+  section.classList.remove("hidden");
+}
+
 // ── NextDNS Profile Auto-detect ───────────────────────────────────────────────
 async function fetchDeviceFingerprint() {
-  try {
-    const res = await fetch("https://test.nextdns.io", {
-      headers: { "Accept": "application/json" },
-      credentials: "omit",
-      signal: AbortSignal.timeout(5000)
-    });
-    const data = await res.json();
-    detectedFingerprint = data.profile    || null;
-    detectedDeviceName  = data.deviceName || data.clientName || null;
-  } catch (_) {
-    // Not on NextDNS or network not configured — silent fail
-  }
+  const nextdns = window.NDMProviders?.nextdns;
+  if (!nextdns) return;
+  const result = await nextdns.detectDeviceFingerprint();
+  detectedFingerprint = result.fingerprint;
+  detectedDeviceName  = result.deviceName;
 }
 
 async function fetchAndMatchProfiles(key) {
   if (profilesFetchInFlight) return;
   profilesFetchInFlight = true;
   try {
-    const res = await fetch("https://api.nextdns.io/profiles", {
-      headers: { "X-Api-Key": key },
-      credentials: "omit",
-      signal: AbortSignal.timeout(6000)
-    });
-    if (!res.ok) return;
-    const data = await res.json();
-    profilesList = data.data || [];
+    const nextdns = window.NDMProviders?.nextdns;
+    const profiles = await nextdns.fetchProfiles({ apiKey: key });
+    if (!profiles) return;
+    profilesList = profiles;
 
     const fingerprintMatch = detectedFingerprint
       ? profilesList.find(p => p.fingerprint === detectedFingerprint) : null;
-    const savedMatch = profileId
-      ? profilesList.find(p => p.id === profileId) : null;
+    const savedMatch = creds.profileId
+      ? profilesList.find(p => p.id === creds.profileId) : null;
     const autoSelect = fingerprintMatch || savedMatch || profilesList[0] || null;
-    if (autoSelect) profileId = autoSelect.id;
+    if (autoSelect) creds.profileId = autoSelect.id;
 
     renderProfileList(fingerprintMatch?.id || null);
-  } catch (_) {
   } finally {
     profilesFetchInFlight = false;
   }
@@ -784,7 +568,7 @@ function renderProfileList(activeId) {
 
   list.innerHTML = profilesList.map(p => {
     const isDevice   = p.id === activeId;
-    const isSelected = p.id === profileId;
+    const isSelected = p.id === creds.profileId;
     return `
       <div class="ndm-profile-item${isSelected ? " selected" : ""}" data-id="${p.id}">
         <div class="ndm-profile-item-info">
@@ -792,7 +576,7 @@ function renderProfileList(activeId) {
           <span class="ndm-profile-item-id">${p.id}</span>
         </div>
         <div class="ndm-profile-item-right">
-          ${isDevice ? `<span class="ndm-profile-item-badge">This device</span>` : ""}
+          ${isDevice   ? `<span class="ndm-profile-item-badge">This device</span>` : ""}
           ${isSelected ? `<span class="ndm-profile-item-check">✓</span>` : ""}
         </div>
       </div>`;
@@ -800,7 +584,7 @@ function renderProfileList(activeId) {
 
   list.querySelectorAll(".ndm-profile-item").forEach(el => {
     el.addEventListener("click", () => {
-      profileId = el.dataset.id;
+      creds.profileId = el.dataset.id;
       renderProfileList(activeId);
     });
   });
@@ -811,15 +595,16 @@ function renderProfileList(activeId) {
 async function handleLookupProfiles() {
   const key = document.getElementById("api-key-input").value.trim();
   if (!key) return;
-  const btn = document.getElementById("btn-lookup-profiles");
+  const btn   = document.getElementById("btn-lookup-profiles");
   const errEl = document.getElementById("api-key-error");
 
   btn.textContent = "…";
   btn.disabled = true;
   errEl.classList.add("hidden");
-  errEl.textContent = "";
 
-  const valid = await validateNextDNSKey(key);
+  const nextdns = window.NDMProviders?.nextdns;
+  const valid = await nextdns.validateCredentials({ apiKey: key });
+
   if (valid === false) {
     btn.textContent = "→";
     btn.disabled = false;
@@ -837,56 +622,53 @@ async function handleLookupProfiles() {
   lockApiKeyField();
 }
 
-async function validateNextDNSKey(key) {
-  try {
-    const resp = await fetch("https://api.nextdns.io/profiles", {
-      headers: { "X-Api-Key": key },
-      credentials: "omit"
-    });
-    return resp.ok; // 200 = valid, 401/403 = invalid
-  } catch (_) {
-    return null; // network error — can't validate
-  }
-}
-
+// ── Save Settings ─────────────────────────────────────────────────────────────
 async function saveSettings() {
-  const newKey      = document.getElementById("api-key-input").value.trim();
-  const newProfile  = profileId;
-  const newProvider = document.getElementById("provider-select").value;
-  const newPiholeUrl    = normalizePiholeUrl(document.getElementById("pihole-url-input").value);
-  const newPiholeToken  = document.getElementById("pihole-token-input").value.trim();
+  const newProvider       = document.getElementById("provider-select").value;
+  const newApiKey         = document.getElementById("api-key-input").value.trim();
+  const newPiholeUrl      = (document.getElementById("pihole-url-input").value || "").replace(/\/+$/, "").trim();
+  const newPiholeToken    = document.getElementById("pihole-token-input").value.trim();
+  const newControldToken  = document.getElementById("controld-token-input").value.trim();
+  const newControldProfileId = document.getElementById("controld-profile-input").value.trim();
   const status = document.getElementById("settings-status");
 
   // Validate NextDNS key before saving
-  if (newProvider === "nextdns" && newKey) {
+  if (newProvider === "nextdns" && newApiKey) {
     status.textContent = "Validating…";
     status.style.color = "";
-    const valid = await validateNextDNSKey(newKey);
+    const nextdns = window.NDMProviders?.nextdns;
+    const valid = await nextdns.validateCredentials({ apiKey: newApiKey });
     if (valid === false) {
       status.textContent = "✗ Invalid API key";
       status.style.color = "#f87171";
       setTimeout(() => { status.textContent = ""; status.style.color = ""; }, 3000);
-      return; // don't save
+      return;
     }
     if (valid === null) {
       status.textContent = "⚠ Network error — saved anyway";
       status.style.color = "#fbbf24";
       setTimeout(() => { status.textContent = ""; status.style.color = ""; }, 3000);
-      // fall through and save
     }
   }
 
   await ext.storage.sync.set({
-    apiKey: newKey, profileId: newProfile,
-    provider: newProvider, piholeUrl: newPiholeUrl, piholeToken: newPiholeToken
+    provider: newProvider,
+    apiKey: newApiKey,
+    profileId: creds.profileId,
+    piholeUrl: newPiholeUrl,
+    piholeToken: newPiholeToken,
+    controldToken: newControldToken,
+    controldProfileId: newControldProfileId,
   });
-  apiKey       = newKey;
-  profileId    = newProfile;
-  provider     = newProvider;
-  piholeUrl    = newPiholeUrl;
-  piholeToken  = newPiholeToken;
 
-  if (newKey && newProvider === "nextdns") lockApiKeyField();
+  providerKey = newProvider;
+  creds.apiKey    = newApiKey;
+  creds.piholeUrl    = newPiholeUrl;
+  creds.piholeToken  = newPiholeToken;
+  creds.controldToken     = newControldToken;
+  creds.controldProfileId = newControldProfileId;
+
+  if (newApiKey && newProvider === "nextdns") lockApiKeyField();
 
   status.style.color = "#4ade80";
   status.textContent = "✓ Saved";
@@ -902,7 +684,7 @@ async function clearBlocks() {
 
 // ── DB Refresh ────────────────────────────────────────────────────────────────
 async function handleRefreshDB() {
-  const btn = document.getElementById("btn-refresh-db");
+  const btn   = document.getElementById("btn-refresh-db");
   const label = document.getElementById("db-meta-label");
   btn.disabled = true;
   btn.textContent = "Refreshing...";

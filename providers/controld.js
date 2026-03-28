@@ -1,0 +1,111 @@
+// providers/controld.js — Control D provider for NextDNS Medic
+// Registered on window.NDMProviders.controld
+//
+// API base: https://api.controld.com
+// Auth: Bearer token (generated in Control D dashboard)
+// Notes:
+//   - Query log requires Business plan
+//   - Data model: Profiles → Endpoints → Custom Rules
+//   - CORS from browser extensions: unconfirmed — tested at runtime
+
+(function () {
+  const API = "https://api.controld.com";
+
+  function authHeaders(apiToken) {
+    return {
+      "Authorization": `Bearer ${apiToken}`,
+      "Content-Type": "application/json",
+    };
+  }
+
+  window.NDMProviders = window.NDMProviders || {};
+  window.NDMProviders.controld = {
+    label: "Control D",
+    id: "controld",
+
+    hasCredentials({ controldToken, controldProfileId }) {
+      return !!(controldToken && controldProfileId);
+    },
+
+    // Fetch blocked domains from query log (requires Business plan)
+    async fetchBlocklistReasons({ controldToken, controldProfileId }, domains) {
+      const result = {};
+      if (!controldToken || !controldProfileId || !domains.length) return result;
+
+      try {
+        const res = await fetch(
+          `${API}/query_log?profile_id=${encodeURIComponent(controldProfileId)}&status=blocked&limit=1000`,
+          { headers: authHeaders(controldToken), signal: AbortSignal.timeout(8000) }
+        );
+        if (!res.ok) return result;
+        const data = await res.json();
+        const entries = data.body?.queries || [];
+
+        const domainSet = new Set(domains);
+        for (const entry of entries) {
+          const d = entry.domain || entry.name;
+          if (d && domainSet.has(d)) {
+            const listName = entry.filter_name || entry.list_name || "Control D blocklist";
+            result[d] = [{ id: String(entry.list_id || ""), name: listName }];
+          }
+        }
+      } catch (_) {}
+
+      return result;
+    },
+
+    // Add domain to custom allow rule in the given profile
+    async allowlistDomain({ controldToken, controldProfileId }, domain) {
+      if (!controldToken || !controldProfileId) {
+        return { ok: false, error: "No API token or profile configured" };
+      }
+      try {
+        const res = await fetch(
+          `${API}/profiles/${encodeURIComponent(controldProfileId)}/rules`,
+          {
+            method: "POST",
+            headers: authHeaders(controldToken),
+            body: JSON.stringify({ action: { do: 0 }, hostnames: [domain] }), // do:0 = allow
+            signal: AbortSignal.timeout(8000),
+          }
+        );
+        if (res.ok || res.status === 201 || res.status === 204) return { ok: true };
+        const body = await res.json().catch(() => null);
+        return { ok: false, error: body?.error?.message || `HTTP ${res.status}` };
+      } catch (e) {
+        return { ok: false, error: e.name === "TimeoutError" ? "Control D unreachable" : e.message };
+      }
+    },
+
+    // Fetch all profiles for this token
+    async fetchProfiles({ controldToken }) {
+      if (!controldToken) return null;
+      try {
+        const res = await fetch(`${API}/profiles`, {
+          headers: authHeaders(controldToken),
+          signal: AbortSignal.timeout(6000),
+        });
+        if (!res.ok) return null;
+        const data = await res.json();
+        // Returns array of { PK, name, ... }
+        return (data.body?.profiles || []).map(p => ({ id: p.PK, name: p.name }));
+      } catch (_) {
+        return null;
+      }
+    },
+
+    // Returns true | false | null
+    async validateCredentials({ controldToken }) {
+      if (!controldToken) return false;
+      try {
+        const res = await fetch(`${API}/profiles`, {
+          headers: authHeaders(controldToken),
+          signal: AbortSignal.timeout(6000),
+        });
+        return res.ok;
+      } catch (_) {
+        return null;
+      }
+    },
+  };
+})();
