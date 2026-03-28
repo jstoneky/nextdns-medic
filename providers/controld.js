@@ -14,7 +14,7 @@
   function authHeaders(apiToken) {
     return {
       "Authorization": `Bearer ${apiToken}`,
-      "Content-Type": "application/json",
+      "Accept": "application/json",
     };
   }
 
@@ -60,18 +60,28 @@
         return { ok: false, error: "No API token or profile configured" };
       }
       try {
+        // API requires form-encoded body, not JSON
+        // do: 1 = BYPASS (allow), do: 0 = BLOCK
+        const body = new URLSearchParams();
+        body.append("do", "1");       // 1 = BYPASS (allow through)
+        body.append("status", "1");   // 1 = enabled
+        body.append("hostnames[]", domain);
+
         const res = await fetch(
           `${API}/profiles/${encodeURIComponent(controldProfileId)}/rules`,
           {
             method: "POST",
-            headers: authHeaders(controldToken),
-            body: JSON.stringify({ action: { do: 0 }, hostnames: [domain] }), // do:0 = allow
+            headers: {
+              "Authorization": `Bearer ${controldToken}`,
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: body.toString(),
             signal: AbortSignal.timeout(8000),
           }
         );
         if (res.ok || res.status === 201 || res.status === 204) return { ok: true };
-        const body = await res.json().catch(() => null);
-        return { ok: false, error: body?.error?.message || `HTTP ${res.status}` };
+        const resBody = await res.json().catch(() => null);
+        return { ok: false, error: resBody?.error?.message || `HTTP ${res.status}` };
       } catch (e) {
         return { ok: false, error: e.name === "TimeoutError" ? "Control D unreachable" : e.message };
       }
