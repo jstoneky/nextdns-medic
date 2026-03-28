@@ -314,7 +314,7 @@ function renderBlocks(blocks) {
   // these are real blocks (ERR_NAME_NOT_RESOLVED, ERR_FAILED, ERR_BLOCKED_BY_CLIENT etc.),
   // just not in our database yet. Unverified section is then Safari ERR_ABORTED only.
   for (const block of blocks) {
-    if (!block.classification.known && (block.isDefiniteBlock || block.isPossibleBlock)) {
+    if (!block.classification.known && (block.isDefiniteBlock || (block.isPossibleBlock && !block.isSafariAbort))) {
       block.classification = {
         ...block.classification,
         known: true,

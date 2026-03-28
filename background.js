@@ -185,6 +185,7 @@ ext.webRequest.onErrorOccurred.addListener(
           error: error,
           isDefiniteBlock: false,
           isPossibleBlock: true,
+          isSafariAbort: true,
           classification,
           count: 1,
           firstSeen: Date.now(),
