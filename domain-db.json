@@ -59,7 +59,7 @@
       "functionalImpact": "features"
     },
     {
-      "pattern": "statsig",
+      "pattern": "statsig\\.com",
       "flags": "i",
       "label": "Feature Flags (Statsig)",
       "confidence": "HIGH",
@@ -91,7 +91,7 @@
       "functionalImpact": "features"
     },
     {
-      "pattern": "launchdarkly",
+      "pattern": "launchdarkly\\.com",
       "flags": "i",
       "label": "Feature Flags (LaunchDarkly)",
       "confidence": "HIGH",
@@ -147,7 +147,7 @@
       "functionalImpact": "features"
     },
     {
-      "pattern": "optimizely",
+      "pattern": "optimizely\\.com",
       "flags": "i",
       "label": "A/B Testing (Optimizely)",
       "confidence": "HIGH",
@@ -187,7 +187,7 @@
       "functionalImpact": "features"
     },
     {
-      "pattern": "posthog",
+      "pattern": "posthog\\.com",
       "flags": "i",
       "label": "Feature Flags (PostHog)",
       "confidence": "HIGH",
@@ -203,7 +203,7 @@
       "functionalImpact": "features"
     },
     {
-      "pattern": "growthbook",
+      "pattern": "growthbook\\.io",
       "flags": "i",
       "label": "Feature Flags (GrowthBook)",
       "confidence": "HIGH",
@@ -227,7 +227,7 @@
       "functionalImpact": "features"
     },
     {
-      "pattern": "configcat",
+      "pattern": "configcat\\.com",
       "flags": "i",
       "label": "Feature Flags (ConfigCat)",
       "confidence": "HIGH",
@@ -243,7 +243,7 @@
       "functionalImpact": "features"
     },
     {
-      "pattern": "flagsmith",
+      "pattern": "flagsmith\\.com",
       "flags": "i",
       "label": "Feature Flags (Flagsmith)",
       "confidence": "HIGH",
@@ -283,7 +283,7 @@
       "functionalImpact": "features"
     },
     {
-      "pattern": "kameleoon",
+      "pattern": "kameleoon\\.com",
       "flags": "i",
       "label": "A/B Testing (Kameleoon)",
       "confidence": "HIGH",
@@ -299,7 +299,7 @@
       "functionalImpact": "features"
     },
     {
-      "pattern": "unleash",
+      "pattern": "getunleash\\.io",
       "flags": "i",
       "label": "Feature Flags (Unleash)",
       "confidence": "HIGH",
@@ -515,7 +515,7 @@
       "functionalImpact": "login"
     },
     {
-      "pattern": "pingidentity",
+      "pattern": "pingidentity\\.com",
       "flags": "i",
       "label": "Auth (Ping Identity)",
       "confidence": "HIGH",
@@ -843,7 +843,7 @@
       "functionalImpact": "search"
     },
     {
-      "pattern": "algolia",
+      "pattern": "algolianet\\.com",
       "flags": "i",
       "label": "Search (Algolia)",
       "confidence": "HIGH",
@@ -875,7 +875,7 @@
       "functionalImpact": "search"
     },
     {
-      "pattern": "klevu",
+      "pattern": "klevu\\.com",
       "flags": "i",
       "label": "Search (Klevu)",
       "confidence": "HIGH",
@@ -891,7 +891,7 @@
       "functionalImpact": "search"
     },
     {
-      "pattern": "searchspring",
+      "pattern": "searchspring\\.io",
       "flags": "i",
       "label": "Search (Searchspring)",
       "confidence": "HIGH",
@@ -899,7 +899,7 @@
       "functionalImpact": "search"
     },
     {
-      "pattern": "bloomreach",
+      "pattern": "bloomreach\\.com",
       "flags": "i",
       "label": "Search (Bloomreach)",
       "confidence": "HIGH",
@@ -915,7 +915,7 @@
       "functionalImpact": "search"
     },
     {
-      "pattern": "coveo",
+      "pattern": "coveo\\.com",
       "flags": "i",
       "label": "Search (Coveo)",
       "confidence": "HIGH",
@@ -931,7 +931,7 @@
       "functionalImpact": "search"
     },
     {
-      "pattern": "yext",
+      "pattern": "yext\\.com",
       "flags": "i",
       "label": "Search (Yext)",
       "confidence": "HIGH",
@@ -947,7 +947,7 @@
       "functionalImpact": "search"
     },
     {
-      "pattern": "findify",
+      "pattern": "findify\\.io",
       "flags": "i",
       "label": "Search (Findify)",
       "confidence": "HIGH",
@@ -1043,7 +1043,7 @@
       "functionalImpact": "assets"
     },
     {
-      "pattern": "akamai",
+      "pattern": "akamai\\.net",
       "flags": "i",
       "label": "CDN (Akamai)",
       "confidence": "HIGH",
@@ -1219,7 +1219,7 @@
       "functionalImpact": "notifications"
     },
     {
-      "pattern": "pusher",
+      "pattern": "pusher\\.com",
       "flags": "i",
       "label": "Real-time (Pusher)",
       "confidence": "HIGH",
@@ -1363,7 +1363,7 @@
       "functionalImpact": "features"
     },
     {
-      "pattern": "tealium",
+      "pattern": "tealium\\.com",
       "flags": "i",
       "label": "Tag Manager (Tealium)",
       "confidence": "MEDIUM",
@@ -1459,7 +1459,7 @@
       "functionalImpact": "features"
     },
     {
-      "pattern": "ensighten",
+      "pattern": "ensighten\\.com",
       "flags": "i",
       "label": "Tag Manager (Ensighten)",
       "confidence": "MEDIUM",
@@ -1491,7 +1491,7 @@
       "functionalImpact": "chat"
     },
     {
-      "pattern": "intercom",
+      "pattern": "intercom\\.io",
       "flags": "i",
       "label": "Chat (Intercom)",
       "confidence": "MEDIUM",
@@ -1547,7 +1547,7 @@
       "functionalImpact": "chat"
     },
     {
-      "pattern": "freshchat",
+      "pattern": "freshchat\\.com",
       "flags": "i",
       "label": "Chat (Freshchat)",
       "confidence": "MEDIUM",
@@ -1555,7 +1555,7 @@
       "functionalImpact": "chat"
     },
     {
-      "pattern": "freshdesk",
+      "pattern": "freshdesk\\.com",
       "flags": "i",
       "label": "Support (Freshdesk)",
       "confidence": "MEDIUM",
@@ -1587,7 +1587,7 @@
       "functionalImpact": "chat"
     },
     {
-      "pattern": "livechat",
+      "pattern": "livechatinc\\.com",
       "flags": "i",
       "label": "Chat (LiveChat)",
       "confidence": "MEDIUM",
@@ -1715,7 +1715,7 @@
       "functionalImpact": "monitoring"
     },
     {
-      "pattern": "bugsnag",
+      "pattern": "bugsnag\\.com",
       "flags": "i",
       "label": "Error Tracking (Bugsnag)",
       "confidence": "MEDIUM",
@@ -1739,7 +1739,7 @@
       "functionalImpact": "monitoring"
     },
     {
-      "pattern": "rollbar",
+      "pattern": "rollbar\\.com",
       "flags": "i",
       "label": "Error Tracking (Rollbar)",
       "confidence": "MEDIUM",
@@ -1795,7 +1795,7 @@
       "functionalImpact": "monitoring"
     },
     {
-      "pattern": "newrelic",
+      "pattern": "newrelic\\.com",
       "flags": "i",
       "label": "Monitoring (New Relic)",
       "confidence": "MEDIUM",
@@ -1811,7 +1811,7 @@
       "functionalImpact": "monitoring"
     },
     {
-      "pattern": "dynatrace",
+      "pattern": "dynatrace\\.com",
       "flags": "i",
       "label": "Monitoring (Dynatrace)",
       "confidence": "MEDIUM",
@@ -1827,7 +1827,7 @@
       "functionalImpact": "monitoring"
     },
     {
-      "pattern": "appdynamics",
+      "pattern": "appdynamics\\.com",
       "flags": "i",
       "label": "Monitoring (AppDynamics)",
       "confidence": "MEDIUM",
@@ -1867,7 +1867,7 @@
       "functionalImpact": "monitoring"
     },
     {
-      "pattern": "hotjar",
+      "pattern": "hotjar\\.com",
       "flags": "i",
       "label": "Session Replay (Hotjar)",
       "confidence": "MEDIUM",
@@ -1891,7 +1891,7 @@
       "functionalImpact": "monitoring"
     },
     {
-      "pattern": "fullstory",
+      "pattern": "fullstory\\.com",
       "flags": "i",
       "label": "Session Replay (FullStory)",
       "confidence": "MEDIUM",
@@ -1923,7 +1923,7 @@
       "functionalImpact": "monitoring"
     },
     {
-      "pattern": "logrocket",
+      "pattern": "logrocket\\.io",
       "flags": "i",
       "label": "Session Replay (LogRocket)",
       "confidence": "MEDIUM",
@@ -1931,7 +1931,7 @@
       "functionalImpact": "monitoring"
     },
     {
-      "pattern": "mouseflow",
+      "pattern": "mouseflow\\.com",
       "flags": "i",
       "label": "Session Replay (Mouseflow)",
       "confidence": "MEDIUM",
@@ -1955,7 +1955,7 @@
       "functionalImpact": "monitoring"
     },
     {
-      "pattern": "luckyorange",
+      "pattern": "luckyorange\\.com",
       "flags": "i",
       "label": "Session Replay (Lucky Orange)",
       "confidence": "MEDIUM",
@@ -1963,7 +1963,7 @@
       "functionalImpact": "monitoring"
     },
     {
-      "pattern": "inspectlet",
+      "pattern": "inspectlet\\.com",
       "flags": "i",
       "label": "Session Replay (Inspectlet)",
       "confidence": "MEDIUM",
@@ -1987,7 +1987,7 @@
       "functionalImpact": "monitoring"
     },
     {
-      "pattern": "quantummetric",
+      "pattern": "quantummetric\\.com",
       "flags": "i",
       "label": "Session Replay (Quantum Metric)",
       "confidence": "MEDIUM",
@@ -2003,7 +2003,7 @@
       "functionalImpact": "monitoring"
     },
     {
-      "pattern": "contentsquare",
+      "pattern": "contentsquare\\.com",
       "flags": "i",
       "label": "Session Replay (Contentsquare)",
       "confidence": "MEDIUM",
@@ -2091,7 +2091,7 @@
       "functionalImpact": "features"
     },
     {
-      "pattern": "cookiebot",
+      "pattern": "cookiebot\\.com",
       "flags": "i",
       "label": "Consent (Cookiebot)",
       "confidence": "MEDIUM",
@@ -2211,7 +2211,7 @@
       "functionalImpact": "features"
     },
     {
-      "pattern": "quantcast",
+      "pattern": "quantcast\\.com",
       "flags": "i",
       "label": "Consent (Quantcast Choice)",
       "confidence": "MEDIUM",
@@ -2251,7 +2251,7 @@
       "functionalImpact": "monitoring"
     },
     {
-      "pattern": "google-analytics",
+      "pattern": "google-analytics\\.com",
       "flags": "i",
       "label": "Analytics (Google Analytics)",
       "confidence": "LOW",
@@ -2275,7 +2275,7 @@
       "functionalImpact": "monitoring"
     },
     {
-      "pattern": "mixpanel",
+      "pattern": "mixpanel\\.com",
       "flags": "i",
       "label": "Analytics (Mixpanel)",
       "confidence": "LOW",
@@ -2379,7 +2379,7 @@
       "functionalImpact": "monitoring"
     },
     {
-      "pattern": "chartbeat",
+      "pattern": "chartbeat\\.com",
       "flags": "i",
       "label": "Analytics (Chartbeat)",
       "confidence": "LOW",
@@ -2395,7 +2395,7 @@
       "functionalImpact": "monitoring"
     },
     {
-      "pattern": "comscore",
+      "pattern": "comscore\\.com",
       "flags": "i",
       "label": "Analytics (Comscore)",
       "confidence": "LOW",
@@ -2451,7 +2451,7 @@
       "functionalImpact": "monitoring"
     },
     {
-      "pattern": "kissmetrics",
+      "pattern": "kissmetrics\\.com",
       "flags": "i",
       "label": "Analytics (Kissmetrics)",
       "confidence": "LOW",
@@ -2467,7 +2467,7 @@
       "functionalImpact": "monitoring"
     },
     {
-      "pattern": "statcounter",
+      "pattern": "statcounter\\.com",
       "flags": "i",
       "label": "Analytics (StatCounter)",
       "confidence": "LOW",
@@ -2619,7 +2619,7 @@
       "functionalImpact": "monitoring"
     },
     {
-      "pattern": "adroll",
+      "pattern": "adroll\\.com",
       "flags": "i",
       "label": "Ads (AdRoll)",
       "confidence": "LOW",
@@ -2699,7 +2699,7 @@
       "functionalImpact": "monitoring"
     },
     {
-      "pattern": "taboola",
+      "pattern": "taboola\\.com",
       "flags": "i",
       "label": "Ads (Taboola)",
       "confidence": "LOW",
@@ -2707,7 +2707,7 @@
       "functionalImpact": "monitoring"
     },
     {
-      "pattern": "outbrain",
+      "pattern": "outbrain\\.com",
       "flags": "i",
       "label": "Ads (Outbrain)",
       "confidence": "LOW",
