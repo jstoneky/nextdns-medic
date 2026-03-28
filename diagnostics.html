@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DNS Medic — Diagnostics</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #0f172a; color: #e2e8f0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 14px; padding: 24px; max-width: 680px; margin: 0 auto; }
+    h1 { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+    .subtitle { color: #64748b; font-size: 13px; margin-bottom: 24px; }
+    .section { background: #1e293b; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+    .section-title { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; margin-bottom: 12px; }
+    .row { display: flex; justify-content: space-between; align-items: flex-start; padding: 6px 0; border-bottom: 1px solid #0f172a; gap: 12px; }
+    .row:last-child { border-bottom: none; }
+    .row-label { color: #94a3b8; flex-shrink: 0; }
+    .row-value { color: #e2e8f0; text-align: right; word-break: break-all; }
+    .status-ok   { color: #22c55e; }
+    .status-warn { color: #f59e0b; }
+    .status-err  { color: #ef4444; }
+    textarea { width: 100%; background: #0f172a; border: 1px solid #334155; border-radius: 6px; color: #e2e8f0; font-family: monospace; font-size: 12px; padding: 12px; resize: vertical; min-height: 140px; margin-top: 8px; }
+    .btn-row { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+    button { background: #334155; border: none; border-radius: 6px; color: #e2e8f0; cursor: pointer; font-size: 13px; padding: 8px 16px; }
+    button:hover { background: #475569; }
+    button.primary { background: #3b82f6; }
+    button.primary:hover { background: #2563eb; }
+    .note { font-size: 12px; color: #64748b; margin-top: 8px; line-height: 1.5; }
+  </style>
+</head>
+<body>
+
+  <h1>🩺 DNS Medic — Diagnostics</h1>
+  <p class="subtitle">Use this page to gather info for a bug report when the extension isn't working.</p>
+
+  <div class="section">
+    <div class="section-title">Environment</div>
+    <div class="row"><span class="row-label">Browser</span><span class="row-value" id="d-browser">detecting...</span></div>
+    <div class="row"><span class="row-label">OS</span><span class="row-value" id="d-os">detecting...</span></div>
+    <div class="row"><span class="row-label">Platform</span><span class="row-value" id="d-platform">detecting...</span></div>
+    <div class="row"><span class="row-label">Language</span><span class="row-value" id="d-lang"></span></div>
+    <div class="row"><span class="row-label">Extension APIs available</span><span class="row-value" id="d-ext-api">checking...</span></div>
+    <div class="row"><span class="row-label">GitHub reachable</span><span class="row-value" id="d-github">checking...</span></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Bug Report</div>
+    <p class="note">The text below is pre-filled with your environment info. Add a description of the issue, then copy it into a GitHub issue.</p>
+    <textarea id="report-text" spellcheck="false"></textarea>
+    <div class="btn-row">
+      <button class="primary" onclick="copyReport()">Copy to Clipboard</button>
+      <button onclick="openGitHub()">Open GitHub Issue</button>
+    </div>
+    <p class="note" id="copy-status"></p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Console Errors</div>
+    <p class="note">If the extension is installed but broken, check the background page console:</p>
+    <p class="note" style="margin-top:8px"><strong>Chrome:</strong> Go to <code>chrome://extensions</code> → find DNS Medic → click "Inspect views: background page" → Console tab → copy any red errors.</p>
+    <p class="note" style="margin-top:6px"><strong>Firefox:</strong> Go to <code>about:debugging</code> → This Firefox → DNS Medic → click Inspect → Console tab → copy any red errors.</p>
+  </div>
+
+  <script>
+    function detectBrowser(ua) {
+      if (/Firefox\/(\d+)/.test(ua)) return `Firefox ${ua.match(/Firefox\/(\d+)/)[1]}`;
+      if (/Edg\/(\d+)/.test(ua))     return `Edge ${ua.match(/Edg\/(\d+)/)[1]}`;
+      if (/Chrome\/(\d+)/.test(ua))  return `Chrome ${ua.match(/Chrome\/(\d+)/)[1]}`;
+      if (/Safari\//.test(ua) && !/Chrome/.test(ua)) {
+        const m = ua.match(/Version\/(\d+)/);
+        return `Safari ${m ? m[1] : ''}`;
+      }
+      return ua.slice(0, 80);
+    }
+
+    function detectOS(ua) {
+      if (/Windows NT 10/.test(ua)) return "Windows 10/11";
+      if (/Windows/.test(ua))       return "Windows";
+      if (/Mac OS X/.test(ua))      return `macOS ${(ua.match(/Mac OS X ([\d_]+)/) || ['',''])[1].replace(/_/g,'.')}`;
+      if (/Android/.test(ua))       return `Android ${(ua.match(/Android ([\d.]+)/) || ['',''])[1]}`;
+      if (/Linux/.test(ua))         return "Linux";
+      if (/iPhone|iPad/.test(ua))   return "iOS";
+      return "Unknown";
+    }
+
+    const ua = navigator.userAgent;
+    const browser = detectBrowser(ua);
+    const os = detectOS(ua);
+
+    document.getElementById("d-browser").textContent   = browser;
+    document.getElementById("d-os").textContent        = os;
+    document.getElementById("d-platform").textContent  = navigator.platform || "unknown";
+    document.getElementById("d-lang").textContent      = navigator.language || "unknown";
+
+    // Check if extension APIs are available (only works if page is loaded from extension context)
+    const hasExt = typeof chrome !== "undefined" || typeof browser !== "undefined";
+    const extEl = document.getElementById("d-ext-api");
+    extEl.textContent = hasExt ? "Yes" : "No (page loaded outside extension)";
+    extEl.className   = "row-value " + (hasExt ? "status-ok" : "status-warn");
+
+    // Check GitHub reachability
+    const ghEl = document.getElementById("d-github");
+    fetch("https://raw.githubusercontent.com/jstoneky/nextdns-medic/main/manifest.json", { cache: "no-store" })
+      .then(r => {
+        ghEl.textContent = r.ok ? "Yes" : `No (HTTP ${r.status})`;
+        ghEl.className   = "row-value " + (r.ok ? "status-ok" : "status-err");
+      })
+      .catch(e => {
+        ghEl.textContent = `No (${e.message})`;
+        ghEl.className   = "row-value status-err";
+      });
+
+    // Build report text
+    function buildReport() {
+      const ghStatus = document.getElementById("d-github").textContent;
+      return [
+        "**Extension version:** (check chrome://extensions or about:addons)",
+        `**Browser:** ${browser}`,
+        `**OS:** ${os}`,
+        `**DNS provider:** `,
+        `**GitHub reachable:** ${ghStatus}`,
+        "",
+        "**Describe the bug:**",
+        "",
+        "**Steps to reproduce:**",
+        "1. ",
+        "2. ",
+        "",
+        "**Console errors (if any):**",
+        "```",
+        "",
+        "```",
+      ].join("\n");
+    }
+
+    // Populate textarea after GitHub check settles
+    setTimeout(() => {
+      document.getElementById("report-text").value = buildReport();
+    }, 1500);
+
+    function copyReport() {
+      const text = document.getElementById("report-text").value;
+      navigator.clipboard.writeText(text).then(() => {
+        document.getElementById("copy-status").textContent = "Copied!";
+        setTimeout(() => document.getElementById("copy-status").textContent = "", 2000);
+      }).catch(() => {
+        document.getElementById("copy-status").textContent = "Select all and copy manually (Ctrl+A / Cmd+A)";
+      });
+    }
+
+    function openGitHub() {
+      const body = document.getElementById("report-text").value;
+      const url  = `https://github.com/jstoneky/nextdns-medic/issues/new?template=bug_report.md&title=%5BBug%5D+&body=${encodeURIComponent(body)}`;
+      window.open(url, "_blank");
+    }
+  </script>
+
+</body>
+</html>

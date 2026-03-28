@@ -786,3 +786,23 @@ body.mobile .flush-cmd-text {
     padding: 10px 12px;
   }
 }
+
+/* ── Bug report link ── */
+.bug-report-section {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid #1e293b;
+  text-align: center;
+}
+
+.bug-report-link {
+  font-size: 11px;
+  color: #64748b;
+  text-decoration: none;
+  opacity: 0.8;
+}
+
+.bug-report-link:hover {
+  color: #94a3b8;
+  opacity: 1;
+}

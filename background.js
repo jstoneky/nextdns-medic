@@ -24,6 +24,34 @@ try { importScripts("db-loader.js"); } catch (e) {}
 // In-memory store: tabId -> { url, hostname, blocks: Map<domain, blockInfo> }
 const tabData = new Map();
 
+// ── Error log (persisted to storage.local, capped at 20 entries) ──────────────
+const ERROR_LOG_KEY = "dnsmedic_error_log";
+const ERROR_LOG_MAX = 20;
+
+async function logError(context, err) {
+  try {
+    const entry = {
+      ts: new Date().toISOString(),
+      ctx: context,
+      msg: err && err.message ? err.message : String(err),
+      stack: err && err.stack ? err.stack.split("\n").slice(0, 4).join(" | ") : "",
+    };
+    const stored = await ext.storage.local.get(ERROR_LOG_KEY);
+    const log = Array.isArray(stored[ERROR_LOG_KEY]) ? stored[ERROR_LOG_KEY] : [];
+    log.push(entry);
+    if (log.length > ERROR_LOG_MAX) log.splice(0, log.length - ERROR_LOG_MAX);
+    await ext.storage.local.set({ [ERROR_LOG_KEY]: log });
+  } catch (_) {
+    // never throw from the error logger itself
+  }
+}
+
+// Catch unhandled errors in the background context
+if (typeof self !== "undefined") {
+  self.addEventListener("error", (e) => logError("uncaught", e.error || e.message));
+  self.addEventListener("unhandledrejection", (e) => logError("unhandledrejection", e.reason));
+}
+
 // Errors that indicate DNS-level blocking
 // Chrome uses net::ERR_* codes; Firefox uses human-readable cert/network error strings
 const DNS_BLOCK_ERRORS = [
@@ -205,6 +233,18 @@ ext.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 
   if (msg.type === "GET_DB_META") {
     sendResponse(getDBMeta());
+    return true;
+  }
+
+  if (msg.type === "GET_ERROR_LOG") {
+    ext.storage.local.get(ERROR_LOG_KEY).then((stored) => {
+      sendResponse(stored[ERROR_LOG_KEY] || []);
+    });
+    return true;
+  }
+
+  if (msg.type === "CLEAR_ERROR_LOG") {
+    ext.storage.local.remove(ERROR_LOG_KEY).then(() => sendResponse({ ok: true }));
     return true;
   }
 });

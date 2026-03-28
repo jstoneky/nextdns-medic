@@ -464,6 +464,55 @@ async function refreshDBMeta() {
     const ageStr = age === 0 ? "today" : age === 1 ? "1 day ago" : `${age} days ago`;
     el.textContent = `${meta.source === "remote" ? "Remote" : "Cached"} DB v${meta.version} • ${meta.count} entries • fetched ${ageStr}`;
   }
+  await buildBugReportLink(meta);
+}
+
+async function buildBugReportLink(dbMeta) {
+  const btn = document.getElementById("btn-report-bug");
+  if (!btn) return;
+
+  // Gather diagnostic info
+  const manifest  = (typeof chrome !== "undefined" && chrome.runtime?.getManifest)
+                    ? chrome.runtime.getManifest()
+                    : (typeof browser !== "undefined" && browser.runtime?.getManifest ? browser.runtime.getManifest() : {});
+  const version   = manifest.version || "unknown";
+  const ua        = navigator.userAgent;
+  const provider  = providerKey || "none";
+  const dbStr     = dbMeta
+                    ? `${dbMeta.source === "bundled" ? "Bundled" : "Remote"} v${dbMeta.version || "?"}, ${dbMeta.count || "?"} entries`
+                    : "unknown";
+
+  // Fetch recent error log from background
+  const errorLog  = await sendMessage({ type: "GET_ERROR_LOG" }) || [];
+  const errorStr  = errorLog.length
+                    ? errorLog.map(e => `[${e.ts}] ${e.ctx}: ${e.msg}`).join("\n")
+                    : "None";
+
+  const body = [
+    `**Extension version:** ${version}`,
+    `**Browser:** ${ua}`,
+    `**DNS provider:** ${provider}`,
+    `**Domain database:** ${dbStr}`,
+    ``,
+    `**Describe the bug:**`,
+    `<!-- What happened? What did you expect? -->`,
+    ``,
+    `**Steps to reproduce:**`,
+    `1. `,
+    `2. `,
+    ``,
+    `**Background error log:**`,
+    "```",
+    errorStr,
+    "```",
+    ``,
+    `**Console errors (if any):**`,
+    `<!-- Chrome: chrome://extensions → DNS Medic → Inspect views: background page → Console`,
+    `     Firefox: about:debugging → This Firefox → DNS Medic → Inspect → Console -->`,
+  ].join("\n");
+
+  const url = `https://github.com/jstoneky/nextdns-medic/issues/new?template=bug_report.md&title=%5BBug%5D+&body=${encodeURIComponent(body)}`;
+  btn.href = url;
 }
 
 function updateProviderUI(selected) {
