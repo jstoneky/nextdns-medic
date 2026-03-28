@@ -107,35 +107,22 @@
     // Two-step: 1) try http://pi.hole (magic domain — only resolves if DNS goes through Pi-hole)
     //           2) fall back to saved piholeUrl if set (confirms server is up)
     // Returns { active: true } | { active: false } | { active: null }
-    async detectUsage({ piholeUrl } = {}) {
-      // Step 1: try the magic domain
+    async detectUsage() {
+      // Only the pi.hole magic domain is a real DNS routing check.
+      // It resolves to the Pi-hole IP only if DNS is going through Pi-hole.
+      // URL reachability (saved piholeUrl) is NOT used — the web UI being up
+      // doesn't mean DNS is routing through Pi-hole.
       try {
         const res = await fetch("http://pi.hole/api/info/version", {
           signal: AbortSignal.timeout(3000),
           credentials: "omit",
-          mode: "no-cors", // avoid CORS preflight; just need to know if it resolves
+          mode: "no-cors",
         });
-        // no-cors always returns opaque — a response object (not a TypeError) means it resolved
-        return { active: true, source: "pi.hole" };
+        // no-cors returns opaque response object (not TypeError) = resolved = routed
+        return { active: true };
       } catch (_) {
-        // ENOTFOUND = DNS not going through Pi-hole
+        return { active: false };
       }
-
-      // Step 2: if user has a custom URL saved, check reachability directly
-      if (piholeUrl) {
-        try {
-          const res = await fetch(`${piholeUrl}/api/info/version`, {
-            signal: AbortSignal.timeout(3000),
-            credentials: "omit",
-            mode: "no-cors",
-          });
-          return { active: true, source: "url" };
-        } catch (_) {
-          return { active: false };
-        }
-      }
-
-      return { active: false };
     },
     label: "Pi-hole",
     id: "pihole",

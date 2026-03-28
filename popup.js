@@ -54,32 +54,6 @@ async function checkDNSRouting() {
   const chip = document.getElementById("dns-status-chip");
   if (!chip) return;
 
-  chip.textContent = "checking…";
-  chip.className = "dns-status-chip checking";
-  chip.classList.remove("hidden");
-
-  let active = null;
-
-  if (providerKey === "nextdns") {
-    const nextdns = window.NDMProviders?.nextdns;
-    if (nextdns) {
-      const result = await nextdns.detectDeviceFingerprint();
-      active = result?.status === "ok";
-    }
-  } else if (providerKey === "controld") {
-    const controld = window.NDMProviders?.controld;
-    if (controld) {
-      const result = await controld.detectUsage();
-      active = result?.active === true;
-    }
-  } else if (providerKey === "pihole") {
-    const pihole = window.NDMProviders?.pihole;
-    if (pihole) {
-      const result = await pihole.detectUsage({ piholeUrl: creds.piholeUrl });
-      active = result?.active === true;
-    }
-  }
-
   const providerLabels = {
     nextdns:  "NextDNS",
     controld: "Control D",
@@ -87,11 +61,40 @@ async function checkDNSRouting() {
   };
   const label = providerLabels[providerKey] || providerKey;
 
+  chip.textContent = "checking…";
+  chip.className = "dns-status-chip checking";
+  chip.classList.remove("hidden");
+
+  let active = false;
+
+  try {
+    if (providerKey === "nextdns") {
+      const nextdns = window.NDMProviders?.nextdns;
+      if (nextdns) {
+        const result = await nextdns.detectDeviceFingerprint();
+        active = result?.status === "ok";
+      }
+    } else if (providerKey === "controld") {
+      const controld = window.NDMProviders?.controld;
+      if (controld) {
+        const result = await controld.detectUsage();
+        active = result?.active === true;
+      }
+    } else if (providerKey === "pihole") {
+      const pihole = window.NDMProviders?.pihole;
+      if (pihole) {
+        const result = await pihole.detectUsage();
+        active = result?.active === true;
+      }
+    }
+  } catch (_) {
+    active = false;
+  }
+
   if (active === true) {
     chip.textContent = `✓ ${label} active`;
     chip.className = "dns-status-chip active";
   } else {
-    // false or null (error/timeout) — show warning either way
     chip.textContent = `⚠ Not routing to ${label}`;
     chip.className = "dns-status-chip inactive";
   }
