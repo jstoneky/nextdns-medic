@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "DNS Medic",
   "short_name": "DNS Medic",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "Detects DNS blocks that break websites. Supports NextDNS, Pi-hole, and Control D. Groups domains by risk level and lets you allowlist them instantly.",
   "permissions": [
     "webRequest",

@@ -168,6 +168,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   loadBlocks();
 
+  // Close popup when the tab navigates (refresh, new URL, etc.)
+  // so the user always gets a fresh read after page load completes.
+  browser.tabs.onUpdated.addListener((tabId, changeInfo) => {
+    if (tabId === currentTabId && changeInfo.status === "loading") {
+      window.close();
+    }
+  });
+
   // Wire buttons
   document.getElementById("btn-settings").addEventListener("click", toggleSettings);
   document.getElementById("btn-clear").addEventListener("click", clearBlocks);
