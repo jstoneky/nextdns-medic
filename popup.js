@@ -1,5 +1,15 @@
 // DNS Medic — Popup Script (v3.0 — multi-provider)
 
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function esc(str) {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 // ── State ─────────────────────────────────────────────────────────────────────
 let currentTabId = null;
 let activeFilter = null; // "HIGH" | "MEDIUM" | "LOW" | null
@@ -315,18 +325,18 @@ function renderBlocks(blocks) {
     item.innerHTML = `
       <div class="confidence-dot ${conf}"></div>
       <div class="block-info">
-        <div class="block-domain" title="${block.domain}">${block.domain}</div>
-        <div class="block-label">${block.classification.label}</div>
+        <div class="block-domain" title="${esc(block.domain)}">${esc(block.domain)}</div>
+        <div class="block-label">${esc(block.classification.label)}</div>
         <div class="block-meta">
-          <span class="block-error">${errorShort}</span>
+          <span class="block-error">${esc(errorShort)}</span>
           ${block.count > 1 ? `<span class="block-count">×${block.count}</span>` : ""}
         </div>
         ${renderImpactBadge(block.classification.functionalImpact)}
         ${renderBlockedBy(block.domain)}
       </div>
       <div class="block-actions">
-        <button class="copy-btn" data-domain="${block.domain}" title="Copy domain">📋</button>
-        <button class="allowlist-btn" data-domain="${block.domain}" ${!hasCredentials ? "disabled title='Configure your DNS provider in settings'" : ""}>
+        <button class="copy-btn" data-domain="${esc(block.domain)}" title="Copy domain">📋</button>
+        <button class="allowlist-btn" data-domain="${esc(block.domain)}" ${!hasCredentials ? "disabled title='Configure your DNS provider in settings'" : ""}>
           + Allowlist
         </button>
       </div>
@@ -574,10 +584,10 @@ function renderControldProfileList(profiles, token) {
 
   list.innerHTML = profiles.map(p => {
     const isSelected = p.id === creds.controldProfileId;
-    return `<div class="ndm-profile-item${isSelected ? " selected" : ""}" data-id="${p.id}">
+    return `<div class="ndm-profile-item${isSelected ? " selected" : ""}" data-id="${esc(p.id)}">
       <div class="ndm-profile-item-info">
-        <span class="ndm-profile-item-name">${p.name}</span>
-        <span class="ndm-profile-item-id">${p.id}</span>
+        <span class="ndm-profile-item-name">${esc(p.name)}</span>
+        <span class="ndm-profile-item-id">${esc(p.id)}</span>
       </div>
       <div class="ndm-profile-item-right">
         ${isSelected ? `<span class="ndm-profile-item-check">✓</span>` : ""}
@@ -636,10 +646,10 @@ function renderProfileList(activeId) {
     const isDevice   = p.id === activeId;
     const isSelected = p.id === creds.profileId;
     return `
-      <div class="ndm-profile-item${isSelected ? " selected" : ""}" data-id="${p.id}">
+      <div class="ndm-profile-item${isSelected ? " selected" : ""}" data-id="${esc(p.id)}">
         <div class="ndm-profile-item-info">
-          <span class="ndm-profile-item-name">${p.name}</span>
-          <span class="ndm-profile-item-id">${p.id}</span>
+          <span class="ndm-profile-item-name">${esc(p.name)}</span>
+          <span class="ndm-profile-item-id">${esc(p.id)}</span>
         </div>
         <div class="ndm-profile-item-right">
           ${isDevice   ? `<span class="ndm-profile-item-badge">This device</span>` : ""}
