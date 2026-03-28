@@ -2,11 +2,12 @@
 
 **See exactly what your DNS blocker is blocking — and why it matters.**
 
-A browser extension for **Chrome**, **Firefox**, and **Firefox for Android** that watches your network traffic in real-time, identifies domains blocked by **NextDNS**, **Pi-hole**, or **Control D**, and tells you the *functional impact* — whether a block might break login, stop videos from loading, prevent checkout, hide maps, or silence support chat.
+A browser extension for **Chrome**, **Firefox**, **Firefox for Android**, and **Safari** that watches your network traffic in real-time, identifies domains blocked by **NextDNS**, **Pi-hole**, or **Control D**, and tells you the *functional impact* — whether a block might break login, stop videos from loading, prevent checkout, hide maps, or silence support chat.
 
 [![Chrome](https://img.shields.io/badge/Chrome-MV3-4285F4?logo=googlechrome&logoColor=white)](https://chromewebstore.google.com)
 [![Firefox](https://img.shields.io/badge/Firefox-MV2-FF7139?logo=firefox&logoColor=white)](https://addons.mozilla.org)
 [![Firefox Android](https://img.shields.io/badge/Firefox_Android-MV2-FF7139?logo=firefox&logoColor=white)](https://addons.mozilla.org)
+[![Safari](https://img.shields.io/badge/Safari-MV2-006CFF?logo=safari&logoColor=white)](https://github.com/jstoneky/nextdns-medic/releases)
 
 ![DNS Medic](store/chrome/marquee-1400x560-v3.0.jpg)
 
@@ -78,6 +79,9 @@ These badges are independent of the High/Medium/Low risk rating — a "Low" doma
 **Firefox:** Load via `about:debugging` → This Firefox → Load Temporary Add-on (select the zip)
 
 **Firefox for Android:** Install Firefox Nightly → open `about:config` → set `xpinstall.signatures.required` to `false` → open `about:Firefox` → tap the logo 5× to unlock debug menu → Install Extension from File → select the `.xpi`
+
+**Safari (macOS):** Download `dns-medic-safari-macOS-v*.zip` from [Releases](https://github.com/jstoneky/nextdns-medic/releases) → unzip → drag `DNS Medic.app` to Applications → right-click → **Open** (required once to bypass Gatekeeper) → Safari → **Develop → Allow Unsigned Extensions** → Safari → **Settings → Extensions** → enable DNS Medic.
+> Note: "Allow Unsigned Extensions" resets every time Safari quits — re-enable it each session until the Mac App Store version is available.
 
 *Chrome and Firefox desktop will be available on their respective extension stores once reviewed.*
 
@@ -269,7 +273,8 @@ PRs welcome. Most useful contributions:
 - **Impact badge corrections** — if the functional impact label is wrong, fix it with reasoning
 - **Blocklist attribution data** — if you know which blocklist targets a domain, add it
 - **New categories** — e.g. identity verification, streaming infrastructure, live events
-- **Edge / Safari port**
+- **Safari iOS port** — currently macOS only; iOS needs a content script heuristic approach
+- **Edge port**
 - **Automated integration tests**
 
 When adding entries to `domain-db.json`, match the schema:
