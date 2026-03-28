@@ -1,7 +1,7 @@
 # Firefox Add-ons Listing
 
 ## Name
-NextDNS Medic
+DNS Medic
 
 ## Summary (250 chars max)
 See what your DNS blocker is blocking — and why it matters. Impact badges, blocklist attribution, one-click allowlist for NextDNS & Pi-hole. 492 known domains across 13 categories.
@@ -12,13 +12,13 @@ See what your DNS blocker is blocking — and why it matters. Impact badges, blo
 
 If you use NextDNS, Pi-hole, or any DNS-based blocker, the answer is often a silently blocked domain. A CAPTCHA provider is blocked, and login fails. A feature flag service is blocked, and the page loads empty. A video CDN is blocked, and the player is just a white box. You reload six times and never find the cause.
 
-**NextDNS Medic makes it visible — and tells you exactly what's at stake.**
+**DNS Medic makes it visible — and tells you exactly what's at stake.**
 
 ---
 
 **See what's blocked and why it matters**
 
-Most DNS debuggers just show you a list of blocked domains. NextDNS Medic shows you the *functional impact* — a color-coded badge on every blocked domain telling you what breaks:
+Most DNS debuggers just show you a list of blocked domains. DNS Medic shows you the *functional impact* — a color-coded badge on every blocked domain telling you what breaks:
 
 🔴 **login/forms** — Could prevent login, sign-up, or checkout (auth, payments, CAPTCHA)
 🔵 **media/maps/assets** — Could break video playback, maps, or page images

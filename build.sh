@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# NextDNS Medic — Build Script
+# DNS Medic — Build Script
 # Usage: ./build.sh [chrome|firefox|all|clean]  (default: all)
 #
 # Runs the full test suite before building.
@@ -68,7 +68,7 @@ build_exclude_args() {
 # ── Chrome ─────────────────────────────────────────────────────────────────────
 build_chrome() {
   echo "▶ Building Chrome v${VERSION}..."
-  local out="$DIST/nextdns-medic-chrome-v${VERSION}.zip"
+  local out="$DIST/dns-medic-chrome-v${VERSION}.zip"
   local tmp
   tmp="$(mktemp -d)"
   rm -f "$out"
@@ -96,8 +96,8 @@ build_chrome() {
 # ── Firefox ────────────────────────────────────────────────────────────────────
 build_firefox() {
   echo "▶ Building Firefox v${VERSION}..."
-  local zip_out="$DIST/nextdns-medic-firefox-v${VERSION}.zip"
-  local xpi_out="$DIST/nextdns-medic-firefox-v${VERSION}.xpi"
+  local zip_out="$DIST/dns-medic-firefox-v${VERSION}.zip"
+  local xpi_out="$DIST/dns-medic-firefox-v${VERSION}.xpi"
   local tmp
   tmp="$(mktemp -d)"
 

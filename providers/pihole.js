@@ -1,4 +1,4 @@
-// providers/pihole.js — Pi-hole provider for NextDNS Medic
+// providers/pihole.js — Pi-hole provider for DNS Medic
 // Registered on window.NDMProviders.pihole
 
 (function () {
@@ -91,7 +91,7 @@
       const addRes = await fetch(`${url}/api/domains/allow/exact`, {
         method: "POST",
         headers: { "Content-Type": "application/json", "X-FTL-SID": sid },
-        body: JSON.stringify({ domain, comment: "Added by NextDNS Medic" }),
+        body: JSON.stringify({ domain, comment: "Added by DNS Medic" }),
         signal: AbortSignal.timeout(8000),
       });
       if (!addRes.ok) return { ok: false, error: `HTTP ${addRes.status}` };

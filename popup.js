@@ -1,4 +1,4 @@
-// NextDNS Medic — Popup Script (v3.0 — multi-provider)
+// DNS Medic — Popup Script (v3.0 — multi-provider)
 
 // ── State ─────────────────────────────────────────────────────────────────────
 let currentTabId = null;

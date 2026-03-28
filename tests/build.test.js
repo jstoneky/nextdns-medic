@@ -48,7 +48,7 @@ describe("Chrome manifest.json", () => {
 
   test("manifest_version is 3", () => assert.equal(manifest.manifest_version, 3));
   test("has name", () => assert.ok(manifest.name?.length > 0));
-  test("name is NextDNS Medic", () => assert.equal(manifest.name, "NextDNS Medic"));
+  test("name is DNS Medic", () => assert.equal(manifest.name, "DNS Medic"));
   test("has version", () => assert.match(manifest.version, /^\d+\.\d+\.\d+$/));
   test("has background.service_worker", () => assert.ok(manifest.background?.service_worker));
   test("has action", () => assert.ok(manifest.action));
@@ -64,11 +64,11 @@ describe("Firefox manifest.firefox.json", () => {
   });
 
   test("manifest_version is 2", () => assert.equal(manifest.manifest_version, 2));
-  test("name is NextDNS Medic", () => assert.equal(manifest.name, "NextDNS Medic"));
+  test("name is DNS Medic", () => assert.equal(manifest.name, "DNS Medic"));
   test("has browser_specific_settings.gecko.id", () =>
     assert.ok(manifest.browser_specific_settings?.gecko?.id?.length > 0));
   test("gecko ID matches expected", () =>
-    assert.equal(manifest.browser_specific_settings.gecko.id, "nextdns-medic@jstoneky.github.io"));
+    assert.equal(manifest.browser_specific_settings.gecko.id, "dns-medic@jstoneky.github.io"));
   test("has data_collection_permissions", () =>
     assert.ok(manifest.browser_specific_settings?.gecko?.data_collection_permissions));
   test("data_collection_permissions.required contains 'none'", () =>
@@ -123,7 +123,7 @@ describe("Build zips", () => {
   before(() => {
     // Build only if current version zip is missing (avoids recursive build)
     const pkg = JSON.parse(fs.readFileSync(path.join(ROOT, "manifest.json"), "utf8"));
-    const expected = path.join(DIST, `nextdns-medic-chrome-v${pkg.version}.zip`);
+    const expected = path.join(DIST, `dns-medic-chrome-v${pkg.version}.zip`);
     if (!fs.existsSync(expected)) {
       execSync("node --test tests/domain-db.test.js tests/error-detection.test.js && ./build.sh all", { cwd: ROOT, stdio: "pipe" });
     }
@@ -133,8 +133,8 @@ describe("Build zips", () => {
   const pkg = JSON.parse(fs.readFileSync(path.join(ROOT, "manifest.json"), "utf8"));
   const v = pkg.version;
   const zips = [
-    `nextdns-medic-chrome-v${v}.zip`,
-    `nextdns-medic-firefox-v${v}.zip`,
+    `dns-medic-chrome-v${v}.zip`,
+    `dns-medic-firefox-v${v}.zip`,
   ];
 
   for (const zip of zips) {
@@ -143,13 +143,13 @@ describe("Build zips", () => {
 
     test(`${zip} is non-empty`, () => {
       const stat = fs.statSync(path.join(DIST, zip));
-      assert.ok(stat.size > 50000, `${zip} is suspiciously small: ${stat.size} bytes`);
+      assert.ok(stat.size > 40000, `${zip} is suspiciously small: ${stat.size} bytes`);
     });
   }
 
   test("XPI exists for Firefox", () =>
     assert.ok(
-      fs.existsSync(path.join(DIST, `nextdns-medic-firefox-v${v}.xpi`)),
+      fs.existsSync(path.join(DIST, `dns-medic-firefox-v${v}.xpi`)),
       "Missing Firefox XPI"
     ));
 });

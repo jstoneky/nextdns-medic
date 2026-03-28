@@ -1,4 +1,4 @@
-// db-loader.js — Dynamic domain database loader for NextDNS Medic
+// db-loader.js — Dynamic domain database loader for DNS Medic
 //
 // Fetches domain-db.json from GitHub, validates strictly, caches for 7 days.
 // Falls back to bundled domain-db.js if remote is unavailable.
