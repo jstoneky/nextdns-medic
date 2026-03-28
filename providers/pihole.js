@@ -103,6 +103,40 @@
 
   window.NDMProviders = window.NDMProviders || {};
   window.NDMProviders.pihole = {
+    // Detect if Pi-hole is reachable.
+    // Two-step: 1) try http://pi.hole (magic domain — only resolves if DNS goes through Pi-hole)
+    //           2) fall back to saved piholeUrl if set (confirms server is up)
+    // Returns { active: true } | { active: false } | { active: null }
+    async detectUsage({ piholeUrl } = {}) {
+      // Step 1: try the magic domain
+      try {
+        const res = await fetch("http://pi.hole/api/info/version", {
+          signal: AbortSignal.timeout(3000),
+          credentials: "omit",
+          mode: "no-cors", // avoid CORS preflight; just need to know if it resolves
+        });
+        // no-cors always returns opaque — a response object (not a TypeError) means it resolved
+        return { active: true, source: "pi.hole" };
+      } catch (_) {
+        // ENOTFOUND = DNS not going through Pi-hole
+      }
+
+      // Step 2: if user has a custom URL saved, check reachability directly
+      if (piholeUrl) {
+        try {
+          const res = await fetch(`${piholeUrl}/api/info/version`, {
+            signal: AbortSignal.timeout(3000),
+            credentials: "omit",
+            mode: "no-cors",
+          });
+          return { active: true, source: "url" };
+        } catch (_) {
+          return { active: false };
+        }
+      }
+
+      return { active: false };
+    },
     label: "Pi-hole",
     id: "pihole",
 
