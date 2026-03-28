@@ -242,16 +242,26 @@ const IMPACT_LABELS = {
 };
 
 function renderImpactBadge(impact) {
-  if (!impact || !IMPACT_LABELS[impact]) return "";
-  return `<span class="impact-badge impact-${impact}">${IMPACT_LABELS[impact]}</span>`;
+  if (!impact || !IMPACT_LABELS[impact]) return null;
+  const span = document.createElement("span");
+  span.className = `impact-badge impact-${impact}`;
+  span.textContent = IMPACT_LABELS[impact];
+  return span;
 }
 
 function renderBlockedBy(domain) {
   const reasons = blocklistCache[domain];
-  if (!reasons?.length) return "";
-  return `<div class="block-reasons">${
-    reasons.map(r => `<span class="blocklist-tag" title="${r.id}">${r.name}</span>`).join("")
-  }</div>`;
+  if (!reasons?.length) return null;
+  const div = document.createElement("div");
+  div.className = "block-reasons";
+  reasons.forEach(r => {
+    const tag = document.createElement("span");
+    tag.className = "blocklist-tag";
+    tag.title = r.id;
+    tag.textContent = r.name;
+    div.appendChild(tag);
+  });
+  return div;
 }
 
 function renderBlocks(blocks) {
@@ -351,25 +361,71 @@ function renderBlocks(blocks) {
       .replace(/_/g, " ")
       .toLowerCase();
 
-    item.innerHTML = `
-      <div class="confidence-dot ${muted ? "UNKNOWN" : conf}"></div>
-      <div class="block-info">
-        <div class="block-domain" title="${esc(block.domain)}">${esc(block.domain)}</div>
-        <div class="block-label">${muted ? "Unknown domain" : esc(block.classification.label)}</div>
-        <div class="block-meta">
-          <span class="block-error">${esc(errorShort)}</span>
-          ${block.count > 1 ? `<span class="block-count">×${block.count}</span>` : ""}
-        </div>
-        ${muted ? "" : renderImpactBadge(block.classification.functionalImpact)}
-        ${renderBlockedBy(block.domain)}
-      </div>
-      <div class="block-actions">
-        <button class="copy-btn" data-domain="${esc(block.domain)}" title="Copy domain">📋</button>
-        <button class="allowlist-btn" data-domain="${esc(block.domain)}" ${!hasCredentials ? "disabled title='Configure your DNS provider in settings'" : ""}>
-          + Allowlist
-        </button>
-      </div>
-    `;
+    // confidence dot
+    const dot = document.createElement("div");
+    dot.className = `confidence-dot ${muted ? "UNKNOWN" : conf}`;
+    item.appendChild(dot);
+
+    // block info
+    const info = document.createElement("div");
+    info.className = "block-info";
+
+    const domainEl = document.createElement("div");
+    domainEl.className = "block-domain";
+    domainEl.title = block.domain;
+    domainEl.textContent = block.domain;
+    info.appendChild(domainEl);
+
+    const labelEl = document.createElement("div");
+    labelEl.className = "block-label";
+    labelEl.textContent = muted ? "Unknown domain" : block.classification.label;
+    info.appendChild(labelEl);
+
+    const meta = document.createElement("div");
+    meta.className = "block-meta";
+    const errorSpan = document.createElement("span");
+    errorSpan.className = "block-error";
+    errorSpan.textContent = errorShort;
+    meta.appendChild(errorSpan);
+    if (block.count > 1) {
+      const countSpan = document.createElement("span");
+      countSpan.className = "block-count";
+      countSpan.textContent = `×${block.count}`;
+      meta.appendChild(countSpan);
+    }
+    info.appendChild(meta);
+
+    if (!muted) {
+      const badge = renderImpactBadge(block.classification.functionalImpact);
+      if (badge) info.appendChild(badge);
+    }
+    const blockedBy = renderBlockedBy(block.domain);
+    if (blockedBy) info.appendChild(blockedBy);
+
+    item.appendChild(info);
+
+    // actions
+    const actions = document.createElement("div");
+    actions.className = "block-actions";
+
+    const copyBtn = document.createElement("button");
+    copyBtn.className = "copy-btn";
+    copyBtn.dataset.domain = block.domain;
+    copyBtn.title = "Copy domain";
+    copyBtn.textContent = "📋";
+    actions.appendChild(copyBtn);
+
+    const allowBtn = document.createElement("button");
+    allowBtn.className = "allowlist-btn";
+    allowBtn.dataset.domain = block.domain;
+    if (!hasCredentials) {
+      allowBtn.disabled = true;
+      allowBtn.title = "Configure your DNS provider in settings";
+    }
+    allowBtn.textContent = "+ Allowlist";
+    actions.appendChild(allowBtn);
+
+    item.appendChild(actions);
     return item;
   }
 
@@ -695,25 +751,41 @@ function renderControldProfileList(profiles, token) {
   if (!section || !list) return;
   if (!profiles.length) { section.classList.add("hidden"); return; }
 
-  list.innerHTML = profiles.map(p => {
+  list.textContent = "";
+  profiles.forEach(p => {
     const isSelected = p.id === creds.controldProfileId;
-    return `<div class="ndm-profile-item${isSelected ? " selected" : ""}" data-id="${esc(p.id)}">
-      <div class="ndm-profile-item-info">
-        <span class="ndm-profile-item-name">${esc(p.name)}</span>
-        <span class="ndm-profile-item-id">${esc(p.id)}</span>
-      </div>
-      <div class="ndm-profile-item-right">
-        ${isSelected ? `<span class="ndm-profile-item-check">✓</span>` : ""}
-      </div>
-    </div>`;
-  }).join("");
+    const item = document.createElement("div");
+    item.className = "ndm-profile-item" + (isSelected ? " selected" : "");
+    item.dataset.id = p.id;
 
-  list.querySelectorAll(".ndm-profile-item").forEach(el => {
-    el.addEventListener("click", () => {
-      creds.controldProfileId = el.dataset.id;
-      document.getElementById("controld-profile-input").value = el.dataset.id;
+    const infoDiv = document.createElement("div");
+    infoDiv.className = "ndm-profile-item-info";
+    const nameSpan = document.createElement("span");
+    nameSpan.className = "ndm-profile-item-name";
+    nameSpan.textContent = p.name;
+    const idSpan = document.createElement("span");
+    idSpan.className = "ndm-profile-item-id";
+    idSpan.textContent = p.id;
+    infoDiv.appendChild(nameSpan);
+    infoDiv.appendChild(idSpan);
+
+    const rightDiv = document.createElement("div");
+    rightDiv.className = "ndm-profile-item-right";
+    if (isSelected) {
+      const check = document.createElement("span");
+      check.className = "ndm-profile-item-check";
+      check.textContent = "✓";
+      rightDiv.appendChild(check);
+    }
+
+    item.appendChild(infoDiv);
+    item.appendChild(rightDiv);
+    item.addEventListener("click", () => {
+      creds.controldProfileId = item.dataset.id;
+      document.getElementById("controld-profile-input").value = item.dataset.id;
       renderControldProfileList(profiles, token);
     });
+    list.appendChild(item);
   });
 
   section.classList.remove("hidden");
@@ -755,27 +827,47 @@ function renderProfileList(activeId) {
   const list    = document.getElementById("ndm-profile-list");
   if (!profilesList.length) { section.classList.add("hidden"); return; }
 
-  list.innerHTML = profilesList.map(p => {
+  list.textContent = "";
+  profilesList.forEach(p => {
     const isDevice   = p.id === activeId;
     const isSelected = p.id === creds.profileId;
-    return `
-      <div class="ndm-profile-item${isSelected ? " selected" : ""}" data-id="${esc(p.id)}">
-        <div class="ndm-profile-item-info">
-          <span class="ndm-profile-item-name">${esc(p.name)}</span>
-          <span class="ndm-profile-item-id">${esc(p.id)}</span>
-        </div>
-        <div class="ndm-profile-item-right">
-          ${isDevice   ? `<span class="ndm-profile-item-badge">This device</span>` : ""}
-          ${isSelected ? `<span class="ndm-profile-item-check">✓</span>` : ""}
-        </div>
-      </div>`;
-  }).join("");
+    const item = document.createElement("div");
+    item.className = "ndm-profile-item" + (isSelected ? " selected" : "");
+    item.dataset.id = p.id;
 
-  list.querySelectorAll(".ndm-profile-item").forEach(el => {
-    el.addEventListener("click", () => {
-      creds.profileId = el.dataset.id;
+    const infoDiv = document.createElement("div");
+    infoDiv.className = "ndm-profile-item-info";
+    const nameSpan = document.createElement("span");
+    nameSpan.className = "ndm-profile-item-name";
+    nameSpan.textContent = p.name;
+    const idSpan = document.createElement("span");
+    idSpan.className = "ndm-profile-item-id";
+    idSpan.textContent = p.id;
+    infoDiv.appendChild(nameSpan);
+    infoDiv.appendChild(idSpan);
+
+    const rightDiv = document.createElement("div");
+    rightDiv.className = "ndm-profile-item-right";
+    if (isDevice) {
+      const badge = document.createElement("span");
+      badge.className = "ndm-profile-item-badge";
+      badge.textContent = "This device";
+      rightDiv.appendChild(badge);
+    }
+    if (isSelected) {
+      const check = document.createElement("span");
+      check.className = "ndm-profile-item-check";
+      check.textContent = "✓";
+      rightDiv.appendChild(check);
+    }
+
+    item.appendChild(infoDiv);
+    item.appendChild(rightDiv);
+    item.addEventListener("click", () => {
+      creds.profileId = item.dataset.id;
       renderProfileList(activeId);
     });
+    list.appendChild(item);
   });
 
   section.classList.remove("hidden");

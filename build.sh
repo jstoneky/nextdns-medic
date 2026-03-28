@@ -62,7 +62,6 @@ build_exclude_args() {
     --exclude=manifest.firefox.json --exclude=store/* --exclude=icons/concepts/* \
     --exclude=node_modules/* --exclude=tests/* --exclude=scripts/* \
     --exclude=package.json --exclude=package-lock.json \
-    --exclude=proposed-additions.json --exclude=.gitignore"
 }
 
 # ── Chrome ─────────────────────────────────────────────────────────────────────
@@ -84,7 +83,6 @@ build_chrome() {
     --exclude="scripts" \
     --exclude="package.json" \
     --exclude="package-lock.json" \
-    --exclude="proposed-additions.json" \
     . "$tmp/"
 
   (cd "$tmp" && zip -r - . --exclude "*.DS_Store*") > "$out" 2>/dev/null
@@ -105,7 +103,6 @@ build_firefox() {
     --exclude="*.md" --exclude="manifest.firefox.json" --exclude="store" \
     --exclude="icons/concepts" --exclude="tests" --exclude="scripts" \
     --exclude="node_modules" --exclude="package.json" --exclude="package-lock.json" \
-    --exclude="proposed-additions.json" \
     . "$tmp/"
 
   cp manifest.firefox.json "$tmp/manifest.json"

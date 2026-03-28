@@ -60,7 +60,7 @@
     <p class="note" style="margin-top:6px"><strong>Firefox:</strong> Go to <code>about:debugging</code> → This Firefox → DNS Medic → click Inspect → Console tab → copy any red errors.</p>
   </div>
 
-  <script>
+  <script src="diagnostics.js">
     function detectBrowser(ua) {
       if (/Firefox\/(\d+)/.test(ua)) return `Firefox ${ua.match(/Firefox\/(\d+)/)[1]}`;
       if (/Edg\/(\d+)/.test(ua))     return `Edge ${ua.match(/Edg\/(\d+)/)[1]}`;
