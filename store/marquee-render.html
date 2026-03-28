@@ -33,12 +33,19 @@ body {
 .b-purple { background:#1a0a2d; border:1px solid #a855f766; color:#d8b4fe; }
 
 /* ── Right popup ── */
-.right {
+.right-wrap {
   flex:0 0 500px;
-  height:460px;
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  padding-bottom:40px;
+}
+.right {
+  width:500px;
+  height:390px;
   position:relative;
   border-radius:14px;
-  box-shadow: 0 32px 80px rgba(0,0,0,0.9);
+  box-shadow: 0 8px 60px rgba(34,211,238,0.12), 0 24px 64px rgba(0,0,0,0.9);
   overflow:hidden;
 }
 .popup {
@@ -128,6 +135,7 @@ body {
   </div>
 </div>
 
+<div class="right-wrap">
 <div class="right">
   <div class="popup">
     <div class="ph">
@@ -172,18 +180,9 @@ body {
       </div>
       <button class="abtn">+ Allowlist</button>
     </div>
-    <div class="shdr low">&#128994; Low &mdash; Safe to ignore</div>
-    <div class="brow">
-      <div class="dot L"></div>
-      <div class="bi">
-        <div class="bd">www.google-analytics.com</div>
-        <div class="bl">Analytics (Google Analytics)</div>
-        <div class="bm">NS_ERROR_UNKNOWN_HOST &times;6</div>
-      </div>
-      <button class="abtn">+ Allowlist</button>
-    </div>
   </div>
   <div class="fade"></div>
+</div>
 </div>
 
 <script>
