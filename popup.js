@@ -170,7 +170,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Close popup when the tab navigates (refresh, new URL, etc.)
   // Background sends TAB_NAVIGATED on onCommitted — works on Chrome MV3 and Firefox.
-  browser.runtime.onMessage.addListener((msg) => {
+  ext.runtime.onMessage.addListener((msg) => {
     if (msg.type === "TAB_NAVIGATED" && msg.tabId === currentTabId) {
       window.close();
     }
