@@ -1,6 +1,6 @@
 {
-  "version": "2.0.1",
-  "updated": "2026-03-26",
+  "version": "2.0.2",
+  "updated": "2026-03-28",
   "entries": [
     {
       "pattern": "featureassets\\.org",
@@ -4217,6 +4217,416 @@
       "functionalImpact": "media",
       "reason": "SproutVideo marketing video platform CDN — blocking breaks embedded video players on business websites.",
       "source": "video platform research 2025"
+    },
+    {
+      "pattern": "cdn\\.onesignal\\.com",
+      "flags": "",
+      "label": "Notifications (OneSignal CDN)",
+      "confidence": "HIGH",
+      "category": "notifications",
+      "functionalImpact": "features",
+      "reason": "OneSignal is one of the most widely-used web push notification platforms. Blocking cdn.onesignal.com prevents the JS SDK from loading, breaking push notification subscriptions and permission prompts on sites that embed it.",
+      "source": "HaGeZi blocklist false positive reports; OneSignal documented as commonly blocked by Pi-hole/NextDNS users"
+    },
+    {
+      "pattern": "onesignal\\.com",
+      "flags": "",
+      "label": "Notifications (OneSignal API)",
+      "confidence": "HIGH",
+      "category": "notifications",
+      "functionalImpact": "features",
+      "reason": "OneSignal API endpoint used for push registration and delivery. Blocking breaks push notification delivery and subscription flows.",
+      "source": "OneSignal official docs; widely reported in pihole/nextdns communities"
+    },
+    {
+      "pattern": "cdn\\.pushwoosh\\.com",
+      "flags": "",
+      "label": "Notifications (Pushwoosh CDN)",
+      "confidence": "HIGH",
+      "category": "notifications",
+      "functionalImpact": "features",
+      "reason": "cdn.pushwoosh.com serves the Pushwoosh web push notification SDK. Blocking breaks web push opt-in prompts and notification delivery on websites using Pushwoosh.",
+      "source": "github.com/Pushwoosh/web-push-notifications README; confirmed CDN endpoint for web SDK"
+    },
+    {
+      "pattern": "cp\\.pushwoosh\\.com",
+      "flags": "",
+      "label": "Notifications (Pushwoosh API)",
+      "confidence": "HIGH",
+      "category": "notifications",
+      "functionalImpact": "features",
+      "reason": "cp.pushwoosh.com is the Pushwoosh control panel API used for push notification delivery. Blocking breaks push subscription registration and notification send.",
+      "source": "Pushwoosh documentation; confirmed API endpoint for push delivery"
+    },
+    {
+      "pattern": "go\\.airship\\.com",
+      "flags": "",
+      "label": "Notifications (Airship SDK endpoint)",
+      "confidence": "HIGH",
+      "category": "notifications",
+      "functionalImpact": "features",
+      "reason": "Airship (formerly Urban Airship) is an enterprise push notification platform. go.airship.com is the primary SDK API endpoint; blocking breaks web push subscriptions and in-app messaging.",
+      "source": "airship.com/docs/developer/sdk-integration/web; enterprise push platform SDK docs"
+    },
+    {
+      "pattern": "cdn\\.airship\\.com",
+      "flags": "",
+      "label": "Notifications (Airship Web SDK CDN)",
+      "confidence": "HIGH",
+      "category": "notifications",
+      "functionalImpact": "features",
+      "reason": "cdn.airship.com hosts the Airship Web SDK JS file loaded by websites that use Airship for push notifications and in-app messaging. Blocking prevents SDK initialization.",
+      "source": "Airship Web SDK v2 documentation (released August 2024); SDK CDN endpoint"
+    },
+    {
+      "pattern": "js\\.appboycdn\\.com",
+      "flags": "",
+      "label": "Notifications (Braze Web SDK CDN)",
+      "confidence": "MEDIUM",
+      "category": "notifications",
+      "functionalImpact": "features",
+      "reason": "js.appboycdn.com (legacy Appboy/Braze name) serves the Braze Web SDK used for in-app messaging, push notifications, and personalized content delivery. Blocking disables all in-app messages and push prompts.",
+      "source": "Braze SDK docs; appboycdn.com is Braze's longstanding CDN domain, commonly flagged by blocklists"
+    },
+    {
+      "pattern": "static\\.iterable\\.com",
+      "flags": "",
+      "label": "Notifications (Iterable Web SDK CDN)",
+      "confidence": "MEDIUM",
+      "category": "notifications",
+      "functionalImpact": "features",
+      "reason": "static.iterable.com hosts the Iterable web SDK used for push notifications, in-browser messages, and web push subscription management.",
+      "source": "Iterable web push documentation; confirmed CDN hostname for SDK delivery"
+    },
+    {
+      "pattern": "cdn\\.attn\\.tv",
+      "flags": "",
+      "label": "Notifications (Attentive popup CDN)",
+      "confidence": "MEDIUM",
+      "category": "notifications",
+      "functionalImpact": "features",
+      "reason": "cdn.attn.tv serves the Attentive signup widget JS embedded on e-commerce sites for SMS/push subscriber acquisition. Blocking hides the subscriber sign-up modal/popup.",
+      "source": "Attentive developer docs; attn.tv CDN confirmed as script source for embedded popups"
+    },
+    {
+      "pattern": "static\\.klaviyo\\.com",
+      "flags": "",
+      "label": "Notifications (Klaviyo onsite JS CDN)",
+      "confidence": "MEDIUM",
+      "category": "ecommerce",
+      "functionalImpact": "forms",
+      "reason": "static.klaviyo.com serves the Klaviyo Active On Site JS (e.g. klaviyo.js) required for sign-up forms, pop-ups, and conversion tracking on e-commerce sites. Blocking causes embedded email capture forms to disappear.",
+      "source": "Klaviyo Help Center articles; Stack Overflow Q 76222749; widely reported as critical for e-commerce forms"
+    },
+    {
+      "pattern": "dev\\.visualwebsiteoptimizer\\.com",
+      "flags": "",
+      "label": "A/B Testing (VWO SmartCode API)",
+      "confidence": "MEDIUM",
+      "category": "ab-testing",
+      "functionalImpact": "features",
+      "reason": "dev.visualwebsiteoptimizer.com is the primary VWO (Visual Website Optimizer) SmartCode endpoint. Blocking it causes 'connection disruption' errors and prevents A/B test variants from loading, which can break page elements modified by experiments.",
+      "source": "VWO Help Center article 21410329983001 'Troubleshooting Connection Disruptions in VWO'; confirmed as commonly blocked"
+    },
+    {
+      "pattern": "cdn\\.abtasty\\.com",
+      "flags": "",
+      "label": "A/B Testing (AB Tasty CDN)",
+      "confidence": "MEDIUM",
+      "category": "ab-testing",
+      "functionalImpact": "features",
+      "reason": "cdn.abtasty.com serves the AB Tasty script that applies experiment variations and personalization. Blocking can result in missing page elements or broken layouts if the default state depends on the test variant.",
+      "source": "AB Tasty documentation; confirmed CDN hostname for experiment script delivery"
+    },
+    {
+      "pattern": "data\\.convert\\.com",
+      "flags": "",
+      "label": "A/B Testing (Convert.com data endpoint)",
+      "confidence": "MEDIUM",
+      "category": "ab-testing",
+      "functionalImpact": "features",
+      "reason": "data.convert.com is the Convert Experiences experiment data endpoint. Blocking it halts A/B test execution and can leave pages in an indeterminate state if experiments control content display.",
+      "source": "Convert.com developer documentation; confirmed data endpoint for experiment delivery"
+    },
+    {
+      "pattern": "cdn\\.convertexperiments\\.com",
+      "flags": "",
+      "label": "A/B Testing (Convert.com JS CDN)",
+      "confidence": "MEDIUM",
+      "category": "ab-testing",
+      "functionalImpact": "features",
+      "reason": "cdn.convertexperiments.com serves the Convert Experiences JavaScript tag. Blocking prevents A/B experiment scripts from loading.",
+      "source": "Convert Experiences implementation docs; confirmed CDN hostname for tracking script"
+    },
+    {
+      "pattern": "lottie\\.host",
+      "flags": "",
+      "label": "Animation (LottieFiles hosted CDN)",
+      "confidence": "HIGH",
+      "category": "animation",
+      "functionalImpact": "assets",
+      "reason": "lottie.host is LottieFiles' primary CDN for self-hosted Lottie animations. Many sites use <lottie-player> or dotLottie elements referencing lottie.host URLs; blocking replaces animations with blank space.",
+      "source": "LottieFiles documentation; commonly embedded on marketing and product pages; HIGH usage as of 2024-2025"
+    },
+    {
+      "pattern": "assets\\.lottiefiles\\.com",
+      "flags": "",
+      "label": "Animation (LottieFiles assets CDN)",
+      "confidence": "HIGH",
+      "category": "animation",
+      "functionalImpact": "assets",
+      "reason": "assets.lottiefiles.com serves Lottie JSON animation files and the LottieFiles player SDK. Blocking breaks embedded animations used for loaders, onboarding, and UI feedback.",
+      "source": "LottieFiles embed documentation; widely used CDN for animation delivery"
+    },
+    {
+      "pattern": "cdn\\.crowdin\\.com",
+      "flags": "",
+      "label": "Localization (Crowdin CDN)",
+      "confidence": "MEDIUM",
+      "category": "localization",
+      "functionalImpact": "features",
+      "reason": "cdn.crowdin.com serves the Crowdin in-context translation overlay SDK used by internationalized web apps. Blocking breaks the translation management overlay used by translators and may prevent locale string bundles from loading.",
+      "source": "Crowdin documentation; CDN endpoint for in-context localization SDK"
+    },
+    {
+      "pattern": "distributions\\.crowdin\\.com",
+      "flags": "",
+      "label": "Localization (Crowdin string distribution CDN)",
+      "confidence": "MEDIUM",
+      "category": "localization",
+      "functionalImpact": "features",
+      "reason": "distributions.crowdin.com is used by apps that deliver translated string bundles via Crowdin OTA distribution. Blocking can cause UI to fall back to default language or show missing text.",
+      "source": "Crowdin OTA (Over-The-Air) content delivery docs; production CDN for localization bundles"
+    },
+    {
+      "pattern": "\\.authkit\\.app",
+      "flags": "",
+      "label": "Auth (WorkOS AuthKit hosted login)",
+      "confidence": "HIGH",
+      "category": "auth",
+      "functionalImpact": "login",
+      "reason": "*.authkit.app is the default hosted login page domain for WorkOS AuthKit. Apps redirect users to *.authkit.app for sign-in; blocking this domain prevents login entirely.",
+      "source": "WorkOS blog 'Introducing AuthKit and User Management' (Nov 2023); Hacker News HN 41927400; confirmed as primary auth redirect domain"
+    },
+    {
+      "pattern": "api\\.supertokens\\.io",
+      "flags": "",
+      "label": "Auth (SuperTokens cloud API)",
+      "confidence": "HIGH",
+      "category": "auth",
+      "functionalImpact": "login",
+      "reason": "api.supertokens.io is the SuperTokens managed cloud API for session management and authentication. Blocking it breaks login, signup, and session refresh for apps using SuperTokens hosted service.",
+      "source": "SuperTokens documentation; confirmed API endpoint for cloud-hosted auth service"
+    },
+    {
+      "pattern": "api\\.maptiler\\.com",
+      "flags": "",
+      "label": "Maps (MapTiler API)",
+      "confidence": "HIGH",
+      "category": "maps",
+      "functionalImpact": "map",
+      "reason": "api.maptiler.com is the primary MapTiler endpoint for map tiles, geocoding, and geodata APIs. MapTiler is widely used as an OpenStreetMap-based alternative to Google Maps; blocking causes maps to fail to load.",
+      "source": "MapTiler Terms and Conditions; confirmed as single required endpoint per MapTiler TOS: 'requests directly to MapTiler infrastructure via https://api.maptiler.com/'"
+    },
+    {
+      "pattern": "cdn\\.maptiler\\.com",
+      "flags": "",
+      "label": "Maps (MapTiler SDK CDN)",
+      "confidence": "HIGH",
+      "category": "maps",
+      "functionalImpact": "map",
+      "reason": "cdn.maptiler.com serves the MapTiler SDK JavaScript and CSS files. Blocking prevents the map component from initializing.",
+      "source": "MapTiler SDK documentation; CDN for MapTiler GL JS library"
+    },
+    {
+      "pattern": "app\\.vwo\\.com",
+      "flags": "",
+      "label": "A/B Testing (VWO app endpoint)",
+      "confidence": "MEDIUM",
+      "category": "ab-testing",
+      "functionalImpact": "features",
+      "reason": "app.vwo.com is used by the VWO SmartCode for certain API calls and configuration fetches. Blocking it alongside dev.visualwebsiteoptimizer.com can cause experiment loading failures.",
+      "source": "VWO SmartCode implementation docs; secondary endpoint used with dev.visualwebsiteoptimizer.com"
+    },
+    {
+      "pattern": "sdk\\.iad-\\d+\\.braze\\.com",
+      "flags": "",
+      "label": "Notifications (Braze SDK endpoint)",
+      "confidence": "MEDIUM",
+      "category": "notifications",
+      "functionalImpact": "features",
+      "reason": "sdk.iad-XX.braze.com endpoints are the Braze SDK data centers (e.g. sdk.iad-06.braze.com). Blocking them prevents in-app messages, push notifications, and content cards from being fetched and displayed.",
+      "source": "Braze SDK configuration docs; confirmed as region-specific SDK endpoints"
+    },
+    {
+      "pattern": "staticw2\\.yotpo\\.com",
+      "flags": "",
+      "label": "Reviews (Yotpo widget CDN)",
+      "confidence": "HIGH",
+      "category": "reviews",
+      "functionalImpact": "features",
+      "reason": "staticw2.yotpo.com serves the Yotpo reviews widget JS. Blocking it removes product review sections from e-commerce product pages. Mozilla filed Firefox bug #1707758 specifically because ETP Strict mode breaks Yotpo reviews on shopping sites.",
+      "source": "Mozilla Bugzilla #1707758 'Yotpo review widget is broken by ETP strict mode'; Pi-hole community; Yotpo implementation docs"
+    },
+    {
+      "pattern": "api\\.bazaarvoice\\.com",
+      "flags": "",
+      "label": "Reviews (Bazaarvoice API)",
+      "confidence": "HIGH",
+      "category": "reviews",
+      "functionalImpact": "features",
+      "reason": "api.bazaarvoice.com is the Bazaarvoice reviews API. Blocking it removes product review sections from major retailer sites (Belkin, Banana Republic, Neiman Marcus, Saks Fifth Avenue). Pi-hole users regularly report needing to whitelist bazaarvoice.com to view product reviews.",
+      "source": "Reddit r/pihole 'White list product reviews from third party blocked website'; Pi-hole discourse thread #3192; Reddit r/pihole Belkin post"
+    },
+    {
+      "pattern": "display\\.ugc\\.bazaarvoice\\.com",
+      "flags": "",
+      "label": "Reviews (Bazaarvoice display CDN)",
+      "confidence": "HIGH",
+      "category": "reviews",
+      "functionalImpact": "features",
+      "reason": "display.ugc.bazaarvoice.com serves Bazaarvoice review display widgets. Blocking it prevents product reviews from rendering. Same functional impact as api.bazaarvoice.com.",
+      "source": "Reddit r/pihole Belkin website post listing blocked domains; Pi-hole community whitelist guides"
+    },
+    {
+      "pattern": "apps\\.bazaarvoice\\.com",
+      "flags": "",
+      "label": "Reviews (Bazaarvoice app CDN)",
+      "confidence": "HIGH",
+      "category": "reviews",
+      "functionalImpact": "features",
+      "reason": "apps.bazaarvoice.com serves Bazaarvoice application scripts for ratings and reviews. Blocking it prevents review submission forms from loading.",
+      "source": "Reddit r/pihole Belkin website post; pi-hole.net whitelist discussions"
+    },
+    {
+      "pattern": "analytics-static\\.ugc\\.bazaarvoice\\.com",
+      "flags": "",
+      "label": "Reviews (Bazaarvoice analytics-static)",
+      "confidence": "MEDIUM",
+      "category": "reviews",
+      "functionalImpact": "monitoring",
+      "reason": "analytics-static.ugc.bazaarvoice.com is used for Bazaarvoice tracking/analytics in the review widget context. Lower impact than api/display, but often grouped with the other Bazaarvoice domains in user-generated content blocks.",
+      "source": "Reddit r/pihole Belkin website post listing blocked domains"
+    },
+    {
+      "pattern": "images\\.ctfassets\\.net",
+      "flags": "",
+      "label": "Headless CMS (Contentful image CDN)",
+      "confidence": "HIGH",
+      "category": "headless-cms",
+      "functionalImpact": "assets",
+      "reason": "images.ctfassets.net is the Contentful CMS image CDN. It was accidentally added to a DNS blocklist (bjornstar/hosts). Blocking it breaks images on any website using Contentful as their CMS.",
+      "source": "github.com/bjornstar/hosts/issues/8 'images.ctfassets.net – Is this intentionally blocked?'; Contentful docs"
+    },
+    {
+      "pattern": "assets\\.ctfassets\\.net",
+      "flags": "",
+      "label": "Headless CMS (Contentful assets CDN)",
+      "confidence": "HIGH",
+      "category": "headless-cms",
+      "functionalImpact": "assets",
+      "reason": "assets.ctfassets.net is the Contentful CMS assets CDN for non-image files (PDFs, videos, etc). Blocking breaks file downloads and media on Contentful-powered websites.",
+      "source": "Contentful documentation; sister domain to images.ctfassets.net"
+    },
+    {
+      "pattern": "img2\\.storyblok\\.com",
+      "flags": "",
+      "label": "Headless CMS (Storyblok image CDN v2)",
+      "confidence": "MEDIUM",
+      "category": "headless-cms",
+      "functionalImpact": "assets",
+      "reason": "img2.storyblok.com is the Storyblok Image Service CDN. Blocking it causes all images served via the Storyblok image transformation pipeline to fail to load.",
+      "source": "Storyblok documentation; Image Service uses img2.storyblok.com as base URL"
+    },
+    {
+      "pattern": "a\\.storyblok\\.com",
+      "flags": "",
+      "label": "Headless CMS (Storyblok assets CDN)",
+      "confidence": "MEDIUM",
+      "category": "headless-cms",
+      "functionalImpact": "assets",
+      "reason": "a.storyblok.com is the Storyblok original assets CDN (for unprocessed media files). Blocking it causes original images and files in Storyblok-powered sites to fail to load.",
+      "source": "Storyblok documentation; primary assets domain alongside img2.storyblok.com"
+    },
+    {
+      "pattern": "\\.propelauthtest\\.com",
+      "flags": "",
+      "label": "Auth (PropelAuth hosted login)",
+      "confidence": "MEDIUM",
+      "category": "auth",
+      "functionalImpact": "login",
+      "reason": "*.propelauthtest.com and propelauth.com are used by PropelAuth's hosted login pages. Blocking breaks SSO redirect flows for B2B SaaS apps using PropelAuth.",
+      "source": "PropelAuth documentation; confirmed as primary hosted login domain"
+    },
+    {
+      "pattern": "\\.propelauth\\.com",
+      "flags": "",
+      "label": "Auth (PropelAuth API and login)",
+      "confidence": "MEDIUM",
+      "category": "auth",
+      "functionalImpact": "login",
+      "reason": "propelauth.com subdomains serve both the hosted login page and the auth API. Blocking prevents user sign-in for B2B apps using PropelAuth.",
+      "source": "PropelAuth documentation; auth provider used by hundreds of B2B SaaS apps"
+    },
+    {
+      "pattern": "cdn\\.callrail\\.com",
+      "flags": "",
+      "label": "Call Tracking (CallRail CDN)",
+      "confidence": "HIGH",
+      "category": "call-tracking",
+      "functionalImpact": "features",
+      "reason": "cdn.callrail.com serves the CallRail JavaScript swap.js used for dynamic number insertion (DNI). Blocking it prevents phone number swapping on websites, breaking call attribution tracking. CallRail's own Help Center documents interference from ad blockers and lists cdn.callrail.com as the required domain.",
+      "source": "CallRail Help Center 'Support CNAME Cloaking for tracking scripts'; hagezi/dns-blocklists issue #4245; CallRail DNI docs"
+    },
+    {
+      "pattern": "cdn\\.bc0a\\.com",
+      "flags": "",
+      "label": "SEO (BrightEdge AutoPilot CDN)",
+      "confidence": "HIGH",
+      "category": "seo",
+      "functionalImpact": "features",
+      "reason": "cdn.bc0a.com is the BrightEdge AutoPilot SEO platform CDN. It was incorrectly categorized as adware/tracking in the MyPDNS blocklist, confirmed as a false positive by BrightEdge themselves in github.com/mypdns/Support/issues/2. Blocking it can affect content recommendations on sites using BrightEdge.",
+      "source": "github.com/mypdns/Support/issues/2 'bc0a.com domain is wrongly categorized and moved to the blacklist'; BrightEdge official statement in issue; HaGeZi issue #4133"
+    },
+    {
+      "pattern": "bc0a\\.com",
+      "flags": "",
+      "label": "SEO (BrightEdge AutoPilot apex domain)",
+      "confidence": "HIGH",
+      "category": "seo",
+      "functionalImpact": "features",
+      "reason": "bc0a.com is the BrightEdge AutoPilot SEO platform domain. Wrongly categorized in multiple blocklists. BrightEdge confirmed this is a non-tracking CDN domain used for content optimization delivery.",
+      "source": "github.com/mypdns/Support/issues/2; BrightEdge official statement"
+    },
+    {
+      "pattern": "cdn\\.sanity\\.io",
+      "flags": "",
+      "label": "Headless CMS (Sanity image CDN)",
+      "confidence": "HIGH",
+      "category": "headless-cms",
+      "functionalImpact": "assets",
+      "reason": "cdn.sanity.io is the Sanity.io headless CMS image CDN. On March 29, 2024, Cloudflare incorrectly flagged cdn.sanity.io as malware, causing widespread broken images across all Sanity-powered websites. This is a confirmed real-world blocklist false positive incident.",
+      "source": "sanity.io/answers/cloudflare-dns-issue-impacts-sanity-io-users (March 2024 incident); Sanity official post-mortem"
+    },
+    {
+      "pattern": "apicdn\\.sanity\\.io",
+      "flags": "",
+      "label": "Headless CMS (Sanity API CDN)",
+      "confidence": "MEDIUM",
+      "category": "headless-cms",
+      "functionalImpact": "assets",
+      "reason": "apicdn.sanity.io is the Sanity.io cached API CDN endpoint. Blocking it forces all requests to the uncached API, increasing latency, and can degrade content delivery performance.",
+      "source": "Sanity.io CDN documentation; apicdn.sanity.io is the CDN-enabled API endpoint"
+    },
+    {
+      "pattern": "www\\.datocms-assets\\.com",
+      "flags": "",
+      "label": "Headless CMS (DatoCMS asset CDN)",
+      "confidence": "HIGH",
+      "category": "headless-cms",
+      "functionalImpact": "assets",
+      "reason": "www.datocms-assets.com is the primary shared asset CDN for all DatoCMS-powered websites. Blocking it causes all images, videos, and media files served from DatoCMS to fail to load.",
+      "source": "DatoCMS documentation 'Custom assets domain'; datocms-assets.com is the default shared CDN domain"
     }
   ]
 }
