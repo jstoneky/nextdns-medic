@@ -1,158 +1,156 @@
-# Chrome Web Store Listing
+# Chrome Web Store Listing — DNS Medic v3.2.0
 
 ## Name
 DNS Medic
 
 ## Short Description (132 chars max)
-See what your DNS blocker is blocking — and why it matters. Impact badges, blocklist attribution, one-click allowlist for NextDNS & Pi-hole.
+Detects DNS blocks that break websites. Supports NextDNS, Pi-hole, and Control D. Groups by risk and lets you allowlist instantly.
 
 ## Full Description
 
-**Ever wonder why a website isn't loading properly — even though your internet is fine?**
+**Your DNS blocker is silently breaking websites. DNS Medic shows you exactly what — and why it matters.**
 
-If you use NextDNS, Pi-hole, or any DNS-based blocker, the answer is often a silently blocked domain. A feature flag service gets blocked, and the inventory page never loads. An auth provider is blocked, and login breaks. A CAPTCHA provider is blocked, and the form won't submit. You reload six times and never find the cause.
+If you use NextDNS, Pi-hole, or Control D, you already know the tradeoff: great privacy, but occasionally something stops working. A login breaks. A payment form won't load. Search autocomplete disappears. You reload three times and give up.
 
-**DNS Medic makes it visible — and tells you exactly what's at stake.**
-
----
-
-### See what's blocked and why it matters
-
-Most DNS debuggers just show you a list of blocked domains. DNS Medic shows you the *functional impact* — a color-coded badge on every blocked domain telling you what breaks if you leave it blocked:
-
-🔴 **login/forms** — Could prevent login, sign-up, or checkout (auth, payments, CAPTCHA)
-🔵 **media/maps/assets** — Could break video playback, maps, or page images (CDN, video players, maps, image CDNs)
-🟢 **chat** — Could hide or disable support chat widgets
-🟣 **feature flags** — Could silently change or disable site features
-🩵 **search** — Could break search or autocomplete
-⚫ **monitoring** — Could disable error reporting
-
-So instead of "statsig.com is blocked (High)", you see "statsig.com is blocked — 🟣 feature flags". You know immediately whether it matters for what you're trying to do.
+DNS Medic watches every network request in real time, catches the DNS blocks, and tells you the functional impact of each one — so you can make a smart call: ignore it, or allowlist it in one click.
 
 ---
 
 ### What it does
 
-• Monitors every network request on every tab in real-time
-• Detects DNS-level blocks (ERR_NAME_NOT_RESOLVED, ERR_CERT_AUTHORITY_INVALID, and similar)
-• Shows a **functional impact badge** on every blocked domain — not just risk, but *what breaks*
-• **Blocklist attribution** — see which blocklist (HaGeZi, AdGuard, uBlock, etc.) flagged each domain
-• Classifies 492 known services across 13 categories by functional impact
-• Shows a live badge on the icon — red means high-risk blocks are active right now
-• Filter by risk level (High / Medium / Low) with a single click on the stats bar
-• Copy any domain to clipboard — works with Pi-hole, AdGuard, or any DNS blocker
-• **One-click allowlist for NextDNS AND Pi-hole** (v5 + v6) — API key required
-• DNS flush reminder after every allowlist or copy action — exact command for your OS, ready to copy
-• **NextDNS profile auto-detection** — fingerprint match labels your current device's profile "This device"
+- Monitors every tab in real time for DNS-level blocks
+- Detects ERR_NAME_NOT_RESOLVED, ERR_CERT_AUTHORITY_INVALID, and more
+- Classifies 492 known services across 13 categories by functional impact
+- Shows **impact badges** — not just "blocked," but what actually breaks
+- Shows **blocklist attribution** — which list flagged the domain (HaGeZi, AdGuard, uBlock, etc.)
+- Live badge on the extension icon — red dot means high-risk blocks are active now
+- Filter by **High / Medium / Low** risk with one click
+- **One-click allowlist** for NextDNS, Pi-hole (v5 + v6), and Control D
+- DNS flush command shown automatically after every allowlist action
+- **Light and dark mode** — follows your system preference or set manually
 
 ---
 
 ### Risk levels
 
 🔴 **High — May break this site**
-Feature flag services (Statsig, LaunchDarkly, Optimizely, PostHog), authentication providers (Auth0, Okta, Clerk), search APIs (Algolia, Bloomreach), payment processors (Stripe, Braintree, Adyen), CAPTCHA (reCAPTCHA, hCaptcha, Turnstile), and core CDNs. When these are blocked, sites often fail silently or show broken/empty states.
+Auth providers (Auth0, Okta, Clerk), feature flags (Statsig, LaunchDarkly, PostHog), payment processors (Stripe, Braintree, Adyen), search APIs (Algolia, Bloomreach), CAPTCHA (reCAPTCHA, hCaptcha, Turnstile), and core CDNs. When these are blocked, things fail visibly — or silently.
 
 🟡 **Medium — Worth reviewing**
-Support chat (Intercom, Zendesk, Drift), video players (YouTube Embed, Vimeo, Wistia), maps (Google Maps, Mapbox), image CDNs (Cloudinary, Imgix), error monitoring (Sentry, Datadog, New Relic), and e-commerce widgets (Yotpo, Bazaarvoice). May affect functionality depending on how the site is built.
+Support chat (Intercom, Zendesk, Drift), video players (YouTube Embed, Vimeo), maps (Google Maps, Mapbox), image CDNs (Cloudinary, Imgix), error monitoring (Sentry, Datadog, New Relic), and e-commerce widgets. May affect functionality depending on the site.
 
 🟢 **Low — Safe to ignore**
-Pure analytics (Google Analytics, Mixpanel, Amplitude, Heap) and advertising pixels (Meta, LinkedIn, TikTok). Blocking these is usually intentional and rarely breaks anything.
+Analytics (Google Analytics, Mixpanel, Amplitude) and ad pixels (Meta, LinkedIn, TikTok). Blocking these is usually intentional and rarely breaks anything.
 
-Unknown domains are flagged as Medium by default.
+Unknown domains default to Medium.
+
+---
+
+### Impact badges
+
+Every blocked domain shows what breaks if you leave it blocked:
+
+- 🔴 **login / forms** — auth, CAPTCHA, payments
+- 🟣 **feature flags** — silent behavior changes
+- 🩵 **search** — autocomplete and results
+- 🔵 **media / maps / assets** — video, maps, images
+- 🟢 **chat** — support widgets
+- ⚫ **monitoring** — error reporting
 
 ---
 
 ### Blocklist attribution
 
-Each blocked domain shows *which blocklist rule* flagged it — works for both NextDNS and Pi-hole:
+See exactly which blocklist rule flagged each domain:
 
-• **NextDNS** — pulled directly from the NextDNS logs API, showing the exact list name
-• **Pi-hole** — uses the gravity search API to look up which of your enabled lists contains the domain, with pretty names for 30+ popular lists: HaGeZi, Steven Black, OISD, AdGuard DNS filter, EasyList, EasyPrivacy, Disconnect.me, Energized, URLhaus, and more
-
-So you know exactly where the block is coming from and can make an informed call about whether to allowlist it.
-
----
-
-### Filter by risk level
-
-Click **High**, **Medium**, or **Low** in the stats bar to filter the list instantly. Click again to clear. Active level is highlighted; inactive ones dim out — so you can focus on what matters.
+- **NextDNS** — pulled from the NextDNS logs API, showing the exact list name
+- **Pi-hole** — searches your gravity database, with pretty names for 30+ popular lists: HaGeZi, Steven Black, OISD, AdGuard DNS filter, EasyList, EasyPrivacy, Disconnect.me, Energized, URLhaus, and more
+- **Control D** — shows the active filter profile that triggered the block
 
 ---
 
-### Copy to clipboard
+### One-click allowlist
 
-Every blocked domain has a 📋 copy button. No account needed — copy the domain and paste it into Pi-hole, AdGuard Home, or any other DNS blocker's dashboard.
+**NextDNS** — Connect with your API key. DNS Medic auto-detects which profile belongs to this device and labels it "This device." One click adds the domain.
 
----
+**Pi-hole** — Connect with your Pi-hole URL and API token. Supports v5 and v6. One click allowlists the domain instantly.
 
-### DNS flush reminder
+**Control D** — Connect with your Control D credentials. One click adds the domain to your custom rules.
 
-After you allowlist or copy a domain, a banner appears with the exact DNS flush command for your OS (macOS, Windows, or Linux) — with its own copy button. No more wondering why changes aren't taking effect.
-
----
-
-### One-click allowlist (NextDNS + Pi-hole)
-
-**NextDNS:** Connect your account (API key + profile ID from my.nextdns.io). The extension auto-detects which profile belongs to this device and labels it "This device". One click — domain added, no dashboard required.
-
-**Pi-hole:** Connect your Pi-hole (URL + API token). Supports both Pi-hole v5 and Pi-hole v6. One click — domain allowlisted instantly.
+After every allowlist action, a banner appears with the exact DNS flush command for your OS — with its own copy button.
 
 ---
 
-### 492-domain database, always up to date
+### 492-domain database
 
-Ships with a curated database of **492 known services across 13 categories**: feature flags, auth, payments, search, CDN, real-time, CAPTCHA, video players, maps, support chat, image CDNs, error monitoring, and e-commerce. The database is automatically fetched from GitHub and cached locally for 7 days. Force-refresh anytime from the Settings panel.
+Ships with a curated database of 492 known services across 13 categories. Automatically updated from GitHub and cached locally for 7 days. Force-refresh anytime from Settings.
+
+---
+
+### Light & Dark mode
+
+Full light mode support added in v3.2.0. Follows your system preference by default, or set it manually in Settings.
 
 ---
 
 ### Privacy
 
-• No data is ever sent to any third party
-• All monitoring is session-only — cleared on navigation
-• Only hostnames are stored, never full URLs or page content
-• Your API key stays in your local Chrome storage
-• Remote DB fetch contacts GitHub only (no user data sent)
+- No data is ever sent to any third party
+- All monitoring is session-only — cleared on navigation
+- Only hostnames are stored, never full URLs or page content
+- Your API keys stay in local Chrome storage only
+- Remote DB fetch contacts GitHub only — no user data sent
+
+Full privacy policy: https://raw.githubusercontent.com/jstoneky/nextdns-medic/main/store/PRIVACY.md
 
 ---
 
 ### Perfect for
 
-• NextDNS and Pi-hole users who want to know what's actually being blocked
-• Developers debugging sites behind DNS blockers
-• Anyone who's ever had a site break mysteriously and suspected their DNS setup
-• Anyone who wants to allowlist responsibly — knowing the impact before they unblock
+- NextDNS, Pi-hole, and Control D users who want to know what's being blocked
+- Developers debugging sites behind DNS filters
+- Anyone who's had a site break mysteriously and suspected their DNS setup
+- Anyone who wants to allowlist responsibly — understanding the impact before unblocking
 
 ---
 
 ## Category
-Productivity
-
-## Language
-English
+Developer Tools
 
 ## Tags / Keywords
-nextdns, pi-hole, dns, blocker, network monitor, privacy, allowlist, debugging, web developer, adguard, impact badges, blocklist
+nextdns, pi-hole, control d, dns, blocker, network monitor, privacy, allowlist, debugging, web developer, adguard, blocklist, dns medic
 
 ---
 
-## What's New (v2.3.1)
-Pi-hole users now get full blocklist attribution — see exactly which gravity list flagged each blocked domain. Includes pretty names for 30+ popular lists: HaGeZi, Steven Black, OISD, AdGuard DNS filter, EasyList, EasyPrivacy, Disconnect.me, Energized, URLhaus, and more. Previously only available for NextDNS users.
+## What's New (v3.2.0)
+
+**Control D support** — DNS Medic now works with all three major DNS providers: NextDNS, Pi-hole, and Control D. One-click allowlist, blocklist attribution, and profile auto-detection for all three.
+
+**Light mode** — Full light theme added. Follows your system preference by default; override it in Settings.
+
+**UI refresh** — Cleaner stats bar, smoother animations, improved mobile layout for Safari iOS.
 
 ---
 
-## Screenshots (1280x800)
-Located in store/chrome/screenshots/
-1. Popup with HIGH confidence blocks detected (red badge, red section visible, impact badges shown)
-2. Popup showing mixed High/Medium/Low breakdown with blocklist attribution
-3. Filter active — only High items shown, Medium/Low dimmed
-4. Settings panel open showing DB meta + refresh button + Pi-hole config
-5. DNS flush banner visible after allowlist action
+## Assets
 
-## Promotional tile (440x280)
+### Screenshots (1280×800) — store/chrome/screenshots/
+- app-1.png — Dark mode: high-risk blocks detected (shop.example.com — stripe, auth0, feature flags)
+- app-2.png — Dark mode: single HIGH block in focus (cdn.auth0.com)
+- app-3.png — Light mode: mixed risk levels (news.example.com)
+- app-4.png — Settings panel: DNS provider selector, API key, profile picker
+- app-5.png — Post-allowlist: success banner + DNS flush command
+- marketing-1.png — "Know exactly what is being blocked as you browse"
+- marketing-2.png — "Every block, categorised by risk"
+- marketing-3.png — "Works with NextDNS, Pi-hole and Control D"
+- marketing-4.png — "All clear. Real-time monitoring"
+- marketing-5.png — "Fix it in one click. For real"
+
+### Store icon (128×128)
+store/chrome/icon-128-store.png
+
+### Promotional tile (440×280)
 store/chrome/promo-tile-440x280.jpg
 
-## Marquee (1400x560)
-store/chrome/marquee-1400x560-v2.3.jpg
-
-## Store icon (128x128)
-store/chrome/icon-128-store.png
+### Marquee (1400×560)
+store/chrome/marquee-1400x560-v3.0.jpg
