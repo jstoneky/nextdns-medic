@@ -169,11 +169,6 @@ ext.webRequest.onErrorOccurred.addListener(
     const reqHostname = extractHostname(details.url);
     const tabHostname = getTabHostname(details.tabId);
 
-    // Debug logging — open background inspector to see all errors in real time
-    if (typeof DEBUG_DNS_MEDIC !== "undefined" && DEBUG_DNS_MEDIC) {
-      console.log(`[DNS Medic] error: ${error} | req: ${reqHostname} | tab: ${tabHostname}`);
-    }
-
     // Skip errors on the main page domain itself (exact match only)
     if (reqHostname === tabHostname) return;
 
