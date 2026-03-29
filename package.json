@@ -1,6 +1,6 @@
 {
   "name": "dns-medic",
-  "version": "3.1.2",
+  "version": "3.2.0",
   "description": "DNS Medic \u2014 browser extension for Chrome and Firefox",
   "scripts": {
     "test": "node --test tests/*.test.js",

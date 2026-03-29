@@ -4,6 +4,18 @@ All notable changes to DNS Medic are documented here.
 
 ---
 
+## [3.2.0] — 2026-03-29
+
+### Added
+- **Light mode** — full light theme with off-white palette and WCAG AA contrast throughout
+- **Theme toggle** — three-way System / Light / Dark selector in settings panel; preference synced via `chrome.storage.sync`
+- **Friendly error labels** — Firefox verbose cert/network error strings (e.g. "Peer's Certificate issuer is not recognized.") now display as short readable labels (e.g. "untrusted cert issuer"); ~15 Firefox and Chrome error patterns covered
+
+### Fixed
+- Light mode contrast audit: selected profile, DNS status chips, flush banner, allowlist button states, impact badges, profile badge/checkmark, Pi-hole version labels, copy button success state all properly adapted for light backgrounds
+
+---
+
 ## [3.1.2] — 2026-03-28
 
 ### Fixed
