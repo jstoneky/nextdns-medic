@@ -52,22 +52,9 @@ function classifyDomain(hostname, dbEntries) {
   };
 }
 
-const NEXTDNS_ERRORS = [
-  "net::ERR_NAME_NOT_RESOLVED",
-  "net::ERR_CERT_AUTHORITY_INVALID",
-  "net::ERR_BLOCKED_BY_ADMINISTRATOR",
-  "net::ERR_BLOCKED_BY_CLIENT",
-  "net::ERR_FAILED",
-];
-
-function isLikelyNextDNSBlock(error) {
-  return NEXTDNS_ERRORS.some(e => error.includes(e));
-}
-
-// Keep DOMAIN_DB export for any code that still reads it directly
-// (will be removed in a future version once db-loader handles all lookups)
+// DOMAIN_DB kept for backwards compat — actual DB is loaded by db-loader.js from domain-db.json
 const DOMAIN_DB = [];
 
 if (typeof module !== "undefined") {
-  module.exports = { classifyDomain, isLikelyNextDNSBlock, DOMAIN_DB };
+  module.exports = { classifyDomain, DOMAIN_DB };
 }
