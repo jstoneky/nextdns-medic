@@ -1,6 +1,6 @@
 {
-  "version": "2.0.2",
-  "updated": "2026-03-28",
+  "version": "2.1.0",
+  "updated": "2026-03-29",
   "entries": [
     {
       "pattern": "featureassets\\.org",
@@ -4627,6 +4627,382 @@
       "functionalImpact": "assets",
       "reason": "www.datocms-assets.com is the primary shared asset CDN for all DatoCMS-powered websites. Blocking it causes all images, videos, and media files served from DatoCMS to fail to load.",
       "source": "DatoCMS documentation 'Custom assets domain'; datocms-assets.com is the default shared CDN domain"
+    },
+    {
+      "pattern": "kameleoon\\.eu",
+      "flags": "",
+      "label": "A/B Testing Script (Kameleoon)",
+      "confidence": "HIGH",
+      "category": "ab-testing",
+      "functionalImpact": "a/b testing"
+    },
+    {
+      "pattern": "kameleoon\\.io",
+      "flags": "",
+      "label": "A/B Testing Script (Kameleoon)",
+      "confidence": "HIGH",
+      "category": "ab-testing",
+      "functionalImpact": "a/b testing"
+    },
+    {
+      "pattern": "cdn\\.intellimize\\.co",
+      "flags": "",
+      "label": "Personalization CDN (Intellimize)",
+      "confidence": "HIGH",
+      "category": "ab-testing",
+      "functionalImpact": "personalization"
+    },
+    {
+      "pattern": "intellimize\\.co",
+      "flags": "",
+      "label": "Personalization (Intellimize)",
+      "confidence": "HIGH",
+      "category": "ab-testing",
+      "functionalImpact": "personalization"
+    },
+    {
+      "pattern": "evolv\\.ai",
+      "flags": "",
+      "label": "AI Optimization (Evolv AI)",
+      "confidence": "HIGH",
+      "category": "ab-testing",
+      "functionalImpact": "a/b testing"
+    },
+    {
+      "pattern": "participants\\.evolv\\.ai",
+      "flags": "",
+      "label": "Experiment Tracking (Evolv AI)",
+      "confidence": "HIGH",
+      "category": "ab-testing",
+      "functionalImpact": "a/b testing"
+    },
+    {
+      "pattern": "front\\.bucket\\.co",
+      "flags": "",
+      "label": "Feature Flags API (Bucket.co)",
+      "confidence": "HIGH",
+      "category": "feature-flags",
+      "functionalImpact": "features"
+    },
+    {
+      "pattern": "bucket\\.co",
+      "flags": "",
+      "label": "Feature Flags (Bucket.co)",
+      "confidence": "HIGH",
+      "category": "feature-flags",
+      "functionalImpact": "features"
+    },
+    {
+      "pattern": "gr4vy\\.app",
+      "flags": "",
+      "label": "Payment Orchestration (Gr4vy)",
+      "confidence": "HIGH",
+      "category": "payments",
+      "functionalImpact": "checkout"
+    },
+    {
+      "pattern": "gr4vy\\.com",
+      "flags": "",
+      "label": "Payment Orchestration (Gr4vy)",
+      "confidence": "HIGH",
+      "category": "payments",
+      "functionalImpact": "checkout"
+    },
+    {
+      "pattern": "pub\\.highlight\\.run",
+      "flags": "",
+      "label": "Monitoring CDN (Highlight.io)",
+      "confidence": "MEDIUM",
+      "category": "monitoring",
+      "functionalImpact": "monitoring"
+    },
+    {
+      "pattern": "highlight\\.run",
+      "flags": "",
+      "label": "Monitoring SDK (Highlight.io)",
+      "confidence": "MEDIUM",
+      "category": "monitoring",
+      "functionalImpact": "monitoring"
+    },
+    {
+      "pattern": "highlight\\.io",
+      "flags": "",
+      "label": "Monitoring (Highlight.io)",
+      "confidence": "MEDIUM",
+      "category": "monitoring",
+      "functionalImpact": "monitoring"
+    },
+    {
+      "pattern": "in\\.logtail\\.com",
+      "flags": "",
+      "label": "Log Ingest (Better Stack / Logtail)",
+      "confidence": "MEDIUM",
+      "category": "monitoring",
+      "functionalImpact": "monitoring"
+    },
+    {
+      "pattern": "logtail\\.com",
+      "flags": "",
+      "label": "Logging (Better Stack / Logtail)",
+      "confidence": "MEDIUM",
+      "category": "monitoring",
+      "functionalImpact": "monitoring"
+    },
+    {
+      "pattern": "telemetry\\.betterstack\\.com",
+      "flags": "",
+      "label": "Telemetry (Better Stack)",
+      "confidence": "MEDIUM",
+      "category": "monitoring",
+      "functionalImpact": "monitoring"
+    },
+    {
+      "pattern": "betterstack\\.com",
+      "flags": "",
+      "label": "Monitoring (Better Stack)",
+      "confidence": "MEDIUM",
+      "category": "monitoring",
+      "functionalImpact": "monitoring"
+    },
+    {
+      "pattern": "appsignal-endpoint\\.net",
+      "flags": "",
+      "label": "Error Tracking Ingest (AppSignal)",
+      "confidence": "MEDIUM",
+      "category": "monitoring",
+      "functionalImpact": "monitoring"
+    },
+    {
+      "pattern": "appsignal\\.com",
+      "flags": "",
+      "label": "Error Monitoring (AppSignal)",
+      "confidence": "MEDIUM",
+      "category": "monitoring",
+      "functionalImpact": "monitoring"
+    },
+    {
+      "pattern": "js\\.honeybadger\\.io",
+      "flags": "",
+      "label": "Error Tracking CDN (Honeybadger)",
+      "confidence": "MEDIUM",
+      "category": "monitoring",
+      "functionalImpact": "monitoring"
+    },
+    {
+      "pattern": "api\\.honeybadger\\.io",
+      "flags": "",
+      "label": "Error Tracking API (Honeybadger)",
+      "confidence": "MEDIUM",
+      "category": "monitoring",
+      "functionalImpact": "monitoring"
+    },
+    {
+      "pattern": "axiom\\.co",
+      "flags": "",
+      "label": "Observability (Axiom)",
+      "confidence": "MEDIUM",
+      "category": "monitoring",
+      "functionalImpact": "monitoring"
+    },
+    {
+      "pattern": "web-sdk\\.smartlook\\.com",
+      "flags": "",
+      "label": "Session Replay CDN (Smartlook)",
+      "confidence": "MEDIUM",
+      "category": "session-replay",
+      "functionalImpact": "session replay"
+    },
+    {
+      "pattern": "smartlook\\.com",
+      "flags": "",
+      "label": "Session Replay (Smartlook)",
+      "confidence": "MEDIUM",
+      "category": "session-replay",
+      "functionalImpact": "session replay"
+    },
+    {
+      "pattern": "c\\.contentsquare\\.net",
+      "flags": "",
+      "label": "Tracking Pixel (Contentsquare)",
+      "confidence": "MEDIUM",
+      "category": "session-replay",
+      "functionalImpact": "session replay"
+    },
+    {
+      "pattern": "config\\.gorgias\\.chat",
+      "flags": "",
+      "label": "Chat Widget CDN (Gorgias)",
+      "confidence": "MEDIUM",
+      "category": "support-chat",
+      "functionalImpact": "chat"
+    },
+    {
+      "pattern": "gorgias\\.chat",
+      "flags": "",
+      "label": "Chat Widget (Gorgias)",
+      "confidence": "MEDIUM",
+      "category": "support-chat",
+      "functionalImpact": "chat"
+    },
+    {
+      "pattern": "cdn\\.gladly\\.com",
+      "flags": "",
+      "label": "Support Chat CDN (Gladly)",
+      "confidence": "MEDIUM",
+      "category": "support-chat",
+      "functionalImpact": "chat"
+    },
+    {
+      "pattern": "gladly\\.com",
+      "flags": "",
+      "label": "Support Chat (Gladly)",
+      "confidence": "MEDIUM",
+      "category": "support-chat",
+      "functionalImpact": "chat"
+    },
+    {
+      "pattern": "static\\.widget\\.trengo\\.eu",
+      "flags": "",
+      "label": "Chat Widget CDN (Trengo)",
+      "confidence": "MEDIUM",
+      "category": "support-chat",
+      "functionalImpact": "chat"
+    },
+    {
+      "pattern": "trengo\\.eu",
+      "flags": "",
+      "label": "Chat Widget (Trengo)",
+      "confidence": "MEDIUM",
+      "category": "support-chat",
+      "functionalImpact": "chat"
+    },
+    {
+      "pattern": "beacon-v2\\.helpscout\\.net",
+      "flags": "",
+      "label": "Help Beacon CDN (HelpScout)",
+      "confidence": "MEDIUM",
+      "category": "support-chat",
+      "functionalImpact": "chat"
+    },
+    {
+      "pattern": "helpscout\\.net",
+      "flags": "",
+      "label": "Help Beacon (HelpScout)",
+      "confidence": "MEDIUM",
+      "category": "support-chat",
+      "functionalImpact": "chat"
+    },
+    {
+      "pattern": "plain\\.com",
+      "flags": "",
+      "label": "Support Chat (Plain)",
+      "confidence": "MEDIUM",
+      "category": "support-chat",
+      "functionalImpact": "chat"
+    },
+    {
+      "pattern": "consent\\.cookiefirst\\.com",
+      "flags": "",
+      "label": "Consent Banner CDN (CookieFirst)",
+      "confidence": "MEDIUM",
+      "category": "consent",
+      "functionalImpact": "consent"
+    },
+    {
+      "pattern": "cookiefirst\\.com",
+      "flags": "",
+      "label": "Consent Management (CookieFirst)",
+      "confidence": "MEDIUM",
+      "category": "consent",
+      "functionalImpact": "consent"
+    },
+    {
+      "pattern": "static\\.axept\\.io",
+      "flags": "",
+      "label": "Consent Widget CDN (Axeptio)",
+      "confidence": "MEDIUM",
+      "category": "consent",
+      "functionalImpact": "consent"
+    },
+    {
+      "pattern": "axept\\.io",
+      "flags": "",
+      "label": "Consent Management (Axeptio)",
+      "confidence": "MEDIUM",
+      "category": "consent",
+      "functionalImpact": "consent"
+    },
+    {
+      "pattern": "complianz\\.io",
+      "flags": "",
+      "label": "Consent Management (Complianz)",
+      "confidence": "MEDIUM",
+      "category": "consent",
+      "functionalImpact": "consent"
+    },
+    {
+      "pattern": "api\\.knock\\.app",
+      "flags": "",
+      "label": "Notifications API (Knock)",
+      "confidence": "MEDIUM",
+      "category": "notifications",
+      "functionalImpact": "notifications"
+    },
+    {
+      "pattern": "knock\\.app",
+      "flags": "",
+      "label": "In-App Notifications (Knock)",
+      "confidence": "MEDIUM",
+      "category": "notifications",
+      "functionalImpact": "notifications"
+    },
+    {
+      "pattern": "api\\.novu\\.co",
+      "flags": "",
+      "label": "Notifications API (Novu)",
+      "confidence": "MEDIUM",
+      "category": "notifications",
+      "functionalImpact": "notifications"
+    },
+    {
+      "pattern": "novu\\.co",
+      "flags": "",
+      "label": "In-App Notifications (Novu)",
+      "confidence": "MEDIUM",
+      "category": "notifications",
+      "functionalImpact": "notifications"
+    },
+    {
+      "pattern": "api\\.courier\\.com",
+      "flags": "",
+      "label": "Notifications API (Courier)",
+      "confidence": "MEDIUM",
+      "category": "notifications",
+      "functionalImpact": "notifications"
+    },
+    {
+      "pattern": "courier\\.com",
+      "flags": "",
+      "label": "Notifications (Courier)",
+      "confidence": "MEDIUM",
+      "category": "notifications",
+      "functionalImpact": "notifications"
+    },
+    {
+      "pattern": "beams\\.pusher\\.com",
+      "flags": "",
+      "label": "Push Notifications CDN (Pusher Beams)",
+      "confidence": "MEDIUM",
+      "category": "notifications",
+      "functionalImpact": "notifications"
+    },
+    {
+      "pattern": "pusherplatform\\.io",
+      "flags": "",
+      "label": "Push Platform (Pusher Beams)",
+      "confidence": "MEDIUM",
+      "category": "notifications",
+      "functionalImpact": "notifications"
     }
   ]
 }
