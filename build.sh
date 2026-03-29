@@ -40,6 +40,21 @@ if [[ "$TARGET" == "clean" ]]; then
   exit 0
 fi
 
+# ── Build domain-db.json from research repo ───────────────────────────────────
+RESEARCH_REPO="../nextdns-medic-research"
+if [[ -d "$RESEARCH_REPO" ]]; then
+  echo "▶ Building domain-db.json from research repo..."
+  if node "$RESEARCH_REPO/scripts/build-db.js" --out=./domain-db.json 2>&1; then
+    echo -e "  ${GREEN}✓ domain-db.json updated${NC}"
+  else
+    echo -e "  ${YELLOW}⚠ Research build failed — using existing domain-db.json${NC}"
+  fi
+  echo ""
+else
+  echo -e "  ${YELLOW}⚠ Research repo not found at $RESEARCH_REPO — skipping DB build${NC}"
+  echo ""
+fi
+
 # ── Tests ──────────────────────────────────────────────────────────────────────
 echo "▶ Running tests..."
 echo ""
