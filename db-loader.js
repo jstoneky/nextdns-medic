@@ -82,7 +82,7 @@ function validateAndCompile(raw) {
 
 // ── classifyDomain using active (or bundled fallback) DB ──────────────────────
 function classifyDomainActive(hostname) {
-  const db = _activeDB || (typeof DOMAIN_DB !== "undefined" ? DOMAIN_DB : []);
+  const db = _activeDB || [];
   for (const entry of db) {
     try {
       if (entry.pattern.test(hostname)) {
@@ -131,14 +131,36 @@ async function loadFromCache() {
   return true;
 }
 
+// ── Load bundled domain-db.json (packed into extension) ──────────────────────
+async function loadBundled() {
+  try {
+    const url = (typeof ext !== "undefined" && ext.runtime?.getURL)
+      ? ext.runtime.getURL("domain-db.json")
+      : null;
+    if (!url) return false;
+    const res = await fetch(url);
+    if (!res.ok) return false;
+    const raw = await res.json();
+    const compiled = validateAndCompile(raw);
+    _activeDB = compiled;
+    _dbMeta   = { source: "bundled", fetchedAt: null, count: compiled.length, version: raw.version || "bundled" };
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+
 // ── Public: init (called on background load) ──────────────────────────────────
 async function initDB() {
   try {
     const fromCache = await loadFromCache();
     if (!fromCache) await fetchAndCacheDB();
   } catch (_) {
-    // Non-fatal: bundled DOMAIN_DB remains as fallback
-    _dbMeta = { source: "bundled", fetchedAt: null, count: typeof DOMAIN_DB !== "undefined" ? DOMAIN_DB.length : 0, version: "bundled" };
+    // Remote fetch failed — load the bundled domain-db.json as fallback
+    const fromBundled = await loadBundled();
+    if (!fromBundled) {
+      _dbMeta = { source: "empty", fetchedAt: null, count: 0, version: "none" };
+    }
   }
 }
 
@@ -156,12 +178,7 @@ async function forceRefreshDB() {
 
 // ── Public: get DB metadata ────────────────────────────────────────────────────
 function getDBMeta() {
-  return _dbMeta || {
-    source: "bundled",
-    fetchedAt: null,
-    count: typeof DOMAIN_DB !== "undefined" ? DOMAIN_DB.length : 0,
-    version: "bundled",
-  };
+  return _dbMeta || { source: "loading", fetchedAt: null, count: 0, version: "?" };
 }
 
 // Override global classifyDomain from domain-db.js
