@@ -162,6 +162,21 @@ body.mobile .blocks-list {
   color: #64748b;
   border: 1px solid rgba(148, 163, 184, 0.2);
 }
+body.light-mode .dns-status-chip.active {
+  background: #dcfce7;
+  color: #166534;
+  border-color: #86efac;
+}
+body.light-mode .dns-status-chip.inactive {
+  background: #fee2e2;
+  color: #991b1b;
+  border-color: #fca5a5;
+}
+body.light-mode .dns-status-chip.checking {
+  background: #f1f5f9;
+  color: #64748b;
+  border-color: #cbd5e1;
+}
 
 .subtitle {
   font-size: 11px;
@@ -260,6 +275,7 @@ body.mobile .blocks-list {
   color: var(--accent-green);
   text-align: center;
 }
+body.light-mode .settings-status { color: #166534; }
 
 /* ── Stats Bar ── */
 .stats-bar {
@@ -477,11 +493,21 @@ body.mobile .blocks-list {
   border-color: #4ade8044;
   color: #4ade80;
 }
+body.light-mode .allowlist-btn.success {
+  background: #dcfce7;
+  border-color: #86efac;
+  color: #166534;
+}
 
 .allowlist-btn.error {
   background: #7f1d1d;
   border-color: #f8717144;
   color: #f87171;
+}
+body.light-mode .allowlist-btn.error {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  color: #991b1b;
 }
 
 .no-api-key {
@@ -498,6 +524,10 @@ body.mobile .blocks-list {
   border-bottom: 1px solid #4ade8033;
   padding: 10px 14px;
 }
+body.light-mode .flush-banner {
+  background: #dcfce7;
+  border-bottom-color: #86efac66;
+}
 .flush-banner-top {
   display: flex;
   align-items: center;
@@ -509,6 +539,7 @@ body.mobile .blocks-list {
   font-weight: 600;
   color: #4ade80;
 }
+body.light-mode .flush-banner-title { color: #166534; }
 .flush-dismiss {
   background: transparent;
   border: none;
@@ -518,6 +549,8 @@ body.mobile .blocks-list {
   padding: 0 2px;
   line-height: 1;
 }
+body.light-mode .flush-dismiss       { color: #16653488; }
+body.light-mode .flush-dismiss:hover { color: #166534; }
 .flush-dismiss:hover { color: #4ade80; }
 .flush-banner-cmd {
   display: flex;
@@ -528,6 +561,7 @@ body.mobile .blocks-list {
   border-radius: 6px;
   padding: 6px 10px;
 }
+body.light-mode .flush-banner-cmd { border-color: #86efac66; }
 .flush-cmd-text {
   flex: 1;
   font-family: monospace;
@@ -537,6 +571,7 @@ body.mobile .blocks-list {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+body.light-mode .flush-cmd-text { color: #166534; }
 body.mobile .flush-cmd-text {
   white-space: normal;
   overflow: visible;
@@ -556,15 +591,30 @@ body.mobile .flush-cmd-text {
   transition: background 0.15s, color 0.15s, border-color 0.15s;
   white-space: nowrap;
 }
+body.light-mode .flush-copy-btn {
+  background: #f0fdf4;
+  border-color: #86efac;
+  color: #166534;
+}
 .flush-copy-btn:hover {
   background: #334155;
   color: #e2e8f0;
+  border-color: #4ade80;
+}
+body.light-mode .flush-copy-btn:hover {
+  background: #bbf7d0;
+  color: #14532d;
   border-color: #4ade80;
 }
 .flush-copy-btn.copied {
   background: #14532d;
   border-color: #4ade80;
   color: #4ade80;
+}
+body.light-mode .flush-copy-btn.copied {
+  background: #dcfce7;
+  border-color: #166534;
+  color: #166534;
 }
 
 /* ── Functional impact badge ── */
@@ -590,6 +640,19 @@ body.mobile .flush-cmd-text {
 .impact-features { background: #1a0a2d; border-color: #a855f755; color: #d8b4fe; }
 .impact-search  { background: #0a1a1a; border-color: #06b6d455; color: #67e8f9; }
 .impact-monitoring { background: #1a1a1a; border-color: #71717a55; color: #a1a1aa; }
+
+/* Impact badges — light mode overrides */
+body.light-mode .impact-badge                        { background: #fef9c3; border-color: #f59e0b88; color: #92400e; }
+body.light-mode .impact-login,
+body.light-mode .impact-forms                        { background: #fee2e2; border-color: #f8717188; color: #991b1b; }
+body.light-mode .impact-media,
+body.light-mode .impact-map,
+body.light-mode .impact-assets                       { background: #dbeafe; border-color: #3b82f688; color: #1e40af; }
+body.light-mode .impact-chat,
+body.light-mode .impact-notifications                { background: #dcfce7; border-color: #22c55e88; color: #166534; }
+body.light-mode .impact-features                     { background: #f3e8ff; border-color: #a855f788; color: #6b21a8; }
+body.light-mode .impact-search                       { background: #cffafe; border-color: #06b6d488; color: #155e75; }
+body.light-mode .impact-monitoring                   { background: #f1f5f9; border-color: #94a3b888; color: #475569; }
 
 /* ── Blocklist tags ── */
 .block-reasons {
@@ -631,6 +694,10 @@ body.mobile .flush-cmd-text {
 .copy-btn.copy-success {
   color: #4ade80;
   border-color: #4ade8044;
+}
+body.light-mode .copy-btn.copy-success {
+  color: #166534;
+  border-color: #86efac;
 }
 
 /* ── API Key row ── */
@@ -719,7 +786,8 @@ body.mobile .flush-cmd-text {
   transition: border-color 0.15s, background 0.15s;
 }
 .ndm-profile-item:hover    { background: var(--bg-hover); border-color: var(--stat-outline); }
-.ndm-profile-item.selected { border-color: #4ade8066; background: #0f1a14; }
+.ndm-profile-item.selected { border-color: #4ade8066; background: #0f1a14; color: #e2e8f0; }
+body.light-mode .ndm-profile-item.selected { background: #dcfce7; border-color: #166534aa; color: var(--text-primary); }
 .ndm-profile-item-info {
   display: flex;
   flex-direction: column;
@@ -750,11 +818,17 @@ body.mobile .flush-cmd-text {
   padding: 2px 6px;
   white-space: nowrap;
 }
+body.light-mode .ndm-profile-item-badge {
+  color: #166534;
+  background: #dcfce7;
+  border-color: #86efac;
+}
 .ndm-profile-item-check {
   font-size: 13px;
   color: #4ade80;
   font-weight: 700;
 }
+body.light-mode .ndm-profile-item-check { color: #166534; }
 
 .pihole-token-hint {
   font-size: 10px;
@@ -777,9 +851,12 @@ body.mobile .flush-cmd-text {
   color: var(--text-dim);
   flex: 1;
 }
-.pihole-version-label.success { color: #4ade80; }
-.pihole-version-label.error   { color: #f87171; }
+.pihole-version-label.success  { color: #4ade80; }
+.pihole-version-label.error    { color: #f87171; }
 .pihole-version-label.detected { color: #60a5fa; }
+body.light-mode .pihole-version-label.success  { color: #166534; }
+body.light-mode .pihole-version-label.error    { color: #991b1b; }
+body.light-mode .pihole-version-label.detected { color: #1e40af; }
 
 .test-btn {
   background: var(--bg-row);
