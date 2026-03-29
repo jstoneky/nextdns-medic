@@ -4,7 +4,7 @@
 
 const { test, describe } = require("node:test");
 const assert = require("node:assert/strict");
-const { DNS_BLOCK_ERRORS, POSSIBLE_BLOCK_ERRORS, extractHostname } = require("../background.js");
+const { DNS_BLOCK_ERRORS, POSSIBLE_BLOCK_ERRORS, extractHostname, eTLD1 } = require("../background.js");
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 function isDefiniteBlock(error) {
@@ -24,6 +24,9 @@ describe("Chrome — definite block errors", () => {
 
   test("ERR_BLOCKED_BY_ADMINISTRATOR", () =>
     assert.ok(isDefiniteBlock("net::ERR_BLOCKED_BY_ADMINISTRATOR")));
+
+  test("ERR_BLOCKED_BY_ORB (DNS block page intercepted by Chrome ORB)", () =>
+    assert.ok(isDefiniteBlock("net::ERR_BLOCKED_BY_ORB")));
 });
 
 // ─── Firefox definite block errors ───────────────────────────────────────────
@@ -82,6 +85,21 @@ describe("Non-block errors — should not match", () => {
 
   test("empty string is not a block", () =>
     assert.ok(!isDefiniteBlock("") && !isPossibleBlock("")));
+});
+
+// ─── Same-domain filter (eTLD1) ───────────────────────────────────────────────
+describe("Same-domain filter", () => {
+  test("eTLD1: images.site.com matches www.site.com", () =>
+    assert.equal(eTLD1("images.dickssportinggoods.com"), eTLD1("www.dickssportinggoods.com")));
+
+  test("eTLD1: static-search.site.com matches tab site.com", () =>
+    assert.equal(eTLD1("static-search.dickssportinggoods.com"), eTLD1("dickssportinggoods.com")));
+
+  test("eTLD1: different domains don't match", () =>
+    assert.notEqual(eTLD1("analytics.google.com"), eTLD1("dickssportinggoods.com")));
+
+  test("eTLD1: third-party subdomain not filtered", () =>
+    assert.notEqual(eTLD1("cdn.launchdarkly.com"), eTLD1("www.dickssportinggoods.com")));
 });
 
 // ─── extractHostname ──────────────────────────────────────────────────────────

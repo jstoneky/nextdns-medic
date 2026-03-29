@@ -64,6 +64,10 @@ const DNS_BLOCK_ERRORS = [
   "net::ERR_NAME_NOT_RESOLVED",
   "net::ERR_CERT_AUTHORITY_INVALID",
   "net::ERR_BLOCKED_BY_ADMINISTRATOR",
+  // ERR_BLOCKED_BY_ORB fires when Chrome's Opaque Response Blocking intercepts a
+  // DNS block page returned as a cross-origin sub-resource (script, image, fetch).
+  // The block page has no CORS headers so Chrome fires ORB instead of NAME_NOT_RESOLVED.
+  "net::ERR_BLOCKED_BY_ORB",
   // Firefox — NextDNS block page returns a self-signed cert, causing these.
   // Note: avoid apostrophes — Firefox may use curly quotes (U+2019) vs straight (U+0027)
   "Certificate issuer is not recognized",   // covers "Peer's Certificate issuer is not recognized."
@@ -84,6 +88,9 @@ const POSSIBLE_BLOCK_ERRORS = [
   "NS_ERROR_CONNECTION_REFUSED",
   "NS_ERROR_NET_RESET",
 ];
+
+// Returns the eTLD+1 (registrable domain) — last two labels of a hostname
+function eTLD1(h) { const p = h.split("."); return p.length >= 2 ? p.slice(-2).join(".") : h; }
 
 function getOrCreateTabData(tabId) {
   if (!tabData.has(tabId)) {
@@ -162,8 +169,18 @@ ext.webRequest.onErrorOccurred.addListener(
     const reqHostname = extractHostname(details.url);
     const tabHostname = getTabHostname(details.tabId);
 
-    // Skip errors on the main page domain itself
+    // Debug logging — open background inspector to see all errors in real time
+    if (typeof DEBUG_DNS_MEDIC !== "undefined" && DEBUG_DNS_MEDIC) {
+      console.log(`[DNS Medic] error: ${error} | req: ${reqHostname} | tab: ${tabHostname}`);
+    }
+
+    // Skip errors on the main page domain itself or any subdomain of it
+    // e.g. images.dickssportinggoods.com when on www.dickssportinggoods.com
     if (reqHostname === tabHostname) return;
+    if (tabHostname && reqHostname.endsWith("." + tabHostname)) return;
+    // Also skip when both share the same eTLD+1 (registrable domain)
+    // Handles: www.site.com tab + images.site.com / static-search.site.com requests
+    if (tabHostname && eTLD1(reqHostname) === eTLD1(tabHostname)) return;
 
     // Determine if this looks like a DNS block
     const isDefiniteBlock = DNS_BLOCK_ERRORS.some(e => error.includes(e));
@@ -252,7 +269,7 @@ function updateBadge(tabId, total, highCount = 0) {
 
 // Exports for unit testing (Node environment only)
 if (typeof module !== "undefined") {
-  module.exports = { DNS_BLOCK_ERRORS, POSSIBLE_BLOCK_ERRORS, extractHostname, getOrCreateTabData, tabData, logError, ERROR_LOG_KEY, ERROR_LOG_MAX };
+  module.exports = { DNS_BLOCK_ERRORS, POSSIBLE_BLOCK_ERRORS, extractHostname, eTLD1, getOrCreateTabData, tabData, logError, ERROR_LOG_KEY, ERROR_LOG_MAX };
 }
 
 // Message handler — popup requests data for current tab
