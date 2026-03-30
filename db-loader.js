@@ -189,5 +189,5 @@ initDB();
 
 // Node test exports
 if (typeof module !== "undefined") {
-  module.exports = { validateAndCompile, classifyDomainActive, forceRefreshDB, getDBMeta, SAFE_PATTERN_RE };
+  module.exports = { validateAndCompile, classifyDomainActive, forceRefreshDB, getDBMeta, loadBundled, initDB, SAFE_PATTERN_RE };
 }

@@ -335,3 +335,45 @@ describe("DB_CACHE_TTL constant", () => {
     assert.equal(DB_CACHE_TTL, 7 * 24 * 60 * 60 * 1000);
   });
 });
+
+// ── loadBundled() ──────────────────────────────────────────────────────────────
+
+describe("loadBundled — no ext.runtime.getURL", () => {
+  test("returns false when ext.runtime.getURL is unavailable", async () => {
+    // Save and remove getURL
+    const origGetURL = globalThis.ext.runtime?.getURL;
+    if (globalThis.ext.runtime) delete globalThis.ext.runtime.getURL;
+
+    const { loadBundled } = require("../db-loader.js");
+    const result = await loadBundled();
+    assert.equal(result, false);
+
+    // Restore
+    if (origGetURL) globalThis.ext.runtime.getURL = origGetURL;
+  });
+});
+
+// ── initDB() fallback path ─────────────────────────────────────────────────────
+
+describe("initDB — cache miss + remote failure falls back to bundled", () => {
+  test("getDBMeta source is 'empty' when cache empty, remote fails, bundled unavailable", async () => {
+    // Clear store and ensure no getURL
+    _store = {};
+    const origRuntime = globalThis.ext.runtime;
+    globalThis.ext.runtime = {}; // no getURL
+
+    // Patch fetch to simulate remote failure
+    const origFetch = globalThis.fetch;
+    globalThis.fetch = async () => { throw new Error("network error"); };
+
+    const { initDB, getDBMeta } = require("../db-loader.js");
+    await initDB();
+    const meta = getDBMeta();
+    assert.equal(meta.source, "empty");
+    assert.equal(meta.count, 0);
+
+    // Restore
+    globalThis.fetch = origFetch;
+    globalThis.ext.runtime = origRuntime;
+  });
+});
