@@ -4,6 +4,23 @@ All notable changes to DNS Medic are documented here.
 
 ---
 
+## [3.2.2] — 2026-03-29
+
+### Fixed
+- **Render crash on page load** — `displayBlocks` was referenced before its `const` declaration in `renderBlocks()`, causing an uncaught `ReferenceError` in the popup. Sort and stats code now correctly follow the `displayBlocks` construction
+
+### Changed
+- **Block display logic extracted to `computeDisplayBlocks()`** — pure function with no DOM or global dependencies; fully covered by unit tests
+- **Pi-hole blocklist lookups now parallel** — `fetchBlocklistReasons` uses `Promise.allSettled()` instead of sequential `await` per domain; significant speedup on popups with many blocked domains
+- **Block objects never mutated during render** — display classifications are computed as an immutable derived view; fixes subtle re-render inconsistencies on double `renderBlocks()` calls
+- **`blocklistCache` only cleared on new data** — filter toggles no longer trigger redundant API re-fetches to NextDNS/Pi-hole
+- **`_activeDB` seeded from bundled JSON before async `initDB()`** — eliminates the cold-start window where all domains classified as "Unknown"
+- **DB empty state now visible** — settings panel shows `⚠ DB failed to load` warning instead of silently classifying everything as unknown
+- **`blocks` Map capped at 100 entries per tab** — prevents unbounded memory growth on long-lived tracker-heavy pages
+- **DB version only bumps when content changes** — SHA-256 hash of compiled entries prevents spurious cache invalidation on code-only rebuilds
+
+---
+
 ## [3.2.1] — 2026-03-29
 
 ### Fixed
