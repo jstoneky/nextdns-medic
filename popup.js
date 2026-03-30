@@ -333,6 +333,31 @@ function renderBlocks(blocks) {
     return;
   }
 
+  const provider = getProvider();
+  const hasCredentials = provider?.hasCredentials(creds) ?? false;
+
+  // Compute display classification for each block — never mutate the original block objects.
+  // This function is called on every render so it must be pure (same input → same output).
+  function displayClassification(block) {
+    const c = block.classification;
+    // Priority 1: confirmed by DNS provider logs
+    if (!c.known && blocklistCache[block.domain]?.length) {
+      return { ...c, known: true, label: "Confirmed by DNS logs", confidence: "MEDIUM" };
+    }
+    // Priority 2: definite or non-Safari possible block → promote to known MEDIUM
+    // (real DNS block, just not in our DB yet; Safari ERR_ABORTED stays unverified)
+    if (!c.known && (block.isDefiniteBlock || (block.isPossibleBlock && !block.isSafariAbort))) {
+      return { ...c, known: true, label: "Unknown Domain", confidence: "MEDIUM" };
+    }
+    return c;
+  }
+
+  // Build display blocks — immutable view over the raw blocks array
+  const displayBlocks = blocks.map(block => ({
+    ...block,
+    classification: displayClassification(block),
+  }));
+
   const order = { HIGH: 0, MEDIUM: 1, LOW: 2 };
   displayBlocks.sort((a, b) => {
     const co = order[a.classification.confidence] - order[b.classification.confidence];
@@ -358,9 +383,6 @@ function renderBlocks(blocks) {
   listEl.classList.remove("hidden");
   listEl.innerHTML = "";
 
-  const provider = getProvider();
-  const hasCredentials = provider?.hasCredentials(creds) ?? false;
-
   if (!hasCredentials) {
     const note = document.createElement("div");
     note.className = "no-api-key";
@@ -372,28 +394,6 @@ function renderBlocks(blocks) {
     note.textContent = labels[providerKey] || "⚙️ Configure your DNS provider in settings";
     listEl.appendChild(note);
   }
-
-  // Compute display classification for each block — never mutate the original block objects.
-  // This function is called on every render so it must be pure (same input → same output).
-  function displayClassification(block) {
-    const c = block.classification;
-    // Priority 1: confirmed by DNS provider logs
-    if (!c.known && blocklistCache[block.domain]?.length) {
-      return { ...c, known: true, label: "Confirmed by DNS logs", confidence: "MEDIUM" };
-    }
-    // Priority 2: definite or non-Safari possible block → promote to known MEDIUM
-    // (real DNS block, just not in our DB yet; Safari ERR_ABORTED stays unverified)
-    if (!c.known && (block.isDefiniteBlock || (block.isPossibleBlock && !block.isSafariAbort))) {
-      return { ...c, known: true, label: "Unknown Domain", confidence: "MEDIUM" };
-    }
-    return c;
-  }
-
-  // Build display blocks — immutable view over the raw blocks array
-  const displayBlocks = blocks.map(block => ({
-    ...block,
-    classification: displayClassification(block),
-  }));
 
   // Split into known (confirmed) and unknown (unverified Safari aborts only)
   const knownBlocks   = displayBlocks.filter(b => b.classification.known);

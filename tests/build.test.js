@@ -82,26 +82,51 @@ describe("Firefox manifest.firefox.json", () => {
 });
 
 // ─── domain-db.js sanity checks ───────────────────────────────────────────────
+// domain-db.js is now a stub shim — classification lives in db-loader.js.
+// These tests verify the shim contract and the JSON source of truth.
 describe("domain-db.js sanity", () => {
   let db;
   before(() => { db = require("../domain-db.js"); });
 
-  test("DOMAIN_DB is a non-empty array", () =>
-    assert.ok(Array.isArray(db.DOMAIN_DB) && db.DOMAIN_DB.length > 50));
+  test("DOMAIN_DB export is an array (compat shim)", () =>
+    assert.ok(Array.isArray(db.DOMAIN_DB)));
 
-  test("every entry has required fields", () => {
-    for (const entry of db.DOMAIN_DB) {
+  test("globalThis.classifyDomain is a function (safe default stub)", () =>
+    assert.ok(typeof globalThis.classifyDomain === "function"));
+
+  test("safe default stub returns expected shape", () => {
+    // db-loader may have seeded a real classifyDomain — stub only matters pre-load.
+    // Verify the shape contract is satisfied regardless.
+    const r = globalThis.classifyDomain("featureassets.org");
+    assert.ok(typeof r.label === "string");
+    assert.ok(typeof r.confidence === "string");
+    assert.ok(typeof r.category === "string");
+    assert.ok(typeof r.known === "boolean");
+  });
+});
+
+// ─── domain-db.json (source of truth) sanity ─────────────────────────────────
+describe("domain-db.json sanity", () => {
+  const dbJson = require("../domain-db.json");
+  const { validateAndCompile, _seedDB } = require("../db-loader.js");
+  const compiled = validateAndCompile(dbJson);
+  _seedDB(compiled);
+
+  test("has > 50 entries", () => assert.ok(dbJson.entries.length > 50));
+
+  test("every compiled entry has required fields", () => {
+    for (const entry of compiled) {
       assert.ok(entry.pattern instanceof RegExp, `pattern must be RegExp: ${JSON.stringify(entry)}`);
-      assert.ok(typeof entry.label === "string" && entry.label.length > 0, `missing label: ${JSON.stringify(entry)}`);
+      assert.ok(typeof entry.label === "string" && entry.label.length > 0, `missing label`);
       assert.ok(["HIGH", "MEDIUM", "LOW"].includes(entry.confidence), `invalid confidence: ${entry.confidence}`);
-      assert.ok(typeof entry.category === "string" && entry.category.length > 0, `missing category: ${JSON.stringify(entry)}`);
+      assert.ok(typeof entry.category === "string" && entry.category.length > 0, `missing category`);
     }
   });
 
   test("no duplicate patterns", () => {
     const seen = new Set();
     const dupes = [];
-    for (const entry of db.DOMAIN_DB) {
+    for (const entry of compiled) {
       const key = entry.pattern.toString();
       if (seen.has(key)) dupes.push(key);
       seen.add(key);
@@ -109,8 +134,9 @@ describe("domain-db.js sanity", () => {
     assert.deepEqual(dupes, [], `Duplicate patterns: ${dupes.join(", ")}`);
   });
 
-  test("classifyDomain returns object with required fields", () => {
-    const r = db.classifyDomain("featureassets.org");
+  test("classifyDomainActive returns object with required fields", () => {
+    const { classifyDomainActive } = require("../db-loader.js");
+    const r = classifyDomainActive("featureassets.org");
     assert.ok(r.label);
     assert.ok(r.confidence);
     assert.ok(r.category);
