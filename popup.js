@@ -237,6 +237,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     updateProviderUI(e.target.value);
   });
 
+  // ── Disable Blocking dropdown ──
+  initDisableBlockingMenu();
+
   // Re-check DNS routing after save
   document.getElementById("btn-save-settings").addEventListener("click", () => {
     setTimeout(checkDNSRouting, 500);
@@ -696,6 +699,211 @@ function updateProviderUI(selected) {
   document.getElementById("provider-nextdns").classList.toggle("hidden",  selected !== "nextdns");
   document.getElementById("provider-pihole").classList.toggle("hidden",   selected !== "pihole");
   document.getElementById("provider-controld").classList.toggle("hidden", selected !== "controld");
+  document.getElementById("disable-blocking-wrap").classList.toggle("hidden", selected !== "pihole");
+}
+
+// ── Disable Blocking Menu ────────────────────────────────────────────────────
+let blockingState = { blocking: true, timer: null }; // current Pi-hole blocking status
+let countdownInterval = null;
+let countdownEnd = null; // epoch ms when timer expires
+
+function formatCountdown(seconds) {
+  if (seconds <= 0) return "0s";
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return m > 0 ? `${m}:${String(s).padStart(2, "0")}` : `${s}s`;
+}
+
+function updateBlockingButton() {
+  const btn = document.getElementById("btn-disable-blocking");
+  const menu = document.getElementById("disable-blocking-menu");
+  if (!btn || !menu) return;
+
+  // Update button appearance
+  if (blockingState.blocking) {
+    btn.textContent = "🛡️";
+    btn.title = "Blocking enabled — click to disable";
+    btn.classList.remove("blocking-disabled");
+  } else {
+    if (countdownEnd) {
+      const remaining = Math.max(0, Math.ceil((countdownEnd - Date.now()) / 1000));
+      btn.textContent = formatCountdown(remaining);
+      btn.title = `Blocking disabled — ${formatCountdown(remaining)} remaining`;
+    } else {
+      btn.textContent = "🛡️‼";
+      btn.title = "Blocking disabled indefinitely";
+    }
+    btn.classList.add("blocking-disabled");
+  }
+
+  // Update menu items visibility
+  const disableItems = menu.querySelectorAll(".disable-menu-item[data-seconds]");
+  const customTrigger = menu.querySelector(".disable-menu-custom-trigger");
+  const customRow = menu.querySelector(".disable-menu-custom-row");
+  const enableItem = menu.querySelector(".enable-menu-item");
+
+  if (blockingState.blocking) {
+    // Blocking is ON — show disable options, hide enable
+    disableItems.forEach(el => el.classList.remove("hidden"));
+    if (customTrigger) customTrigger.classList.remove("hidden");
+    if (enableItem) enableItem.classList.add("hidden");
+  } else {
+    // Blocking is OFF — hide disable options, show enable
+    disableItems.forEach(el => el.classList.add("hidden"));
+    if (customTrigger) customTrigger.classList.add("hidden");
+    if (customRow) customRow.classList.add("hidden");
+    if (enableItem) enableItem.classList.remove("hidden");
+  }
+}
+
+function startCountdown(seconds) {
+  stopCountdown();
+  if (!seconds || seconds <= 0) return;
+  countdownEnd = Date.now() + seconds * 1000;
+  countdownInterval = setInterval(() => {
+    const remaining = Math.max(0, Math.ceil((countdownEnd - Date.now()) / 1000));
+    if (remaining <= 0) {
+      stopCountdown();
+      blockingState.blocking = true;
+      blockingState.timer = null;
+      updateBlockingButton();
+      return;
+    }
+    updateBlockingButton();
+  }, 1000);
+}
+
+function stopCountdown() {
+  if (countdownInterval) {
+    clearInterval(countdownInterval);
+    countdownInterval = null;
+  }
+  countdownEnd = null;
+}
+
+async function fetchBlockingStatus() {
+  const pihole = window.NDMProviders?.pihole;
+  if (!pihole || providerKey !== "pihole" || !pihole.hasCredentials(creds)) return;
+
+  const result = await pihole.getBlocking(creds);
+  if (!result.ok) return;
+
+  blockingState.blocking = result.blocking;
+  blockingState.timer = result.timer || null;
+
+  stopCountdown();
+  if (!result.blocking && result.timer > 0) {
+    startCountdown(result.timer);
+  }
+
+  updateBlockingButton();
+}
+
+function initDisableBlockingMenu() {
+  const btn = document.getElementById("btn-disable-blocking");
+  const menu = document.getElementById("disable-blocking-menu");
+  if (!btn || !menu) return;
+
+  btn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    menu.classList.toggle("hidden");
+  });
+
+  // Close menu on outside click
+  document.addEventListener("click", () => menu.classList.add("hidden"));
+  menu.addEventListener("click", (e) => e.stopPropagation());
+
+  // Preset duration items
+  menu.querySelectorAll(".disable-menu-item[data-seconds]").forEach(item => {
+    item.addEventListener("click", () => {
+      const seconds = parseInt(item.dataset.seconds, 10);
+      triggerDisableBlocking(seconds);
+      menu.classList.add("hidden");
+    });
+  });
+
+  // Enable blocking item
+  menu.querySelector(".enable-menu-item")?.addEventListener("click", () => {
+    triggerEnableBlocking();
+    menu.classList.add("hidden");
+  });
+
+  // Custom trigger
+  const customTrigger = menu.querySelector(".disable-menu-custom-trigger");
+  const customRow = menu.querySelector(".disable-menu-custom-row");
+  customTrigger.addEventListener("click", () => {
+    customRow.classList.toggle("hidden");
+    if (!customRow.classList.contains("hidden")) {
+      document.getElementById("disable-custom-seconds").focus();
+    }
+  });
+
+  document.getElementById("disable-custom-go").addEventListener("click", () => {
+    const val = parseInt(document.getElementById("disable-custom-seconds").value, 10);
+    if (val > 0) {
+      triggerDisableBlocking(val);
+      menu.classList.add("hidden");
+      customRow.classList.add("hidden");
+    }
+  });
+
+  document.getElementById("disable-custom-seconds").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") document.getElementById("disable-custom-go").click();
+  });
+
+  // Fetch initial status
+  fetchBlockingStatus();
+}
+
+async function triggerDisableBlocking(seconds) {
+  const pihole = window.NDMProviders?.pihole;
+  if (!pihole) return;
+
+  const btn = document.getElementById("btn-disable-blocking");
+  btn.textContent = "⏳";
+  btn.disabled = true;
+
+  const timer = seconds > 0 ? seconds : undefined;
+  const result = await pihole.disableBlocking(creds, timer);
+
+  btn.disabled = false;
+
+  if (result.ok) {
+    blockingState.blocking = false;
+    const remaining = result.timer || timer || null;
+    blockingState.timer = remaining;
+    stopCountdown();
+    if (remaining) startCountdown(remaining);
+    updateBlockingButton();
+  } else {
+    btn.textContent = "✗";
+    btn.title = result.error || "Failed to disable blocking";
+    setTimeout(() => updateBlockingButton(), 2000);
+  }
+}
+
+async function triggerEnableBlocking() {
+  const pihole = window.NDMProviders?.pihole;
+  if (!pihole) return;
+
+  const btn = document.getElementById("btn-disable-blocking");
+  btn.textContent = "⏳";
+  btn.disabled = true;
+
+  const result = await pihole.enableBlocking(creds);
+
+  btn.disabled = false;
+
+  if (result.ok) {
+    blockingState.blocking = true;
+    blockingState.timer = null;
+    stopCountdown();
+    updateBlockingButton();
+  } else {
+    btn.textContent = "✗";
+    btn.title = result.error || "Failed to enable blocking";
+    setTimeout(() => updateBlockingButton(), 2000);
+  }
 }
 
 function updatePiholeVersionLabel(version) {
