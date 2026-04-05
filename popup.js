@@ -240,6 +240,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   // ── Disable Blocking dropdown ──
   initDisableBlockingMenu();
 
+  // Re-fetch blocking status whenever the popup becomes visible again
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) fetchBlockingStatus();
+  });
+
   // Re-check DNS routing after save
   document.getElementById("btn-save-settings").addEventListener("click", () => {
     setTimeout(checkDNSRouting, 500);
