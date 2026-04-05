@@ -226,6 +226,200 @@
       return { ok: false, error: "Invalid token — check Pi-hole settings" };
     },
 
+    // Disable DNS blocking via Pi-hole v5 API.
+    // timer: optional seconds to disable for (omit or 0 = disable indefinitely)
+    async v5DisableBlocking({ piholeUrl, piholeToken }, timer) {
+      const url = normalizeUrl(piholeUrl);
+      if (!url || !piholeToken) return { ok: false, error: "No Pi-hole URL or token configured" };
+
+      try {
+        let endpoint = `${url}/admin/api.php?disable&auth=${encodeURIComponent(piholeToken)}`;
+        if (timer && timer > 0) endpoint += `&time=${timer}`;
+
+        const res = await fetch(endpoint, { signal: AbortSignal.timeout(8000) });
+        if (!res.ok) return { ok: false, error: `HTTP ${res.status}` };
+        const data = await res.json();
+        if (data.status === "disabled") return { ok: true, status: data.status };
+        return { ok: false, error: data.message || "Pi-hole returned an unexpected status" };
+      } catch (e) {
+        return { ok: false, error: e.name === "TimeoutError" ? "Pi-hole unreachable — check your URL" : e.message };
+      }
+    },
+
+    // Disable DNS blocking via Pi-hole v6 API.
+    // timer: optional seconds to disable for (omit or 0 = disable indefinitely)
+    async v6DisableBlocking({ piholeUrl, piholeToken }, timer) {
+      const url = normalizeUrl(piholeUrl);
+      if (!url || !piholeToken) return { ok: false, error: "No Pi-hole URL or token configured" };
+
+      try {
+        const authRes = await fetch(`${url}/api/auth`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ password: piholeToken }),
+          signal: AbortSignal.timeout(8000),
+        });
+        if (!authRes.ok) return { ok: false, error: authRes.status === 401 ? "Invalid API token" : `Auth failed (HTTP ${authRes.status})` };
+        const authData = await authRes.json();
+        const sid = authData?.session?.sid;
+        if (!sid) return { ok: false, error: "Could not obtain Pi-hole session token" };
+
+        const body = { blocking: false };
+        if (timer && timer > 0) body.timer = timer;
+
+        const res = await fetch(`${url}/api/dns/blocking`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "X-FTL-SID": sid },
+          body: JSON.stringify(body),
+          signal: AbortSignal.timeout(8000),
+        });
+        if (!res.ok) return { ok: false, error: `HTTP ${res.status}` };
+        const data = await res.json();
+        return { ok: true, blocking: data.blocking };
+      } catch (e) {
+        return { ok: false, error: e.name === "TimeoutError" ? "Pi-hole unreachable — check your URL" : e.message };
+      }
+    },
+
+    // Get current DNS blocking state via Pi-hole v5 API.
+    async v5GetBlocking({ piholeUrl, piholeToken }) {
+      const url = normalizeUrl(piholeUrl);
+      if (!url || !piholeToken) return { ok: false, error: "No Pi-hole URL or token configured" };
+
+      try {
+        const res = await fetch(
+          `${url}/admin/api.php?status&auth=${encodeURIComponent(piholeToken)}`,
+          { signal: AbortSignal.timeout(8000) }
+        );
+        if (!res.ok) return { ok: false, error: `HTTP ${res.status}` };
+        const data = await res.json();
+        if (data.status === "enabled" || data.status === "disabled") {
+          return { ok: true, blocking: data.status === "enabled" };
+        }
+        return { ok: false, error: data.message || "Pi-hole returned an unexpected status" };
+      } catch (e) {
+        return { ok: false, error: e.name === "TimeoutError" ? "Pi-hole unreachable — check your URL" : e.message };
+      }
+    },
+
+    // Get current DNS blocking state via Pi-hole v6 API.
+    async v6GetBlocking({ piholeUrl, piholeToken }) {
+      const url = normalizeUrl(piholeUrl);
+      if (!url || !piholeToken) return { ok: false, error: "No Pi-hole URL or token configured" };
+
+      try {
+        const authRes = await fetch(`${url}/api/auth`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ password: piholeToken }),
+          signal: AbortSignal.timeout(8000),
+        });
+        if (!authRes.ok) return { ok: false, error: authRes.status === 401 ? "Invalid API token" : `Auth failed (HTTP ${authRes.status})` };
+        const authData = await authRes.json();
+        const sid = authData?.session?.sid;
+        if (!sid) return { ok: false, error: "Could not obtain Pi-hole session token" };
+
+        const res = await fetch(`${url}/api/dns/blocking`, {
+          method: "GET",
+          headers: { "X-FTL-SID": sid },
+          signal: AbortSignal.timeout(8000),
+        });
+        if (!res.ok) return { ok: false, error: `HTTP ${res.status}` };
+        const data = await res.json();
+        const result = { ok: true, blocking: data.blocking };
+        if (data.timer != null) result.timer = data.timer;
+        return result;
+      } catch (e) {
+        return { ok: false, error: e.name === "TimeoutError" ? "Pi-hole unreachable — check your URL" : e.message };
+      }
+    },
+
+    async getBlocking({ piholeUrl, piholeToken, piholeVersion }) {
+      const url = normalizeUrl(piholeUrl);
+      if (!url || !piholeToken) return { ok: false, error: "No Pi-hole URL or token configured" };
+
+      let version = piholeVersion;
+      if (!version) {
+        version = await detectVersion(url);
+      }
+
+      if (version === 6) return this.v6GetBlocking({ piholeUrl, piholeToken });
+      return this.v5GetBlocking({ piholeUrl, piholeToken });
+    },
+
+    async enableBlocking({ piholeUrl, piholeToken, piholeVersion }) {
+      const url = normalizeUrl(piholeUrl);
+      if (!url || !piholeToken) return { ok: false, error: "No Pi-hole URL or token configured" };
+
+      let version = piholeVersion;
+      if (!version) {
+        version = await detectVersion(url);
+      }
+
+      if (version === 6) return this.v6EnableBlocking({ piholeUrl, piholeToken });
+      return this.v5EnableBlocking({ piholeUrl, piholeToken });
+    },
+
+    async v5EnableBlocking({ piholeUrl, piholeToken }) {
+      const url = normalizeUrl(piholeUrl);
+      if (!url || !piholeToken) return { ok: false, error: "No Pi-hole URL or token configured" };
+
+      try {
+        const res = await fetch(
+          `${url}/admin/api.php?enable&auth=${encodeURIComponent(piholeToken)}`,
+          { signal: AbortSignal.timeout(8000) }
+        );
+        if (!res.ok) return { ok: false, error: `HTTP ${res.status}` };
+        const data = await res.json();
+        if (data.status === "enabled") return { ok: true };
+        return { ok: false, error: data.message || "Pi-hole returned an unexpected status" };
+      } catch (e) {
+        return { ok: false, error: e.name === "TimeoutError" ? "Pi-hole unreachable — check your URL" : e.message };
+      }
+    },
+
+    async v6EnableBlocking({ piholeUrl, piholeToken }) {
+      const url = normalizeUrl(piholeUrl);
+      if (!url || !piholeToken) return { ok: false, error: "No Pi-hole URL or token configured" };
+
+      try {
+        const authRes = await fetch(`${url}/api/auth`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ password: piholeToken }),
+          signal: AbortSignal.timeout(8000),
+        });
+        if (!authRes.ok) return { ok: false, error: authRes.status === 401 ? "Invalid API token" : `Auth failed (HTTP ${authRes.status})` };
+        const authData = await authRes.json();
+        const sid = authData?.session?.sid;
+        if (!sid) return { ok: false, error: "Could not obtain Pi-hole session token" };
+
+        const res = await fetch(`${url}/api/dns/blocking`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "X-FTL-SID": sid },
+          body: JSON.stringify({ blocking: true }),
+          signal: AbortSignal.timeout(8000),
+        });
+        if (!res.ok) return { ok: false, error: `HTTP ${res.status}` };
+        return { ok: true };
+      } catch (e) {
+        return { ok: false, error: e.name === "TimeoutError" ? "Pi-hole unreachable — check your URL" : e.message };
+      }
+    },
+
+    async disableBlocking({ piholeUrl, piholeToken, piholeVersion }, timer) {
+      const url = normalizeUrl(piholeUrl);
+      if (!url || !piholeToken) return { ok: false, error: "No Pi-hole URL or token configured" };
+
+      let version = piholeVersion;
+      if (!version) {
+        version = await detectVersion(url);
+      }
+
+      if (version === 6) return this.v6DisableBlocking({ piholeUrl, piholeToken }, timer);
+      return this.v5DisableBlocking({ piholeUrl, piholeToken }, timer);
+    },
+
     // validateCredentials maps to testConnection for the abstraction layer
     async validateCredentials(config) {
       const result = await this.testConnection(config);

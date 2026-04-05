@@ -208,6 +208,107 @@ body.light-mode .dns-status-chip.checking {
   background: var(--bg-row);
 }
 
+/* ── Disable Blocking Dropdown ── */
+.disable-blocking-wrap {
+  position: relative;
+}
+
+.disable-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 4px 16px var(--shadow);
+  z-index: 100;
+  min-width: 150px;
+  padding: 4px 0;
+  overflow: hidden;
+}
+
+.disable-menu-item {
+  display: block;
+  width: 100%;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  font-size: 12px;
+  padding: 7px 12px;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+.disable-menu-item:hover {
+  background: var(--bg-hover);
+}
+.disable-menu-item:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.disable-menu-custom-row {
+  display: flex;
+  gap: 4px;
+  padding: 6px 10px;
+  align-items: center;
+}
+
+.disable-custom-input {
+  width: 70px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  color: var(--text-primary);
+  font-size: 12px;
+  padding: 4px 6px;
+  outline: none;
+}
+.disable-custom-input:focus {
+  border-color: var(--accent-blue);
+}
+
+.disable-custom-go {
+  background: var(--accent-blue);
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.disable-custom-go:hover {
+  background: var(--accent-blue-hover);
+}
+
+/* Blocking disabled state — button shows countdown or warning */
+#btn-disable-blocking.blocking-disabled {
+  opacity: 1;
+  color: var(--accent-red);
+  font-size: 11px;
+  font-weight: 700;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  min-width: 32px;
+  background: rgba(248, 113, 113, 0.1);
+  border: 1px solid rgba(248, 113, 113, 0.3);
+}
+body.light-mode #btn-disable-blocking.blocking-disabled {
+  color: #991b1b;
+  background: #fee2e2;
+  border-color: #fca5a5;
+}
+
+.enable-menu-item {
+  color: var(--accent-green) !important;
+  font-weight: 600;
+}
+body.light-mode .enable-menu-item {
+  color: #166534 !important;
+}
+
 /* ── Settings Panel ── */
 .settings-panel {
   padding: 14px;
