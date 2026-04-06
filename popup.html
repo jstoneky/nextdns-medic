@@ -20,6 +20,21 @@
         </div>
       </div>
       <div class="header-actions">
+        <div id="disable-blocking-wrap" class="disable-blocking-wrap hidden">
+          <button id="btn-disable-blocking" class="icon-btn" title="Disable blocking">🛡️</button>
+          <div id="disable-blocking-menu" class="disable-menu hidden">
+            <button class="enable-menu-item disable-menu-item hidden">Enable Blocking</button>
+            <button class="disable-menu-item" data-seconds="0">Indefinitely</button>
+            <button class="disable-menu-item" data-seconds="10">10 seconds</button>
+            <button class="disable-menu-item" data-seconds="30">30 seconds</button>
+            <button class="disable-menu-item" data-seconds="300">5 minutes</button>
+            <button class="disable-menu-item disable-menu-custom-trigger">Custom...</button>
+            <div class="disable-menu-custom-row hidden">
+              <input type="number" id="disable-custom-seconds" class="disable-custom-input" min="1" placeholder="sec" />
+              <button id="disable-custom-go" class="disable-custom-go">Go</button>
+            </div>
+          </div>
+        </div>
         <button id="btn-settings" class="icon-btn" title="Settings">⚙️</button>
         <button id="btn-clear" class="icon-btn" title="Clear">🗑️</button>
       </div>
