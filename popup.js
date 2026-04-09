@@ -155,6 +155,11 @@ async function checkDNSRouting() {
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────────
+// Log out of the Pi-hole v6 session when the popup closes
+window.addEventListener("unload", () => {
+  window.NDMProviders?.pihole?.destroySession?.();
+});
+
 document.addEventListener("DOMContentLoaded", async () => {
   const stored = await ext.storage.sync.get([
     "apiKey", "profileId", "provider",
