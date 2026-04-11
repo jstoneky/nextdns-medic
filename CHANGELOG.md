@@ -4,6 +4,25 @@ All notable changes to DNS Medic are documented here.
 
 ---
 
+## [3.2.4] — 2026-04-11
+
+### Fixed
+- **Pi-hole FTL concurrency workaround** — parallel domain lookups (`Promise.allSettled`) reverted to sequential fetching to avoid a Pi-hole FTL bug where concurrent API requests can freeze the server. Parallel code preserved in comments; will be restored once the upstream bug is fixed
+- **Pi-hole session destroy disabled** — `DELETE /api/auth` on popup close commented out; the request arriving while search requests are still in-flight triggers the same FTL freeze
+
+---
+
+## [3.2.3] — 2026-03-29
+
+### Added
+- **Pi-hole "Disable Blocking" button** — new toggle in the popup lets users pause Pi-hole blocking directly from the extension (contributed by JeffP07, PR #1)
+
+### Fixed
+- **Block button showing timer incorrectly** — disable-blocking button no longer shows a countdown in states where no timer is active
+- **Blocking status not refreshed on reopen** — fixed a regression where Pi-hole blocking status was not re-fetched when the popup was closed and reopened
+
+---
+
 ## [3.2.2] — 2026-03-29
 
 ### Fixed
