@@ -52,30 +52,38 @@
   }
 
   // ── v6 session cache ──────────────────────────────────────────────
-  // Stores { url, token, sid } so we don't re-authenticate every call.
+  // Reuse the session token within a popup session to avoid re-authing on every call.
+  // TTL matches Pi-hole v6's ~5-minute session lifetime.
   let _sessionCache = null;
+  const V6_SESSION_TTL_MS = 4 * 60 * 1000; // 4 minutes
 
   async function getV6Session(url, token) {
-    // Reuse cached session if url+token haven't changed
-    if (_sessionCache && _sessionCache.url === url && _sessionCache.token === token) {
-      return _sessionCache.sid;
+    if (_sessionCache &&
+        _sessionCache.url === url &&
+        _sessionCache.token === token &&
+        Date.now() < _sessionCache.expiresAt) {
+      return { ok: true, sid: _sessionCache.sid };
     }
-    const sid = await authenticateV6(url, token);
-    if (sid) _sessionCache = { url, token, sid };
-    return sid;
+    return authenticateV6(url, token);
   }
 
-  // Perform the actual POST /api/auth call
   async function authenticateV6(url, token) {
-    const res = await fetch(`${url}/api/auth`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password: token }),
-      signal: AbortSignal.timeout(8000),
-    });
-    if (!res.ok) return null;
-    const data = await res.json();
-    return data?.session?.sid || null;
+    try {
+      const res = await fetch(`${url}/api/auth`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: token }),
+        signal: AbortSignal.timeout(8000),
+      });
+      if (!res.ok) return { ok: false, error: res.status === 401 ? "Invalid API token" : `Auth failed (HTTP ${res.status})` };
+      const data = await res.json();
+      const sid = data?.session?.sid;
+      if (!sid) return { ok: false, error: "Could not obtain Pi-hole session token" };
+      _sessionCache = { url, token, sid, expiresAt: Date.now() + V6_SESSION_TTL_MS };
+      return { ok: true, sid };
+    } catch (e) {
+      return { ok: false, error: e.name === "TimeoutError" ? "Pi-hole unreachable — check your URL" : e.message };
+    }
   }
 
   // Invalidate cache so the next call re-authenticates
@@ -97,6 +105,7 @@
       });
     } catch (_) {}
   }
+  // ─────────────────────────────────────────────────────────────────
 
   // v6 exposes /api/auth; v5 does not
   async function detectVersion(url) {
@@ -124,12 +133,12 @@
 
   async function v6Allowlist(url, token, domain) {
     try {
-      let sid = await getV6Session(url, token);
-      if (!sid) return { ok: false, error: "Invalid API token" };
+      let session = await getV6Session(url, token);
+      if (!session.ok) return session;
 
       let addRes = await fetch(`${url}/api/domains/allow/exact`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", "X-FTL-SID": sid },
+        headers: { "Content-Type": "application/json", "X-FTL-SID": session.sid },
         body: JSON.stringify({ domain, comment: "Added by DNS Medic" }),
         signal: AbortSignal.timeout(8000),
       });
@@ -137,11 +146,11 @@
       // Session expired — re-authenticate once and retry
       if (addRes.status === 401) {
         clearV6Session();
-        sid = await getV6Session(url, token);
-        if (!sid) return { ok: false, error: "Invalid API token" };
+        session = await getV6Session(url, token);
+        if (!session.ok) return session;
         addRes = await fetch(`${url}/api/domains/allow/exact`, {
           method: "POST",
-          headers: { "Content-Type": "application/json", "X-FTL-SID": sid },
+          headers: { "Content-Type": "application/json", "X-FTL-SID": session.sid },
           body: JSON.stringify({ domain, comment: "Added by DNS Medic" }),
           signal: AbortSignal.timeout(8000),
         });
@@ -193,18 +202,20 @@
       if (!url || !piholeToken || !domains.length) return result;
 
       try {
-        let sid = await getV6Session(url, piholeToken);
-        if (!sid) return result;
+        let session = await getV6Session(url, piholeToken);
+        if (!session.ok) return result;
 
-        // Fetch all domains in parallel — much faster than sequential awaits
-        const fetchDomains = async (sessionId) => {
+        // Fetch all domains in parallel — much faster than sequential awaits.
+        // Returns true if any request got a 401 (session expired mid-flight).
+        const fetchDomains = async (sid) => {
+          let sessionExpired = false;
           await Promise.allSettled(domains.map(async (domain) => {
             try {
               const res = await fetch(
                 `${url}/api/search/${encodeURIComponent(domain)}`,
-                { headers: { "X-FTL-SID": sessionId }, signal: AbortSignal.timeout(6000) }
+                { headers: { "X-FTL-SID": sid }, signal: AbortSignal.timeout(6000) }
               );
-              if (res.status === 401) throw new Error("__SESSION_EXPIRED__");
+              if (res.status === 401) { sessionExpired = true; return; }
               if (!res.ok) return;
               const data = await res.json();
               const gravityHits = data?.search?.gravity || [];
@@ -219,18 +230,16 @@
                 reasons.push({ id: String(hit.id || ""), name: prettyListName(address) });
               }
               if (reasons.length) result[domain] = reasons;
-            } catch (e) { if (e.message === "__SESSION_EXPIRED__") throw e; }
+            } catch (_) {}
           }));
+          return sessionExpired;
         };
 
-        try {
-          await fetchDomains(sid);
-        } catch (e) {
-          if (e.message === "__SESSION_EXPIRED__") {
-            clearV6Session();
-            sid = await getV6Session(url, piholeToken);
-            if (sid) await fetchDomains(sid);
-          }
+        const expired = await fetchDomains(session.sid);
+        if (expired) {
+          clearV6Session();
+          session = await getV6Session(url, piholeToken);
+          if (session.ok) await fetchDomains(session.sid);
         }
       } catch (_) {}
 
@@ -269,8 +278,9 @@
         } else {
           // testConnection always does a fresh auth to verify the token
           clearV6Session();
-          const sid = await getV6Session(url, piholeToken);
-          tokenOk = !!sid;
+          const session = await getV6Session(url, piholeToken);
+          if (!session.ok) return { ok: false, error: session.error };
+          tokenOk = true;
         }
       } catch (_) {
         return { ok: false, error: "Pi-hole unreachable — check your URL" };
@@ -307,26 +317,26 @@
       if (!url || !piholeToken) return { ok: false, error: "No Pi-hole URL or token configured" };
 
       try {
-        let sid = await getV6Session(url, piholeToken);
-        if (!sid) return { ok: false, error: "Invalid API token" };
+        let session = await getV6Session(url, piholeToken);
+        if (!session.ok) return session;
 
         const body = { blocking: false };
         if (timer && timer > 0) body.timer = timer;
 
         let res = await fetch(`${url}/api/dns/blocking`, {
           method: "POST",
-          headers: { "Content-Type": "application/json", "X-FTL-SID": sid },
+          headers: { "Content-Type": "application/json", "X-FTL-SID": session.sid },
           body: JSON.stringify(body),
           signal: AbortSignal.timeout(8000),
         });
 
         if (res.status === 401) {
           clearV6Session();
-          sid = await getV6Session(url, piholeToken);
-          if (!sid) return { ok: false, error: "Invalid API token" };
+          session = await getV6Session(url, piholeToken);
+          if (!session.ok) return session;
           res = await fetch(`${url}/api/dns/blocking`, {
             method: "POST",
-            headers: { "Content-Type": "application/json", "X-FTL-SID": sid },
+            headers: { "Content-Type": "application/json", "X-FTL-SID": session.sid },
             body: JSON.stringify(body),
             signal: AbortSignal.timeout(8000),
           });
@@ -369,28 +379,29 @@
       if (!url || !piholeToken) return { ok: false, error: "No Pi-hole URL or token configured" };
 
       try {
-        let sid = await getV6Session(url, piholeToken);
-        if (!sid) return { ok: false, error: "Invalid API token" };
+        let session = await getV6Session(url, piholeToken);
+        if (!session.ok) return session;
 
         let res = await fetch(`${url}/api/dns/blocking`, {
           method: "GET",
-          headers: { "X-FTL-SID": sid },
+          headers: { "X-FTL-SID": session.sid },
           signal: AbortSignal.timeout(8000),
         });
 
         if (res.status === 401) {
           clearV6Session();
-          sid = await getV6Session(url, piholeToken);
-          if (!sid) return { ok: false, error: "Invalid API token" };
+          session = await getV6Session(url, piholeToken);
+          if (!session.ok) return session;
           res = await fetch(`${url}/api/dns/blocking`, {
             method: "GET",
-            headers: { "X-FTL-SID": sid },
+            headers: { "X-FTL-SID": session.sid },
             signal: AbortSignal.timeout(8000),
           });
         }
 
         if (!res.ok) return { ok: false, error: `HTTP ${res.status}` };
         const data = await res.json();
+        // v6 returns blocking as "enabled"/"disabled" string — normalize to boolean
         const blocking = data.blocking === "enabled" || data.blocking === true;
         const result = { ok: true, blocking };
         if (data.timer != null && data.timer > 0) result.timer = data.timer;
@@ -449,23 +460,23 @@
       if (!url || !piholeToken) return { ok: false, error: "No Pi-hole URL or token configured" };
 
       try {
-        let sid = await getV6Session(url, piholeToken);
-        if (!sid) return { ok: false, error: "Invalid API token" };
+        let session = await getV6Session(url, piholeToken);
+        if (!session.ok) return session;
 
         let res = await fetch(`${url}/api/dns/blocking`, {
           method: "POST",
-          headers: { "Content-Type": "application/json", "X-FTL-SID": sid },
+          headers: { "Content-Type": "application/json", "X-FTL-SID": session.sid },
           body: JSON.stringify({ blocking: true }),
           signal: AbortSignal.timeout(8000),
         });
 
         if (res.status === 401) {
           clearV6Session();
-          sid = await getV6Session(url, piholeToken);
-          if (!sid) return { ok: false, error: "Invalid API token" };
+          session = await getV6Session(url, piholeToken);
+          if (!session.ok) return session;
           res = await fetch(`${url}/api/dns/blocking`, {
             method: "POST",
-            headers: { "Content-Type": "application/json", "X-FTL-SID": sid },
+            headers: { "Content-Type": "application/json", "X-FTL-SID": session.sid },
             body: JSON.stringify({ blocking: true }),
             signal: AbortSignal.timeout(8000),
           });

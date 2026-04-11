@@ -242,8 +242,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     updateProviderUI(e.target.value);
   });
 
-  // ── Disable Blocking dropdown ──
-  initDisableBlockingMenu();
+  // ── Disable Blocking dropdown — only init for Pi-hole ──
+  if (providerKey === "pihole") initDisableBlockingMenu();
 
   // Re-check DNS routing after save
   document.getElementById("btn-save-settings").addEventListener("click", () => {
@@ -742,7 +742,7 @@ function updateBlockingButton() {
   }
 
   // Update menu items visibility
-  const disableItems = menu.querySelectorAll(".disable-menu-item[data-seconds]");
+  const disableItems = menu.querySelectorAll(".disable-menu-item[data-seconds], .disable-menu-item[data-indefinite]");
   const customTrigger = menu.querySelector(".disable-menu-custom-trigger");
   const customRow = menu.querySelector(".disable-menu-custom-row");
   const enableItem = menu.querySelector(".enable-menu-item");
@@ -818,10 +818,10 @@ function initDisableBlockingMenu() {
   document.addEventListener("click", () => menu.classList.add("hidden"));
   menu.addEventListener("click", (e) => e.stopPropagation());
 
-  // Preset duration items
-  menu.querySelectorAll(".disable-menu-item[data-seconds]").forEach(item => {
+  // Preset duration items (data-seconds for timed, data-indefinite for permanent)
+  menu.querySelectorAll(".disable-menu-item[data-seconds], .disable-menu-item[data-indefinite]").forEach(item => {
     item.addEventListener("click", () => {
-      const seconds = parseInt(item.dataset.seconds, 10);
+      const seconds = item.dataset.indefinite ? 0 : parseInt(item.dataset.seconds, 10);
       triggerDisableBlocking(seconds);
       menu.classList.add("hidden");
     });
@@ -1251,12 +1251,17 @@ async function saveSettings() {
     controldProfileId: newControldProfileId,
   });
 
+  const prevProvider = providerKey;
   providerKey = newProvider;
   creds.apiKey    = newApiKey;
   creds.piholeUrl    = newPiholeUrl;
   creds.piholeToken  = newPiholeToken;
   creds.controldToken     = newControldToken;
   creds.controldProfileId = newControldProfileId;
+
+  // Init blocking menu when switching TO Pi-hole; refresh status if already on Pi-hole
+  if (newProvider === "pihole" && prevProvider !== "pihole") initDisableBlockingMenu();
+  else if (newProvider === "pihole") fetchBlockingStatus();
 
   if (newApiKey && newProvider === "nextdns") lockApiKeyField();
 
