@@ -160,9 +160,9 @@ async function checkDNSRouting() {
 // search requests are still in flight) can trigger a freeze in FTL.
 // Tracked: https://github.com/pi-hole/FTL — restore when confirmed fixed.
 //
-// window.addEventListener("unload", () => {
-//   window.NDMProviders?.pihole?.destroySession?.();
-// });
+window.addEventListener("unload", () => {
+  window.NDMProviders?.pihole?.destroySession?.();
+});
 
 document.addEventListener("DOMContentLoaded", async () => {
   const stored = await ext.storage.sync.get([
