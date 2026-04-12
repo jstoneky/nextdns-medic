@@ -95,18 +95,18 @@
   // Any concurrent API requests can freeze FTL — the DELETE arriving while
   // search requests are still in flight triggers it. Restore when confirmed fixed.
   //
-  // function destroyV6Session() {
-  //   if (!_sessionCache) return;
-  //   const { url, sid } = _sessionCache;
-  //   _sessionCache = null;
-  //   try {
-  //     fetch(`${url}/api/auth`, {
-  //       method: "DELETE",
-  //       headers: { "X-FTL-SID": sid },
-  //       keepalive: true,
-  //     });
-  //   } catch (_) {}
-  // }
+  function destroyV6Session() {
+    if (!_sessionCache) return;
+    const { url, sid } = _sessionCache;
+    _sessionCache = null;
+    try {
+      fetch(`${url}/api/auth`, {
+        method: "DELETE",
+        headers: { "X-FTL-SID": sid },
+        keepalive: true,
+      });
+    } catch (_) {}
+  }
   // ─────────────────────────────────────────────────────────────────
 
   // v6 exposes /api/auth; v5 does not
@@ -548,7 +548,7 @@
     },
 
     clearSession: clearV6Session,
-    // destroySession: destroyV6Session, // TODO: restore when Pi-hole FTL concurrency bug is fixed
+    destroySession: destroyV6Session, // TODO: restore when Pi-hole FTL concurrency bug is fixed
     detectVersion,
   };
 })();
