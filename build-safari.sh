@@ -9,6 +9,18 @@ set -euo pipefail
 VERSION=$(node -p "require('./package.json').version")
 SCHEME="DNS Medic (macOS)"
 XCODE_PROJECT="platforms/safari/DNS Medic/DNS Medic.xcodeproj"
+PBXPROJ="${XCODE_PROJECT}/project.pbxproj"
+
+# Sync version from package.json into all Xcode targets
+CURRENT_BUILD=$(grep -m1 'CURRENT_PROJECT_VERSION' "$PBXPROJ" | grep -o '[0-9]*' | head -1)
+NEXT_BUILD=$((CURRENT_BUILD + 1))
+
+echo "▶ Syncing versions: marketing=$VERSION  build=$CURRENT_BUILD → $NEXT_BUILD"
+
+# Update MARKETING_VERSION and CURRENT_PROJECT_VERSION in all build configurations
+sed -i '' "s/MARKETING_VERSION = .*;/MARKETING_VERSION = ${VERSION};/g" "$PBXPROJ"
+sed -i '' "s/CURRENT_PROJECT_VERSION = .*;/CURRENT_PROJECT_VERSION = ${NEXT_BUILD};/g" "$PBXPROJ"
+
 DERIVED_DATA_NAME="DNS_Medic"
 OUTPUT_DIR="store/dist"
 ZIP_NAME="dns-medic-safari-macOS-v${VERSION}.zip"

@@ -4,6 +4,14 @@ All notable changes to DNS Medic are documented here.
 
 ---
 
+## [3.2.5] — 2026-04-11
+
+### Added
+- **Comprehensive test suite** — 480 unit tests across 7 new test files covering `background.js`, `platform-detect.js`, `browser-compat.js`, and all three provider modules (Pi-hole, NextDNS, Control D)
+- **Safari build version automation** — `build-safari.sh` now syncs `MARKETING_VERSION` from `package.json` and auto-increments `CURRENT_PROJECT_VERSION` across all 8 Xcode build configurations on every build
+
+---
+
 ## [3.2.4] — 2026-04-11
 
 ### Fixed
