@@ -4,6 +4,13 @@ All notable changes to DNS Medic are documented here.
 
 ---
 
+## [3.2.6] — 2026-04-27
+
+### Fixed
+- **Pi-hole routing detection fallback** — `detectUsage()` now falls back to the configured Pi-hole URL when the `http://pi.hole` magic domain fails to resolve (e.g. non-standard web port, stale browser DNS cache, or Docker internal IP returned instead of LAN IP). Previously, any failure to reach `pi.hole` unconditionally returned "Not routing to Pi-hole" even when Pi-hole was fully operational.
+
+---
+
 ## [3.2.5] — 2026-04-11
 
 ### Added

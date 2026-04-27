@@ -137,7 +137,7 @@ async function checkDNSRouting() {
     } else if (providerKey === "pihole") {
       const pihole = window.NDMProviders?.pihole;
       if (pihole) {
-        const result = await pihole.detectUsage();
+        const result = await pihole.detectUsage({ piholeUrl: creds.piholeUrl });
         active = result?.active === true;
       }
     }

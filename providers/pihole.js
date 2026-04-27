@@ -171,22 +171,31 @@
     // Two-step: 1) try http://pi.hole (magic domain — only resolves if DNS goes through Pi-hole)
     //           2) fall back to saved piholeUrl if set (confirms server is up)
     // Returns { active: true } | { active: false } | { active: null }
-    async detectUsage() {
-      // Only the pi.hole magic domain is a real DNS routing check.
-      // It resolves to the Pi-hole IP only if DNS is going through Pi-hole.
-      // URL reachability (saved piholeUrl) is NOT used — the web UI being up
-      // doesn't mean DNS is routing through Pi-hole.
+    async detectUsage({ piholeUrl } = {}) {
+      // Step 1: try http://pi.hole magic domain — only resolves if DNS goes through Pi-hole.
       try {
-        const res = await fetch("http://pi.hole/api/info/version", {
+        await fetch("http://pi.hole/api/info/version", {
           signal: AbortSignal.timeout(3000),
           credentials: "omit",
           mode: "no-cors",
         });
-        // no-cors returns opaque response object (not TypeError) = resolved = routed
         return { active: true };
-      } catch (_) {
-        return { active: false };
+      } catch (_) {}
+
+      // Step 2: fall back to configured URL — Pi-hole is reachable even if pi.hole
+      // doesn't resolve (e.g. non-standard port, browser DNS cache stale).
+      if (piholeUrl) {
+        try {
+          await fetch(`${normalizeUrl(piholeUrl)}/api/info/version`, {
+            signal: AbortSignal.timeout(3000),
+            credentials: "omit",
+            mode: "no-cors",
+          });
+          return { active: true };
+        } catch (_) {}
       }
+
+      return { active: false };
     },
     label: "Pi-hole",
     id: "pihole",
