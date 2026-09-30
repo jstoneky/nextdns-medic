@@ -357,7 +357,7 @@ describe("detectUsage", () => {
       return makeResponse(200, {});
     };
     await controld.detectUsage();
-    assert.match(capturedUrls[0], /https:\/\/[a-z0-9]+\.dns\.controld\.com\/detect/);
+    assert.match(capturedUrls[0], /https:\/\/[a-z0-9]+\.verify\.controld\.com\/detect/);
   });
 });
 

@@ -105,11 +105,11 @@
     },
 
     // Detect if current DNS is routing through Control D.
-    // Fetches https://{rand}.dns.controld.com/detect — resolves only if Control D is active.
+    // Fetches https://{rand}.verify.controld.com/detect — resolves only if Control D is active.
     // Returns { active: true } | { active: false } | { active: null } (null = network error)
     async detectUsage() {
       const rand = Math.random().toString(36).substr(2, 12);
-      const url = `https://${rand}.dns.controld.com/detect`;
+      const url = `https://${rand}.verify.controld.com/detect`;
       try {
         const res = await fetch(url, {
           signal: AbortSignal.timeout(4000),
